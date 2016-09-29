@@ -18,3 +18,4 @@ script:
 
 notifications:
   email: false
+  slack: 7552-tallerii:pPtNMc7Fysne3xXz36XuNxWg
