@@ -45,14 +45,17 @@ template <class T> void MemoriaCompartida2<T>::crear ( const std::string& archiv
 				this->ptrDatos = static_cast<T*> (tmpPtr);
 			} else {
 				std::string mensaje = std::string("Error en shmat() (crear): ") + std::string(strerror(errno));
+				std::cerr<<mensaje<<std::endl;
 				throw mensaje;
 			}
 		} else {
 			std::string mensaje = std::string("Error en shmget() (crear): ") + std::string(strerror(errno));
+			std::cerr<<mensaje<<std::endl;
 			throw mensaje;
 		}
 	} else {
 		std::string mensaje = std::string("Error en ftok() (crear): ") + std::string(strerror(errno));
+		std::cerr<<mensaje<<std::endl;
 		throw mensaje;
 	}
 }
@@ -83,14 +86,17 @@ template <class T> MemoriaCompartida2<T>::MemoriaCompartida2 ( const std::string
 				this->ptrDatos = static_cast<T*> (tmpPtr);
 			} else {
 				std::string mensaje = std::string("Error en shmat() (constructor): ") + std::string(strerror(errno));
+				std::cerr<<mensaje<<std::endl;
 				throw mensaje;
 			}
 		} else {
 			std::string mensaje = std::string("Error en shmget() constructor: ") + std::string(strerror(errno));
+			std::cerr<<mensaje<<std::endl;
 			throw mensaje;
 		}
 	} else {
 		std::string mensaje = std::string("Error en ftok() (constructor): ") + std::string(strerror(errno));
+		std::cerr<<mensaje<<std::endl;
 		throw mensaje;
 	}
 }
@@ -102,6 +108,7 @@ template <class T> MemoriaCompartida2<T>::MemoriaCompartida2 ( const MemoriaComp
 		this->ptrDatos = static_cast<T*> (tmpPtr);
 	} else {
 		std::string mensaje = std::string("Error en shmat() (constructor copia): ") + std::string(strerror(errno));
+		std::cerr<<mensaje<<std::endl;
 		throw mensaje;
 	}
 }
@@ -127,6 +134,7 @@ template <class T> MemoriaCompartida2<T>& MemoriaCompartida2<T>::operator= ( con
 		this->ptrDatos = static_cast<T*> (tmpPtr);
 	} else {
 		std::string mensaje = std::string("Error en shmat() (operador=): ") + std::string(strerror(errno));
+		std::cerr<<mensaje<<std::endl;
 		throw mensaje;
 	}
 

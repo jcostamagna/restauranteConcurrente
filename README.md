@@ -1,7 +1,7 @@
 # restauranteConcurrente
 Trabajo practico de Tecnicas de programacion Concurrente.
 
-[Read more words!](2016-2C-PrimerProyecto.pdf)
+[Ver en pdf](2016-2C-PrimerProyecto.pdf)
 
 Objetivo
 

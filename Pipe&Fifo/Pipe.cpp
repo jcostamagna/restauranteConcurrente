@@ -1,7 +1,14 @@
 #include "Pipe.h"
+#include <string>
+#include <string.h>
+#include <iostream>
+#include <errno.h>
 
 Pipe :: Pipe() : lectura(true), escritura(true) {
-	pipe ( this->descriptores );
+	if (pipe ( this->descriptores ) == -1){
+		std::string mensaje = std::string("Error en pipe() (constructor): ") + std::string(strerror(errno));
+		throw mensaje;
+	}
 	/*fcntl ( this->descriptors[0],F_SETFL,O_NONBLOCK );
 	fcntl ( this->descriptors[1],F_SETFL,O_NONBLOCK );*/
 }
