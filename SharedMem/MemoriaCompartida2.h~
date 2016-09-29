@@ -44,15 +44,15 @@ template <class T> void MemoriaCompartida2<T>::crear ( const std::string& archiv
 			if ( tmpPtr != (void*) -1 ) {
 				this->ptrDatos = static_cast<T*> (tmpPtr);
 			} else {
-				std::string mensaje = std::string("Error en shmat() (crear): ") + std::string(strerror(errno));
+				std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
 				throw mensaje;
 			}
 		} else {
-			std::string mensaje = std::string("Error en shmget() (crear): ") + std::string(strerror(errno));
+			std::string mensaje = std::string("Error en shmget(): ") + std::string(strerror(errno));
 			throw mensaje;
 		}
 	} else {
-		std::string mensaje = std::string("Error en ftok() (crear): ") + std::string(strerror(errno));
+		std::string mensaje = std::string("Error en ftok(): ") + std::string(strerror(errno));
 		throw mensaje;
 	}
 }
@@ -66,7 +66,7 @@ template <class T> void MemoriaCompartida2<T>::liberar() {
 			shmctl ( this->shmId,IPC_RMID,NULL );
 		}
 	} else {
-		std::string mensaje = std::string("Error en shmdt() (liberando): ") + std::string(strerror(errno));
+		std::string mensaje = std::string("Error en shmdt(): ") + std::string(strerror(errno));
 		throw mensaje;
 	}
 }
@@ -82,15 +82,15 @@ template <class T> MemoriaCompartida2<T>::MemoriaCompartida2 ( const std::string
 			if ( tmpPtr != (void*) -1 ) {
 				this->ptrDatos = static_cast<T*> (tmpPtr);
 			} else {
-				std::string mensaje = std::string("Error en shmat() (constructor): ") + std::string(strerror(errno));
+				std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
 				throw mensaje;
 			}
 		} else {
-			std::string mensaje = std::string("Error en shmget() constructor: ") + std::string(strerror(errno));
+			std::string mensaje = std::string("Error en shmget(): ") + std::string(strerror(errno));
 			throw mensaje;
 		}
 	} else {
-		std::string mensaje = std::string("Error en ftok() (constructor): ") + std::string(strerror(errno));
+		std::string mensaje = std::string("Error en ftok(): ") + std::string(strerror(errno));
 		throw mensaje;
 	}
 }
@@ -101,7 +101,7 @@ template <class T> MemoriaCompartida2<T>::MemoriaCompartida2 ( const MemoriaComp
 	if ( tmpPtr != (void*) -1 ) {
 		this->ptrDatos = static_cast<T*> (tmpPtr);
 	} else {
-		std::string mensaje = std::string("Error en shmat() (constructor copia): ") + std::string(strerror(errno));
+		std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
 		throw mensaje;
 	}
 }
@@ -115,7 +115,7 @@ template <class T> MemoriaCompartida2<T>::~MemoriaCompartida2 () {
 			shmctl ( this->shmId,IPC_RMID,NULL );
 		}
 	} else {
-		std::cerr << "Error en shmdt() (destructor): " << strerror(errno) << std::endl;
+		std::cerr << "Error en shmdt(): " << strerror(errno) << std::endl;
 	}
 }
 
@@ -126,7 +126,7 @@ template <class T> MemoriaCompartida2<T>& MemoriaCompartida2<T>::operator= ( con
 	if ( tmpPtr != (void*) -1 ) {
 		this->ptrDatos = static_cast<T*> (tmpPtr);
 	} else {
-		std::string mensaje = std::string("Error en shmat() (operador=): ") + std::string(strerror(errno));
+		std::string mensaje = std::string("Error en shmat(): ") + std::string(strerror(errno));
 		throw mensaje;
 	}
 

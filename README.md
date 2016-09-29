@@ -1,13 +1,17 @@
 # restauranteConcurrente
 Trabajo practico de Tecnicas de programacion Concurrente.
 
+[Read more words!](2016-2C-PrimerProyecto.pdf)
 
 Objetivo
 
 El objetivo de este proyecto consiste en implementar la simulaci´on parcial del funcionamiento de un
 restaurant.
+
 Requerimientos Funcionales
+
 Los requerimientos funcionales son los siguientes:
+
 1. Al restaurant ingresan grupos de comensales que son recibidos en la puerta por los recepcionistas.
 2. Cada recepcionista atiende a un grupo de personas a la vez y los ubica en una mesa disponible.
 Si no hay m´as mesas disponibles, los hace pasar al living del restaurant, donde esperar´an a que
@@ -80,6 +84,7 @@ espec´ıfico, la elecci´on en cada caso queda a cargo del grupo y debe estar d
 Entrega
 
 La entrega del proyecto comprende lo siguiente:
+
 1. Informe, se deber´a presentar impreso en una carpeta o folio y en forma digital (PDF) a trav´es del
 campus
 2. El c´odigo fuente de la aplicaci´on, que se entregar´a ´unicamente mediante el campus
