@@ -7,6 +7,7 @@
 Pipe :: Pipe() : lectura(true), escritura(true) {
 	if (pipe ( this->descriptores ) == -1){
 		std::string mensaje = std::string("Error en pipe() (constructor): ") + std::string(strerror(errno));
+		std::cerr<<mensaje<<std::endl;
 		throw mensaje;
 	}
 	/*fcntl ( this->descriptors[0],F_SETFL,O_NONBLOCK );
