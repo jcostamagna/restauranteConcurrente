@@ -31,7 +31,11 @@ EventHandler* SignalHandler :: registrarHandler ( int signum,EventHandler* eh ) 
 	sa.sa_handler = SignalHandler :: dispatcher;
 	sigemptyset ( &sa.sa_mask );	// inicializa la mascara de seniales a bloquear durante la ejecucion del handler como vacio
 	sigaddset ( &sa.sa_mask,signum );
-	sigaction ( signum,&sa,0 );	// cambiar accion de la senial
+	if (sigaction ( signum,&sa,0 ) < 0){// cambiar accion de la senial
+		std::string mensaje = std::string("Error en sigaction() (registrarHandler): ") + std::string(strerror(errno));
+		std::cerr<<mensaje<<std::endl;
+		throw mensaje;
+		}	
 
 	return old_eh;
 }

@@ -8,6 +8,11 @@ LockFile :: LockFile ( const std::string nombre ) {
 	this->fl.l_start = 0;
 	this->fl.l_len = 0;
 	this->fd = open ( this->nombre.c_str(),O_CREAT|O_WRONLY,0777 );
+	if (fd <= 0){
+		std::string mensaje = std::string("Error en open() del Lock (crear): ") + std::string(strerror(errno));
+		std::cerr<<mensaje<<std::endl;
+		throw mensaje;
+	}
 }
 
 int LockFile :: tomarLock () {
