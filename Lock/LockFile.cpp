@@ -1,4 +1,8 @@
 #include "LockFile.h"
+#include <string>
+#include <string.h>
+#include <iostream>
+#include <errno.h>
 
 LockFile :: LockFile ( const std::string nombre ) {
 

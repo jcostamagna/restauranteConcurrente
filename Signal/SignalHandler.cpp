@@ -1,4 +1,8 @@
 #include "SignalHandler.h"
+#include <string>
+#include <string.h>
+#include <iostream>
+#include <errno.h>
 
 SignalHandler* SignalHandler :: instance = NULL;
 EventHandler* SignalHandler :: signal_handlers [ NSIG ];
