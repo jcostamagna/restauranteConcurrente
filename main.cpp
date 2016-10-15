@@ -3,6 +3,7 @@
 #include <sys/wait.h>
 
 #include "Pipe&Fifo/Pipe.h"
+#include "Log.h"
 
 
 int main () {
@@ -42,6 +43,13 @@ int main () {
 		wait ( NULL );
 
 		canal.cerrar ();
-		exit ( 0 );
+		//exit ( 0 );
 	}
+
+	Log* log = Log::getInstance();
+    log->setearArchivo("/tmp/log.txt");
+    std::string elLog("Hola soy ale");
+    log->log(elLog);
+    log->destruir();
+    system("cat /tmp/log.txt");
 }

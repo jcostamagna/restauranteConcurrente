@@ -1,0 +1,29 @@
+//
+// Created by ale on 15/10/16.
+//
+
+#ifndef RESTAURANTCONCURRENTE_LOG_H
+#define RESTAURANTCONCURRENTE_LOG_H
+
+
+#include <ostream>
+#include "Lock/LockFile.h"
+
+class Log {
+private:
+    static Log* instance;
+    static LockFile* lockFile;
+
+    Log();
+
+public:
+    static Log* getInstance ();
+    static void destruir ();
+    bool setearArchivo(const char* archivo);
+
+    void log(std::string &msg);
+
+};
+
+
+#endif //RESTAURANTCONCURRENTE_LOG_H
