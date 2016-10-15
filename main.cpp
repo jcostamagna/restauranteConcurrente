@@ -5,14 +5,14 @@
 //#include <fstream>
 #include "Pipe&Fifo/Pipe.h"
 #include "src/Parser.h"
+#include "src/Recepcionista.h"
 
 
 int main () {
 
 	static const int BUFFSIZE = 100;
 
-	//std::ifstream infile("config.txt");
-    std::string string("config");
+    std::string string("../config");
 
 	Parser parser(string);
 	std::string header;
@@ -27,7 +27,6 @@ int main () {
 
 	while (parser.obtenerTupla(header, &precio)){
         menu.push_back(std::make_pair(header, precio));
-		//std::cout<<header<<" "<<precio<<std::endl;
 	}
 
 
@@ -38,9 +37,10 @@ int main () {
     std::cout << '\n';
     std::cout << "ESTO ANDA" << std::endl;*/
 	Pipe canal;
-	int pid = fork ();
-
-	if ( pid == 0 ) {
+	//int pid = fork ();
+    Recepcionista recepcionista(canal);
+    recepcionista.start();
+	/*if ( pid == 0 ) {
 
 		// lector
 		char buffer[BUFFSIZE];
@@ -56,20 +56,21 @@ int main () {
 		canal.cerrar ();
 		exit ( 0 );
 
-	} else {
+	} else {*/
 
 		// escritor
 		std::string dato = "Hola mundo pipes!!";
-//		sleep ( 5 );
+		sleep ( 5 );
 		canal.escribir ( static_cast<const void*>(dato.c_str()),dato.size() );
 
 		std::cout << "Escritor: escribi el dato [" << dato << "] en el pipe" << std::endl;
 		std::cout << "Escritor: fin del proceso" << std::endl;
 
 		// espero a que termine el hijo
-		wait ( NULL );
+		//wait ( NULL );
+        recepcionista.stop();
 
 		canal.cerrar ();
 		exit ( 0 );
-	}
+	//}
 }

@@ -10,6 +10,8 @@ private:
 	int descriptores[2];
 	bool lectura;
 	bool escritura;
+	Pipe(const Pipe& object);
+	Pipe& operator=(const Pipe& object);
 
 public:
 	static const int LECTURA = 0;
