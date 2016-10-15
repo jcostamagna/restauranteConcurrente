@@ -1,6 +1,5 @@
-#include <string.h>
+
 #include <iostream>
-#include <stdlib.h>
 #include <sys/wait.h>
 
 #include "Pipe&Fifo/Pipe.h"
@@ -33,7 +32,7 @@ int main () {
 
 		// escritor
 		std::string dato = "Hola mundo pipes!!";
-//		sleep ( 5 );
+		sleep ( 5 );
 		canal.escribir ( static_cast<const void*>(dato.c_str()),dato.size() );
 
 		std::cout << "Escritor: escribi el dato [" << dato << "] en el pipe" << std::endl;
