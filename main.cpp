@@ -1,15 +1,42 @@
 #include <string.h>
 #include <iostream>
-#include <stdlib.h>
 #include <sys/wait.h>
-
+#include <list>
+//#include <fstream>
 #include "Pipe&Fifo/Pipe.h"
+#include "src/Parser.h"
 
 
 int main () {
 
 	static const int BUFFSIZE = 100;
 
+	//std::ifstream infile("config.txt");
+    std::string string("config");
+
+	Parser parser(string);
+	std::string header;
+	int recepCant, mozosCant, mesasCant, precio;
+
+    //Leo la cantidad de recepcionistas, mozos y mesas
+    parser.obtenerTupla(header, &recepCant);
+    parser.obtenerTupla(header, &mozosCant);
+    parser.obtenerTupla(header, &mesasCant);
+
+    std::list<std::pair<std::string,int>  > menu;
+
+	while (parser.obtenerTupla(header, &precio)){
+        menu.push_back(std::make_pair(header, precio));
+		//std::cout<<header<<" "<<precio<<std::endl;
+	}
+
+
+    /*std::cout << "mylist contains:";
+    for (std::list<std::pair<std::string,int> >::iterator it= menu.begin(); it != menu.end(); ++it)
+        std::cout << ' ' << (*it).first << (*it).second;
+
+    std::cout << '\n';
+    std::cout << "ESTO ANDA" << std::endl;*/
 	Pipe canal;
 	int pid = fork ();
 

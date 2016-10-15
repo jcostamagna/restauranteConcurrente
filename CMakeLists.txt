@@ -9,9 +9,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 
 
-set(HEADER_FILES Pipe&Fifo/Pipe.h)  #lsoslas
+set(HEADER_FILES Pipe&Fifo/Pipe.h src/Parser.cpp src/Parser.h)  #lsoslas
 set(SOURCE_FILES
-        Pipe&Fifo/Pipe.cpp)
+        Pipe&Fifo/Pipe.cpp src/Parser.cpp src/Parser.h)
 
 
 #add_library(foo STATIC ${HEADER_FILES}  ${SOURCE_FILES} )
