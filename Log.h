@@ -21,6 +21,7 @@ public:
     static void destruir ();
     bool setearArchivo(const char* archivo);
 
+    void log(const char* msg);
     void log(std::string &msg);
 
 };
