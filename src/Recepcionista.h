@@ -7,21 +7,20 @@
 
 
 #include <Pipe.h>
+#include "Forkeable.h"
 
-class Recepcionista {
+class Recepcionista: public Forkeable {
 private:
     Pipe& clientes;
-    int pid;
     void rutinaRecepcionista();
     Recepcionista(const Recepcionista& object);
     Recepcionista& operator=(const Recepcionista& object);
 
+    virtual void run() override;
+
 public:
     Recepcionista (Pipe& clientes): clientes(clientes) {}
-    void start();
     int getPid();
-    void stop();
-    //~Parser ();
 };
 
 

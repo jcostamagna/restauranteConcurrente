@@ -11,15 +11,12 @@ class Forkeable {
 public:
 
     virtual ~Forkeable();
-    virtual void run();
     void start();
     void stop();
 
-private:
-    static void* starter(void* datos);
-
 protected:
     pid_t pid;
+    virtual void run();
 };
 
 
