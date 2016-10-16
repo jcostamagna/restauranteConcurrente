@@ -7,6 +7,9 @@ set(CMAKE_CXX_FLAGS_DEBUG   "-O0 -g3")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
+set(CONFIG_FILES
+        config/restaurante.config)
+
 
 set(SOURCE_FILES
         Pipe&Fifo/Pipe.cpp
@@ -20,11 +23,11 @@ set(SOURCE_FILES
         src/Parser.cpp
         src/Log.cpp src/Log.h)
 
+add_executable(restaurantConcurrente main.cpp ${SOURCE_FILES} ${CONFIG_FILES})#${HEADER_FILES})
 
-#add_library(foo STATIC ${HEADER_FILES}  ${SOURCE_FILES} )
-
-
-add_executable(restaurantConcurrente main.cpp ${SOURCE_FILES} )#${HEADER_FILES})
+add_custom_command(TARGET restaurantConcurrente POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/config $<TARGET_FILE_DIR:restaurantConcurrente>)
 
 #include_directories(Pipe&Fifo)
 

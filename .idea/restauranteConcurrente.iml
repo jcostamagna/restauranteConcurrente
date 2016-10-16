@@ -23,6 +23,7 @@
       <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Signal/SignalHandler.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Signal/SignalHandler.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/config/restaurante.config" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">

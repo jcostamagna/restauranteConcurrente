@@ -6,5 +6,10 @@
 
 bool Parser::obtenerTupla(std::string &header, int *cantidad) {
 
-    return (infile >> header >> (*cantidad));
+    infile >> header >> (*cantidad);
+    return infile.good();
+}
+
+Parser::~Parser() {
+    infile.close();
 }
