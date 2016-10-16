@@ -6,14 +6,14 @@
 #include "Recepcionista.h"
 
 void Recepcionista::start() {
-    this->pid = fork ();
+    this->pid = fork (); //guardo el pid del padre
     if (this->pid == 0){
         rutinaRecepcionista();
     }
 }
 
 void Recepcionista::stop() {
-    waitpid ( this->pid , NULL, 0);
+    waitpid ( this->pid , NULL, 0); //espero a que run() termine
 }
 
 void Recepcionista::rutinaRecepcionista(){

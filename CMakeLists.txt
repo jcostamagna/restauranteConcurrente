@@ -31,5 +31,9 @@ add_custom_command(TARGET restaurantConcurrente POST_BUILD
         ${CMAKE_SOURCE_DIR}/config $<TARGET_FILE_DIR:restaurantConcurrente>)
 
 
-#add_subdirectory(src)
-#add_subdirectory(test)
+include_directories(
+        Lock
+        Pipe&Fifo
+        Semaforos
+        SharedMem
+        Signal)

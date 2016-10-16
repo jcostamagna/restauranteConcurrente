@@ -9,7 +9,7 @@
 
 int main() {
 
-    static const int BUFFSIZE = 100;
+//    static const int BUFFSIZE = 100;
 
 
     std::string string("restaurante.config");
