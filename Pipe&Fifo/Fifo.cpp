@@ -1,3 +1,5 @@
+#include <cstring>
+#include <iostream>
 #include "Fifo.h"
 
 Fifo::Fifo(const std::string nombre) : nombre(nombre), fd(-1) {

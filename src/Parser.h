@@ -19,6 +19,7 @@ class Parser {
         Parser (const std::string& archivo): infile(archivo.c_str()) {}
         bool obtenerTupla(std::string& header, int* cantidad);
         //~Parser ();
+        virtual ~Parser();
 
 };
 

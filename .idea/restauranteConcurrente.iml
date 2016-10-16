@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="CPP_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/Lock/LockFile.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Lock/LockFile.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/SharedMem/MemoriaCompartida2.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Semaforos/Semaforo.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Semaforos/Semaforo.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Parser.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Recepcionista.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Recepcionista.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Log.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Log.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Parser.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/Pipe.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/FifoLectura.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/Fifo.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/FifoEscritura.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/Pipe.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/Fifo.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/FifoLectura.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/FifoEscritura.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Signal/SignalHandler.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Signal/SignalHandler.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/config/restaurante.config" isTestSource="false" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library name="Header Search Paths">
+        <CLASSES>
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
+          <root url="file:///usr/include" />
+          <root url="file:///usr/local/include" />
+        </CLASSES>
+        <SOURCES>
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
+          <root url="file:///usr/include" />
+          <root url="file:///usr/local/include" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+  </component>
+</module>
