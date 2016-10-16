@@ -8,8 +8,6 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 
-
-#set(HEADER_FILES Pipe&Fifo/Pipe.h)  #lsoslas
 set(SOURCE_FILES
         Pipe&Fifo/Pipe.cpp
         Pipe&Fifo/Fifo.cpp
@@ -18,7 +16,8 @@ set(SOURCE_FILES
         Lock/LockFile.cpp
         Semaforos/Semaforo.cpp
         SharedMem/MemoriaCompartida2.h
-        Signal/SignalHandler.cpp)
+        Signal/SignalHandler.cpp
+        src/Parser.cpp)
 
 
 #add_library(foo STATIC ${HEADER_FILES}  ${SOURCE_FILES} )
