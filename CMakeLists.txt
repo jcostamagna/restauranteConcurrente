@@ -22,7 +22,8 @@ set(SOURCE_FILES
         Signal/SignalHandler.cpp
         src/Parser.cpp
         src/Log.cpp src/Log.h
-        src/Recepcionista.cpp src/Recepcionista.h)
+        src/Recepcionista.cpp src/Recepcionista.h
+        src/Forkeable.cpp src/Forkeable.h)
 
 add_executable(restaurantConcurrente main.cpp ${SOURCE_FILES} ${CONFIG_FILES})#${HEADER_FILES})
 

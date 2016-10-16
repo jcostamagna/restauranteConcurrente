@@ -12,8 +12,10 @@
       <sourceFolder url="file://$MODULE_DIR$/src/Recepcionista.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Recepcionista.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Log.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Log.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Parser.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Forkeable.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Forkeable.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Log.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/Pipe.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/FifoLectura.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/Fifo.h" isTestSource="false" />
