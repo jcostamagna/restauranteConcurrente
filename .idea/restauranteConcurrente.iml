@@ -9,7 +9,9 @@
       <sourceFolder url="file://$MODULE_DIR$/Semaforos/Semaforo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Semaforos/Semaforo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Parser.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Log.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Parser.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Log.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/Pipe.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/FifoLectura.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/Fifo.h" isTestSource="false" />

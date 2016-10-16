@@ -17,7 +17,8 @@ set(SOURCE_FILES
         Semaforos/Semaforo.cpp
         SharedMem/MemoriaCompartida2.h
         Signal/SignalHandler.cpp
-        src/Parser.cpp)
+        src/Parser.cpp
+        src/Log.cpp src/Log.h)
 
 
 #add_library(foo STATIC ${HEADER_FILES}  ${SOURCE_FILES} )
