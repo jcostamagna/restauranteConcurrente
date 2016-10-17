@@ -22,6 +22,7 @@ private:
     bool vive;
     e_recepcionista estado;
 
+
     Recepcionista(const Recepcionista& object);
     Recepcionista& operator=(const Recepcionista& object);
 

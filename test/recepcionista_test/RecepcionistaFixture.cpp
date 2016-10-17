@@ -24,6 +24,7 @@ public:
 
     virtual ~RecepcionistaFixture() {
         delete recepcionista;
+        delete canal;
     }
 
     Pipe* canal;
@@ -45,6 +46,7 @@ TEST_F(RecepcionistaFixture, mi_test){
 
     // espero a que termine el hijo
     //wait ( NULL );
+    kill(recepcionista->get_pid(), SIGINT);
     recepcionista->stop();
 
     canal->cerrar();

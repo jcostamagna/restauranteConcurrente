@@ -2,18 +2,33 @@
 // Created by juan on 15/10/16.
 //
 #include <sys/wait.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <iostream>
+#include <SIGINT_Handler.h>
+#include <SignalHandler.h>
 #include "Recepcionista.h"
 
 
 Recepcionista::Recepcionista(Pipe& clientes) : clientes(clientes),vive(true), estado(ESPERANDO) {}
 
 void Recepcionista::run() {
+
+    // se registra el event handler declarado antes
+    SignalHandler :: getInstance()->registrarHandler ( SIGINT,&sigint_handler );
+
     this->rutinaRecepcionista();
+
+    // se recibio la senial SIGINT, el proceso termina
+    SignalHandler :: destruir ();
+    std::cout << "Termino el proceso" << getpid() << std::endl;
+
+    this->clientes.cerrar ();
+    exit ( 0 );
 }
 
 void Recepcionista::rutinaRecepcionista(){
-    while (vive) {
+    while (sigint_handler.getGracefulQuit() == 0) {
         switch (estado) {
             case ESPERANDO:
                 esperando();
@@ -32,8 +47,6 @@ void Recepcionista::rutinaRecepcionista(){
                 break;
         }
     }
-    this->clientes.cerrar ();
-    exit ( 0 );
 }
 
 void Recepcionista::avanzarEstado() {
@@ -55,19 +68,19 @@ void Recepcionista::avanzarEstado() {
 }
 
 void Recepcionista::esperando() {
-    static const int BUFFSIZE = 100;
+    static const int BUFFSIZE = 26;
     // lector
     char buffer[BUFFSIZE];
 
     std::cout << "Lector: esperando para leer..." << std::endl;
     ssize_t bytesLeidos = this->clientes.leer ( static_cast<void*>(buffer),BUFFSIZE );
+    if (bytesLeidos <= 0) return;
     std::string mensaje = buffer;
     mensaje.resize ( bytesLeidos );
 
-    std::cout << "Lector: lei el dato [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe" << std::endl;
-    std::cout << "Lector: fin del proceso" << std::endl;
-
-    vive = false;
+    std::cout << "Lector: lei el dato [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe y soy el hijo " << getpid() << std::endl;
+    //std::cout << "Lector: fin del proceso" << std::endl;
+    //vive = false;
 }
 
 void Recepcionista::ubicandoEnLiving() {
