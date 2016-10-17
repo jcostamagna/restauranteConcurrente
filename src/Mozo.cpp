@@ -4,7 +4,7 @@
 
 #include "Mozo.h"
 
-Mozo::Mozo(): vive(true), estado (ESPERANDO_COMENSALES) {}
+Mozo::Mozo(): vive(true), estado (RECIBIENDO_ORDEN) {}
 
 Mozo::~Mozo() {
 

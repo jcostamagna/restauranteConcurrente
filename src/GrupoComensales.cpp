@@ -3,6 +3,7 @@
 //
 
 #include <cstdlib>
+#include <ctime>
 #include "GrupoComensales.h"
 
 GrupoComensales::GrupoComensales(): vive(true), estado (ESPERANDO_EN_PUERTA) {}
@@ -58,7 +59,7 @@ void GrupoComensales::avanzarEstado() {
         case PAGAR_RETIRARSE:
             vive = false;  // TODO: chequear esto
         case APAGON:
-            estado =
+            vive = false;
     }
 }
 
@@ -96,7 +97,7 @@ void GrupoComensales::apagon() {
 
 
 int GrupoComensales::calcularRandom (int tope) {
-    srand ( time(NULL) );
+    std::srand ( std::time(NULL) );
     int resultado = rand() % tope;
     return resultado;
 }
