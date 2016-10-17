@@ -23,7 +23,10 @@ set(SOURCE_FILES
         src/Parser.cpp
         src/Log.cpp src/Log.h
         src/Recepcionista.cpp src/Recepcionista.h
-        src/Forkeable.cpp src/Forkeable.h src/Mozo.cpp src/Mozo.h src/GrupoComensales.cpp src/GrupoComensales.h src/Cocinero.cpp src/Cocinero.h)
+        src/Forkeable.cpp src/Forkeable.h
+        src/Mozo.cpp src/Mozo.h
+        src/GrupoComensales.cpp src/GrupoComensales.h
+        src/Cocinero.cpp src/Cocinero.h)
 
 add_executable(restaurantConcurrente main.cpp ${SOURCE_FILES} ${CONFIG_FILES})#${HEADER_FILES})
 
@@ -33,8 +36,12 @@ add_custom_command(TARGET restaurantConcurrente POST_BUILD
 
 
 include_directories(
+        src
         Lock
         Pipe&Fifo
         Semaforos
         SharedMem
         Signal)
+
+add_subdirectory(test)
+add_library(libRestaurantConcurrente STATIC ${SOURCE_FILES} )

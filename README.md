@@ -3,6 +3,9 @@ Trabajo practico de Tecnicas de programacion Concurrente.
 
 [Ver en pdf](2016-2C-PrimerProyecto.pdf)
 
+[![Build Status](https://travis-ci.org/jcostamagna/restauranteConcurrente.svg?branch=master)](https://travis-ci.org/jcostamagna/restauranteConcurrente)
+
+
 Objetivo
 
 El objetivo de este proyecto consiste en implementar la simulaci´on parcial del funcionamiento de un
