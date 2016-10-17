@@ -6,6 +6,7 @@
 #define RESTAURANTCONCURRENTE_MOZO_H
 
 
+#include <Pipe.h>
 #include "Forkeable.h"
 typedef enum ESTADO_MOZO {
     RECIBIENDO_ORDEN, //Esperando que alguna mesa tenga un pedido y le diga cual es (ordenar comida, ordenar cuenta)
@@ -16,8 +17,12 @@ typedef enum ESTADO_MOZO {
 
 class Mozo: public Forkeable {
 private:
+    Pipe& pedidos;
     bool vive;
     e_mozo estado;
+
+    Mozo(const Mozo& object);
+    Mozo& operator=(const Mozo& object);
 
     virtual void run() override;
     void rutinaMozo();
@@ -31,9 +36,8 @@ private:
     void avanzarEstado();
 
 public:
-    Mozo();
+    Mozo(Pipe& pedidos);
     virtual ~Mozo();
-
 
 
 };

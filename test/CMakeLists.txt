@@ -5,7 +5,7 @@ set(SOURCE_FILES
         foo_tests/basic_check.cpp
         foo_tests/FooFixture.cpp
         recepcionista_test/RecepcionistaFixture.cpp
-        )
+        mozo_test/MozoRealizaPedidoComida.cpp)
 
 
 add_executable(run_tests main.cpp ${SOURCE_FILES} )
