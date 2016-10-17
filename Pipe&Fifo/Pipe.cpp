@@ -4,7 +4,7 @@
 #include <iostream>
 #include <errno.h>
 
-Pipe :: Pipe() : lectura(true), escritura(true) {
+Pipe :: Pipe() : lectura(true), escritura(true), semLectores("Pipe.h",1), semEscritores("Pipe.cpp",1) { //TODO: como chequeo que no falle?
 	if (pipe ( this->descriptores ) == -1){
 		std::string mensaje = std::string("Error en pipe() (constructor): ") + std::string(strerror(errno));
 		std::cerr<<mensaje<<std::endl;
@@ -15,6 +15,8 @@ Pipe :: Pipe() : lectura(true), escritura(true) {
 }
 
 Pipe::~Pipe() {
+    semEscritores.eliminar();
+    semLectores.eliminar();
 }
 
 void Pipe :: setearModo ( const int modo ) {
@@ -33,8 +35,13 @@ ssize_t Pipe :: escribir ( const void* dato,int datoSize ) {
 		close ( this->descriptores[0] );
 		this->lectura = false;
 	}
-
-	return write ( this->descriptores[1],dato,datoSize );
+    std::cerr << "PIPE antes del semaforo para escribir, esta en 1 (deberia)" << std::endl;
+    semEscritores.p();  // -1  Si hay uno escribiendo nadie mas puede escribir
+    std::cerr << "PIPE paso el semaforo para escribir, queda en 0" << std::endl;
+    ssize_t written = write ( this->descriptores[1],dato,datoSize );
+    semEscritores.v();  // +1
+    std::cerr << "PIPE escrito, el semaforo queda en 1" << std::endl;
+	return written;
 }
 
 ssize_t Pipe :: leer ( void* buffer,const int buffSize ) {
@@ -42,8 +49,12 @@ ssize_t Pipe :: leer ( void* buffer,const int buffSize ) {
 		close ( this->descriptores[1] );
 		this->escritura = false;
 	}
-
-	return read ( this->descriptores[0],buffer,buffSize );
+    semLectores.p();  // -1  Si hay uno leyendo nadie mas puede leer
+    std::cerr << "PIPE paso el semaforo para leer, queda en 0" << std::endl;
+    ssize_t cantRead = read ( this->descriptores[0],buffer,buffSize );
+    semLectores.v();  // +1
+    std::cerr << "PIPE leido, el semaforo queda en 1"<< std::endl;
+    return cantRead;
 }
 
 int Pipe :: getFdLectura () const {

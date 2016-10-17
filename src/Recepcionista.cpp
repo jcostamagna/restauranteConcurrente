@@ -46,10 +46,11 @@ void Recepcionista::avanzarEstado() {
 void Recepcionista::esperando() {
     static const int BUFFSIZE = 100;
     // lector
+    //clientes.setearModo(clientes.LECTURA);
     char buffer[BUFFSIZE];
 
     std::cout << "Lector: esperando para leer..." << std::endl;
-    ssize_t bytesLeidos = this->clientes.leer ( static_cast<void*>(buffer),BUFFSIZE );
+    ssize_t bytesLeidos = clientes.leer ( static_cast<void*>(buffer),BUFFSIZE );
     std::string mensaje = buffer;
     mensaje.resize ( bytesLeidos );
 

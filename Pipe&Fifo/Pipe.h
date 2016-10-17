@@ -3,6 +3,7 @@
 
 #include <unistd.h>
 #include <fcntl.h>
+#include <Semaforo.h>
 
 class Pipe {
 
@@ -12,6 +13,9 @@ private:
 	bool escritura;
 	Pipe(const Pipe& object);
 	Pipe& operator=(const Pipe& object);
+
+    Semaforo semLectores;  // Semaforos binarios de lectura y escritura.
+    Semaforo semEscritores;  // Solo pueden leer o escribir 1 proceso al mismo tiempo
 
 public:
 	static const int LECTURA = 0;

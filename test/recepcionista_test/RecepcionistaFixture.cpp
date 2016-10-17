@@ -4,6 +4,7 @@
 
 #include <gtest/gtest.h>
 #include <Recepcionista.h>
+#include <Pipe.h>
 
 class RecepcionistaFixture : public ::testing::Test {
 
@@ -33,11 +34,13 @@ public:
 
 
 TEST_F(RecepcionistaFixture, mi_test){
-    recepcionista->start();
+    recepcionista->start(); //el proceso hijo quiere leer del canal
 
     // escritor
+    //canal->setearModo(canal->ESCRITURA);
     std::string dato = "Hola mundo pipes!!";
     sleep(5);
+    std::cout << "Escritor: holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" << std::endl;
     canal->escribir(static_cast<const void *>(dato.c_str()), dato.size());
 
     std::cout << "Escritor: escribi el dato [" << dato << "] en el pipe" << std::endl;
