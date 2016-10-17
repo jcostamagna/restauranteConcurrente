@@ -20,3 +20,5 @@ void Forkeable::stop() {
 }
 
 void Forkeable::run() {}
+
+Forkeable::Forkeable() : pid(0) {}
