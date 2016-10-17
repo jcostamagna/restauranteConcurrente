@@ -21,7 +21,9 @@ set(SOURCE_FILES
         SharedMem/MemoriaCompartida2.h
         Signal/SignalHandler.cpp
         src/Parser.cpp
-        src/Log.cpp src/Log.h)
+        src/Log.cpp src/Log.h
+        src/Recepcionista.cpp src/Recepcionista.h
+        src/Forkeable.cpp src/Forkeable.h)
 
 add_executable(restaurantConcurrente main.cpp ${SOURCE_FILES} ${CONFIG_FILES})#${HEADER_FILES})
 
@@ -29,7 +31,10 @@ add_custom_command(TARGET restaurantConcurrente POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/config $<TARGET_FILE_DIR:restaurantConcurrente>)
 
-#include_directories(Pipe&Fifo)
 
-#add_subdirectory(src)
-#add_subdirectory(test)
+include_directories(
+        Lock
+        Pipe&Fifo
+        Semaforos
+        SharedMem
+        Signal)
