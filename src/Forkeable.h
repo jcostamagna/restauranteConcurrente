@@ -9,10 +9,12 @@
 
 class Forkeable {
 public:
+    Forkeable();
 
     virtual ~Forkeable();
     void start();
     void stop();
+    pid_t get_pid() {return pid;}
 
 protected:
     pid_t pid;

@@ -25,7 +25,3 @@ void Recepcionista::rutinaRecepcionista(){
     this->clientes.cerrar ();
     exit ( 0 );
 }
-
-int Recepcionista::getPid() {
-    return this->pid;
-}

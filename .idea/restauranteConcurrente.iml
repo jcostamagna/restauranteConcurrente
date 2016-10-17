@@ -8,14 +8,18 @@
       <sourceFolder url="file://$MODULE_DIR$/SharedMem/MemoriaCompartida2.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Semaforos/Semaforo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Semaforos/Semaforo.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Mozo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Parser.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Recepcionista.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Recepcionista.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Log.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Parser.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Mozo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Forkeable.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/Forkeable.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Recepcionista.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/GrupoComensales.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Log.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Log.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/GrupoComensales.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Forkeable.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Parser.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Recepcionista.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/Pipe.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/FifoLectura.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/Fifo.h" isTestSource="false" />

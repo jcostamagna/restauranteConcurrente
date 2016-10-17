@@ -23,7 +23,7 @@ set(SOURCE_FILES
         src/Parser.cpp
         src/Log.cpp src/Log.h
         src/Recepcionista.cpp src/Recepcionista.h
-        src/Forkeable.cpp src/Forkeable.h)
+        src/Forkeable.cpp src/Forkeable.h src/Mozo.cpp src/Mozo.h src/GrupoComensales.cpp src/GrupoComensales.h)
 
 add_executable(restaurantConcurrente main.cpp ${SOURCE_FILES} ${CONFIG_FILES})#${HEADER_FILES})
 

@@ -12,6 +12,7 @@
 class Recepcionista: public Forkeable {
 private:
     Pipe& clientes;
+
     void rutinaRecepcionista();
     Recepcionista(const Recepcionista& object);
     Recepcionista& operator=(const Recepcionista& object);
@@ -20,7 +21,6 @@ private:
 
 public:
     Recepcionista (Pipe& clientes): clientes(clientes) {}
-    int getPid();
 };
 
 
