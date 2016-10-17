@@ -14,7 +14,7 @@ script:
   - cd build
   - cmake ..
   - make
-  - ./main
+  - ./restaurantConcurrente
 
 
 notifications:
