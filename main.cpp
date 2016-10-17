@@ -34,17 +34,23 @@ int main() {
 
 
     std::cout << "\nmylist contains:\n";
-    for (std::list<std::pair<std::string, int> >::iterator it = menu.begin(); it != menu.end(); ++it)
+    for (std::list<std::pair<std::string, int> >::iterator it = menu.begin(); it != menu.end(); ++it) {
         std::cout << "\t\t" << (*it).first << "\t" << (*it).second << "\n";
-
+    }
     std::cout << '\n';
     std::cout << "ESTO ANDA" << std::endl;
 
 
     Pipe canal;
     //int pid = fork ();
-    Recepcionista recepcionista(canal);
-    recepcionista.start();
+    std::list<Recepcionista> recepcionistas;
+    for (int i = 0; i < recepCant; i++){
+        Recepcionista recepcionista(canal);
+        recepcionista.start();
+        recepcionistas.push_back(recepcionista);
+    }
+    //Recepcionista recepcionista(canal);
+    //recepcionista.start();
     /*if ( pid == 0 ) {
         // lector
         char buffer[BUFFSIZE];
@@ -61,15 +67,24 @@ int main() {
     // escritor
     std::string dato = "Hola mundo pipes!!";
     sleep(5);
-    canal.escribir(static_cast<const void *>(dato.c_str()), dato.size());
 
-    std::cout << "Escritor: escribi el dato [" << dato << "] en el pipe" << std::endl;
+    for (int i = 0; i < recepCant; i++){
+        std::string datoNew = dato + std::string("Numero") +std::to_string(i);
+        canal.escribir(static_cast<const void *>(datoNew.c_str()), datoNew.size());
+        std::cout << "Escritor: escribi el dato [" << datoNew << "] en el pipe" << std::endl;
+    }
+
+
+
     std::cout << "Escritor: fin del proceso" << std::endl;
 
     // espero a que termine el hijo
     //wait ( NULL );
-    recepcionista.stop();
 
+    for (std::list<Recepcionista>::iterator it = recepcionistas.begin(); it != recepcionistas.end(); ++it){
+        //std::cout << "\t\t" << (*it)<< "\n";
+        (*it).stop();
+    }
     canal.cerrar();
     exit(0);
 }

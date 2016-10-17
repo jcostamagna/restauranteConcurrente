@@ -53,7 +53,7 @@ void Recepcionista::esperando() {
     std::string mensaje = buffer;
     mensaje.resize ( bytesLeidos );
 
-    std::cout << "Lector: lei el dato [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe" << std::endl;
+    std::cout << "Lector: lei el dato [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe y soy el hijo " << get_pid() << std::endl;
     std::cout << "Lector: fin del proceso" << std::endl;
 
     this->clientes.cerrar ();
