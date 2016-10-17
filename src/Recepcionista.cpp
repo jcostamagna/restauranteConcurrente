@@ -17,16 +17,23 @@ void Recepcionista::rutinaRecepcionista(){
         switch (estado) {
             case ESPERANDO:
                 esperando();
+                break;
             case UBICANDO_EN_LIVING:
                 ubicandoEnLiving();
+                break;
             case UBICANDO_EN_MESA:
                 ubicandoEnMesa();
+                break;
             case APAGON:
                 apagon();
+                break;
             default:
                 esperando();
+                break;
         }
     }
+    this->clientes.cerrar ();
+    exit ( 0 );
 }
 
 void Recepcionista::avanzarEstado() {
@@ -34,12 +41,16 @@ void Recepcionista::avanzarEstado() {
         //case ESPERANDO; si estaba ESPERANDO lo define la rutina si va a UBICANDO EN EL LIVING O A UBICANDO EN MESA
         case UBICANDO_EN_LIVING:
             estado = ESPERANDO;
+            break;
         case UBICANDO_EN_MESA:
             estado = ESPERANDO;
+            break;
         case APAGON:
             estado = ESPERANDO;
+            break;
         default:
             estado = ESPERANDO;
+            break;
     }
 }
 
@@ -56,8 +67,7 @@ void Recepcionista::esperando() {
     std::cout << "Lector: lei el dato [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe y soy el hijo " << get_pid() << std::endl;
     std::cout << "Lector: fin del proceso" << std::endl;
 
-    this->clientes.cerrar ();
-    exit ( 0 );
+    vive = false;
 }
 
 void Recepcionista::ubicandoEnLiving() {
