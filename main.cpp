@@ -2,9 +2,11 @@
 #include <iostream>
 #include <sys/wait.h>
 #include <list>
+#include <GeneradorClientes.h>
 #include "Pipe&Fifo/Pipe.h"
 #include "src/Parser.h"
 #include "src/Recepcionista.h"
+#define SALIR "q"
 
 
 int main() {
@@ -43,30 +45,18 @@ int main() {
 
     Pipe canal;
     //int pid = fork ();
-    std::list<Recepcionista> recepcionistas;
+    std::list<Recepcionista*> recepcionistas;
     for (int i = 0; i < recepCant; i++){
-        Recepcionista recepcionista(canal);
-        recepcionista.start();
+        Recepcionista* recepcionista = new Recepcionista(canal);
+        recepcionista->start();
         recepcionistas.push_back(recepcionista);
     }
     //Recepcionista recepcionista(canal);
     //recepcionista.start();
-    /*if ( pid == 0 ) {
-        // lector
-        char buffer[BUFFSIZE];
-        std::cout << "Lector: esperando para leer..." << std::endl;
-        ssize_t bytesLeidos = canal.leer ( static_cast<void*>(buffer),BUFFSIZE );
-        std::string mensaje = buffer;
-        mensaje.resize ( bytesLeidos );
-        std::cout << "Lector: lei el dato [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe" << std::endl;
-        std::cout << "Lector: fin del proceso" << std::endl;
-        canal.cerrar ();
-        exit ( 0 );
-    } else {*/
 
     // escritor
-    std::string dato = "Hola mundo pipes!!";
-    sleep(5);
+   /* std::string dato = "Hola mundo pipes!!";
+    //sleep(5);
 
     for (int i = 0; i < recepCant; i++){
         std::string datoNew = dato + std::string("Numero") +std::to_string(i);
@@ -77,14 +67,27 @@ int main() {
 
 
     std::cout << "Escritor: fin del proceso" << std::endl;
+*/
+    GeneradorClientes generador(canal);
+    generador.start();
 
     // espero a que termine el hijo
     //wait ( NULL );
-
-    for (std::list<Recepcionista>::iterator it = recepcionistas.begin(); it != recepcionistas.end(); ++it){
-        //std::cout << "\t\t" << (*it)<< "\n";
-        (*it).stop();
+    std::cout << "Salir ingresando tecla 'q'" << std::endl;
+    std::string mensaje;
+    std::getline(std::cin,mensaje);
+    while (mensaje != SALIR){
+        std::getline(std::cin,mensaje);
     }
-    canal.cerrar();
+
+
+    for (std::list<Recepcionista*>::iterator it = recepcionistas.begin(); it != recepcionistas.end(); ++it){
+        kill((*it)->get_pid(), SIGINT);
+        (*it)->stop();
+        delete (*it);
+    }
+
+    kill(generador.get_pid(), SIGINT);
+    generador.stop();
     exit(0);
 }

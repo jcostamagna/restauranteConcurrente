@@ -6,6 +6,7 @@
 #define RESTAURANTCONCURRENTE_FORKEABLE_H
 
 #include <unistd.h>
+#include <SIGINT_Handler.h>
 
 class Forkeable {
 public:
@@ -18,6 +19,7 @@ public:
 
 protected:
     pid_t pid;
+    SIGINT_Handler sigint_handler;
     virtual void run();
 };
 
