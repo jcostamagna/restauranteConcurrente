@@ -3,6 +3,8 @@
 #include <sys/wait.h>
 #include <list>
 #include <GeneradorClientes.h>
+#include <map>
+#include <Restaurante.h>
 #include "Pipe&Fifo/Pipe.h"
 #include "src/Parser.h"
 #include "src/Recepcionista.h"
@@ -28,21 +30,26 @@ int main() {
     parser.obtenerTupla(header, &mesasCant);
     std::cout << "\nitem: " << header << "\tvalor: " << mesasCant;
 
-    std::list<std::pair<std::string, int> > menu;
+    std::map<std::string, int> menu;
 
     while (parser.obtenerTupla(header, &precio)) {
-        menu.push_back(std::make_pair(header, precio));
+        menu.insert(std::make_pair(header, precio));
     }
 
 
     std::cout << "\nmylist contains:\n";
-    for (std::list<std::pair<std::string, int> >::iterator it = menu.begin(); it != menu.end(); ++it) {
+    for (std::map<std::string, int>::iterator it = menu.begin(); it != menu.end(); ++it) {
         std::cout << "\t\t" << (*it).first << "\t" << (*it).second << "\n";
     }
     std::cout << '\n';
     std::cout << "ESTO ANDA" << std::endl;
 
+    Restaurante restaurante(recepCant,mozosCant,mesasCant,menu);
 
+    restaurante.iniciarPersonal();
+    restaurante.abrirPuertas();
+
+    /*
     Pipe canal;
     //int pid = fork ();
     std::list<Recepcionista*> recepcionistas;
@@ -55,19 +62,7 @@ int main() {
     //recepcionista.start();
 
     // escritor
-   /* std::string dato = "Hola mundo pipes!!";
-    //sleep(5);
 
-    for (int i = 0; i < recepCant; i++){
-        std::string datoNew = dato + std::string("Numero") +std::to_string(i);
-        canal.escribir(static_cast<const void *>(datoNew.c_str()), datoNew.size());
-        std::cout << "Escritor: escribi el dato [" << datoNew << "] en el pipe" << std::endl;
-    }
-
-
-
-    std::cout << "Escritor: fin del proceso" << std::endl;
-*/
     GeneradorClientes generador(canal);
     generador.start();
 
@@ -87,7 +82,9 @@ int main() {
         delete (*it);
     }
 
+
     kill(generador.get_pid(), SIGINT);
     generador.stop();
     exit(0);
+    */
 }

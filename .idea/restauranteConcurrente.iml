@@ -21,6 +21,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/Forkeable.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Parser.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Log.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Restaurante.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Recepcionista.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Mozo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/GrupoComensales.h" isTestSource="false" />
@@ -29,6 +30,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/Parser.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/GeneradorClientes.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Recepcionista.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Restaurante.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Mozo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Cocinero.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/Pipe.h" isTestSource="false" />
