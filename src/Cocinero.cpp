@@ -2,14 +2,13 @@
 // Created by ale on 17/10/16.
 //
 
+#include <iostream>
 #include "Cocinero.h"
 
-
-Cocinero::~Cocinero() {
+Cocinero::Cocinero(Pipe& escrCocinero, Pipe& lectCocinero, std::list<Semaforo *>& semaforos) :
+        eCocinero(escrCocinero), lCocinero(lectCocinero), semaforos(semaforos), vive(true), estado(ESPERANDO_PEDIDO) {
 
 }
-
-Cocinero::Cocinero() : vive(true), estado(ESPERANDO_PEDIDO) {}
 
 
 void Cocinero::run() {
@@ -21,25 +20,70 @@ void Cocinero::rutinaCocinero() {
         switch (estado) {
             case ESPERANDO_PEDIDO:
                 esperandoPedido();
+                break;
             case ENTREGANDO_PEDIDO:
                 entregandoPedido();
+                break;
             case APAGON_COCINERO:
                 apagon();
+                break;
             default:
                 esperandoPedido();
+                break;
         }
 
     }
 }
 
-void Cocinero::esperandoPedido() {
+void Cocinero::avanzarEstado() {
+    switch (estado) {
+        case ESPERANDO_PEDIDO:
+            estado = ENTREGANDO_PEDIDO;
+            break;
+        case ENTREGANDO_PEDIDO:
+            estado = ESPERANDO_PEDIDO;
+            break;
+        case APAGON_COCINERO:
+            estado = APAGON_COCINERO;
+            break;
+        default:
+            estado = ESPERANDO_PEDIDO;
+            break;
+    }
+}
 
+void Cocinero::esperandoPedido() {
+    static const int BUFFSIZE = 12;
+    char buffer[BUFFSIZE];
+
+    std::cout << "Cocinero: esperando pedido..." << std::endl;
+    ssize_t bytesLeidos = eCocinero.leer ( static_cast<void*>(buffer),BUFFSIZE);
+    std::string mensaje = buffer;
+    mensaje.resize ( bytesLeidos );
+    std::cout << "Cocinero: Leo al mozo ->" << mensaje << "<-" << std::endl;
+
+    int N = std::stoi(mensaje);
+    std::cout << "Cocinero: Pongo en verde el semaforo ->" << N << "<-" << std::endl;
+    if (semaforos.size() > (unsigned)N)
+    {
+        std::list<Semaforo*>::iterator it = semaforos.begin();
+        std::advance(it, N);
+        (*it)->v();
+    }
+    avanzarEstado();
 }
 
 void Cocinero::entregandoPedido() {
-
+    std::string dato = "Pedido listo";
+    std::cout << "Cocinero: Escribo en mozo: " << dato << std::endl;
+    lCocinero.escribir(static_cast<const void *>(dato.c_str()), dato.size());
+    avanzarEstado();
 }
 
 void Cocinero::apagon() {
+
+}
+
+Cocinero::~Cocinero() {
 
 }

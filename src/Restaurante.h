@@ -19,20 +19,25 @@ class Restaurante {
 
     Cocinero *cocinero;
     std::map<pid_t, Recepcionista *> recepcionistas;
-    std::map<pid_t, Mozo *> mozos;
+    std::map<pid_t, Mozo *> mozosMap;
 
     Pipe living;
 
-    
+    Pipe pipeMesas;
+    Pipe pipeECocinero;
+    Pipe pipeLCocinero;
+
+    std::list<Mozo*> mozos;
+    std::list<Semaforo*> semaforos;
+
+
     MemoriaCompartida2<int> caja;
     MemoriaCompartida2<int> cantLiving;
 
 
-
+    void iniciarMozos();
 
     void iniciarCocinero();
-
-    void iniciarMozos();
 
     void iniciarRecepcionistas();
 
@@ -42,6 +47,8 @@ public:
     void iniciarPersonal();
 
     void abrirPuertas();
+
+    virtual ~Restaurante();
 
 
 };

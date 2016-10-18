@@ -2,6 +2,7 @@
 // Created by ale on 16/10/16.
 //
 
+#include <iostream>
 #include "Mozo.h"
 
 Mozo::Mozo(int id, Pipe& pedidos, Pipe& escrCocinero, Pipe& lectCocinero, Semaforo& semaforo)

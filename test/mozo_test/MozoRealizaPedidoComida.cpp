@@ -5,6 +5,7 @@
 #include <gtest/gtest.h>
 #include <list>
 #include <Mozo.h>
+#include <Cocinero.h>
 
 class MozoRealizaPedidoComida : public ::testing::Test {
 
@@ -75,9 +76,6 @@ TEST_F(MozoRealizaPedidoComida, mi_test3) {
         semaforos.push_back(semaforo_);
     }
 
-    static const int BUFFSIZE = 12;
-    char buffer[BUFFSIZE];
-
     static const int CANTPEDIDOS = 4;
 
     // PEDIDOS
@@ -87,24 +85,6 @@ TEST_F(MozoRealizaPedidoComida, mi_test3) {
     }
 
     //COCINERO
-    for(int i=0; i<CANTPEDIDOS; i++) {
-        std::cout << "Cocinero: esperando para leer..." << std::endl;
-        ssize_t bytesLeidos = pipeECocinero->leer ( static_cast<void*>(buffer),BUFFSIZE);
-        std::string mensaje = buffer;
-        mensaje.resize ( bytesLeidos );
-        std::cout << "Cocinero: Leo al mozo ->" << mensaje << "<-" << std::endl;
-
-        int N = std::stoi(mensaje);
-        std::cout << "Cocinero: Pongo en verde el semaforo ->" << N << "<-" << std::endl;
-        if (semaforos.size() > (unsigned)N)
-        {
-            std::list<Semaforo*>::iterator it = semaforos.begin();
-            std::advance(it, N);
-            (*it)->v();
-        }
-
-        std::string dato = "Pedido listo";
-        std::cout << "Cocinero: Escribo en mozo: " << dato << std::endl;
-        pipeLCocinero->escribir(static_cast<const void *>(dato.c_str()), dato.size());
-    }
+    Cocinero* cocinero = new Cocinero(*pipeECocinero,*pipeLCocinero,semaforos);
+    cocinero->start();
 }
