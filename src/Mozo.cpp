@@ -5,7 +5,9 @@
 #include <iostream>
 #include "Mozo.h"
 
-Mozo::Mozo(Pipe& pedidos): pedidos(pedidos), vive(true), estado (RECIBIENDO_ORDEN) {}
+Mozo::Mozo(int id, Pipe& pedidos, Pipe& escrCocinero, Pipe& lectCocinero, Semaforo& semaforo)
+            : id(id), pedidos(pedidos), eCocinero(escrCocinero), lCocinero(lectCocinero),vive(true),
+              estado (RECIBIENDO_ORDEN), semaforo(semaforo) {}
 
 Mozo::~Mozo() {
 }
@@ -66,36 +68,46 @@ void Mozo::avanzarEstado() {
 }
 
 void Mozo::esperandoComida() {
+    static const int BUFFSIZE = 12;
+    std::cout << "Mozo[" << id << "]: Intentando acceder al cocinero" << std::endl;
 
+    std::string dato = std::to_string(id) + "           ";
+    std::cout << "Mozo[" << id << "]: Escribo mi ID en cocinero y me pongo rojo" << std::endl;
+    this->eCocinero.escribir(static_cast<const void *>(dato.c_str()), BUFFSIZE);
+    semaforo.p();
+    std::cout << "Mozo[" << id << "]: SEMAFORO VERDE" << std::endl;
+    char buffer[BUFFSIZE];
+    ssize_t bytesLeidos = this->lCocinero.leer(static_cast<void*>(buffer),BUFFSIZE );
+    std::string mensaje = buffer;
+    mensaje.resize ( bytesLeidos );
+    std::cout << "Mozo[" << id << "] recibio de cocinero: " << mensaje << std::endl;
+
+    avanzarEstado();
 }
 
 void Mozo::recibiendoOrden() {
-    static const int BUFFSIZE = 100;
-    // lector
+    static const int BUFFSIZE = 12;
     char buffer[BUFFSIZE];
 
-    std::cout << "Lector: esperando para leer..." << std::endl;
+    std::cout << "Mozo[" << id << "]: esperando para leer..." << std::endl;
     ssize_t bytesLeidos = this->pedidos.leer ( static_cast<void*>(buffer),BUFFSIZE );
     std::string mensaje = buffer;
     mensaje.resize ( bytesLeidos );
-    if(mensaje == "comida") {
-        std::cout << "ES IGUAL A COMIDA" << std::endl;
-        estado = ENTREGANDO_COMIDA;
-    } else if (mensaje == "cuenta") {
+    std::cout << "PEDIDO: " << mensaje << std::endl;
+    if(mensaje == "comida      ") {
+        estado = ESPERANDO_COMIDA;
+    } else if (mensaje == "cuenta      ") {
         estado = ENTREGANDO_CUENTA;
     }
-
-    std::cout << "Mozo: lei el dato [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe" << std::endl;
-    std::cout << "Mozo: fin del proceso" << std::endl;
 }
 
 void Mozo::entregandoComida() {
-    std::cout << "Mozo entrega COMIDA" << std::endl;
-    vive = false;
+    std::cout << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir Ordenes" << std::endl;
+    avanzarEstado();
 }
 
 void Mozo::entregandoCuenta() {
-    std::cout << "Mozo entrega cuenta" << std::endl;
+    std::cout << "Mozo[" << id << "] entrega cuenta" << std::endl;
     vive = false;
 }
 

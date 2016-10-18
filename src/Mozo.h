@@ -7,7 +7,10 @@
 
 
 #include <Pipe.h>
+#include <LockFd.h>
+#include <Semaforo.h>
 #include "Forkeable.h"
+
 typedef enum ESTADO_MOZO {
     RECIBIENDO_ORDEN, //Esperando que alguna mesa tenga un pedido y le diga cual es (ordenar comida, ordenar cuenta)
     ESPERANDO_COMIDA,
@@ -17,9 +20,14 @@ typedef enum ESTADO_MOZO {
 
 class Mozo: public Forkeable {
 private:
+    int id;
     Pipe& pedidos;
+    Pipe& eCocinero;
+    Pipe& lCocinero;
     bool vive;
     e_mozo estado;
+    Semaforo& semaforo;
+
 
     Mozo(const Mozo& object);
     Mozo& operator=(const Mozo& object);
@@ -36,7 +44,7 @@ private:
     void avanzarEstado();
 
 public:
-    Mozo(Pipe& pedidos);
+    Mozo(int id,Pipe& pedidos, Pipe& escrCocinero, Pipe& lectCocinero, Semaforo& semaforo);
     virtual ~Mozo();
 
 
