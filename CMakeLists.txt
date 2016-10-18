@@ -26,7 +26,7 @@ set(SOURCE_FILES
         src/Forkeable.cpp src/Forkeable.h
         src/Mozo.cpp src/Mozo.h
         src/GrupoComensales.cpp src/GrupoComensales.h
-        src/Cocinero.cpp src/Cocinero.h src/GeneradorClientes.cpp src/GeneradorClientes.h)
+        src/Cocinero.cpp src/Cocinero.h src/GeneradorClientes.cpp src/GeneradorClientes.h Lock/LockFd.cpp Lock/LockFd.h)
 
 add_executable(restaurantConcurrente main.cpp ${SOURCE_FILES} ${CONFIG_FILES})#${HEADER_FILES})
 

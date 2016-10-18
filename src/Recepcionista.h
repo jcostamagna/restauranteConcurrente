@@ -7,6 +7,7 @@
 
 
 #include <Pipe.h>
+#include <LockFd.h>
 #include "Forkeable.h"
 
 typedef enum ESTADO_RECEPCIONISTA {
@@ -21,6 +22,8 @@ private:
     Pipe& clientes;
     bool vive;
     e_recepcionista estado;
+    LockFd& lecturaPuerta;
+
 
 
     Recepcionista(const Recepcionista& object);
@@ -37,7 +40,7 @@ private:
     void avanzarEstado();
 
 public:
-    Recepcionista (Pipe& clientes);
+    Recepcionista (Pipe& clientes, LockFd& lecturaPuerta);
 
 
 };
