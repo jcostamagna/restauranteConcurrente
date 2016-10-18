@@ -34,6 +34,7 @@ void GeneradorClientes::rutinaGenerador(){
         clientes.escribir(static_cast<const void *>(datoNew.c_str()), datoNew.size());
         std::cout << "Escritor: escribi el dato [" << datoNew << "] en el pipe" << std::endl;
         i++;
+        //sleep(1);
         if (i%10==0) i=0;
     }
 }

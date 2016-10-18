@@ -10,7 +10,7 @@
 #include "Recepcionista.h"
 
 
-Recepcionista::Recepcionista(Pipe &clientes) : clientes(clientes), vive(true), estado(ESPERANDO) {}
+Recepcionista::Recepcionista(Pipe &clientes, LockFd& lecturaPuerta) : clientes(clientes), vive(true), estado(ESPERANDO), lecturaPuerta(lecturaPuerta) {}
 
 void Recepcionista::run() {
 
@@ -73,7 +73,10 @@ void Recepcionista::esperando() {
     char buffer[BUFFSIZE];
 
     std::cout << "Lector: esperando para leer..." << std::endl;
+    lecturaPuerta.tomarLock();
     ssize_t bytesLeidos = this->clientes.leer(static_cast<void *>(buffer), BUFFSIZE);
+    lecturaPuerta.liberarLock();
+
     if (bytesLeidos <= 0) return;
     std::string mensaje = buffer;
     mensaje.resize(bytesLeidos);
@@ -82,6 +85,7 @@ void Recepcionista::esperando() {
               << getpid() << std::endl;
     //std::cout << "Lector: fin del proceso" << std::endl;
     //vive = false;
+
 }
 
 void Recepcionista::ubicandoEnLiving() {

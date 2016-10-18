@@ -3,6 +3,7 @@
 #include <sys/wait.h>
 #include <list>
 #include <GeneradorClientes.h>
+#include <Semaforo.h>
 #include "Pipe&Fifo/Pipe.h"
 #include "src/Parser.h"
 #include "src/Recepcionista.h"
@@ -12,6 +13,7 @@
 int main() {
 
 //    static const int BUFFSIZE = 100;
+    static const std::string NOMBRE = "main.cpp";
 
 
     std::string string("restaurante.config");
@@ -42,32 +44,16 @@ int main() {
     std::cout << '\n';
     std::cout << "ESTO ANDA" << std::endl;
 
-
     Pipe canal;
-    //int pid = fork ();
+    LockFd lockLectura(canal.getFdLectura());
+
     std::list<Recepcionista*> recepcionistas;
     for (int i = 0; i < recepCant; i++){
-        Recepcionista* recepcionista = new Recepcionista(canal);
+        Recepcionista* recepcionista = new Recepcionista(canal,lockLectura);
         recepcionista->start();
         recepcionistas.push_back(recepcionista);
     }
-    //Recepcionista recepcionista(canal);
-    //recepcionista.start();
 
-    // escritor
-   /* std::string dato = "Hola mundo pipes!!";
-    //sleep(5);
-
-    for (int i = 0; i < recepCant; i++){
-        std::string datoNew = dato + std::string("Numero") +std::to_string(i);
-        canal.escribir(static_cast<const void *>(datoNew.c_str()), datoNew.size());
-        std::cout << "Escritor: escribi el dato [" << datoNew << "] en el pipe" << std::endl;
-    }
-
-
-
-    std::cout << "Escritor: fin del proceso" << std::endl;
-*/
     GeneradorClientes generador(canal);
     generador.start();
 
