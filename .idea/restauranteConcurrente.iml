@@ -14,10 +14,10 @@
       <sourceFolder url="file://$MODULE_DIR$/test/foo_tests/FooFixture.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/foo_tests/basic_check.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Semaforos/Semaforo.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Semaforos/Semaforo.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Forkeable.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Cocinero.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/GeneradorClientes.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Forkeable.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Parser.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Log.h" isTestSource="false" />
@@ -27,6 +27,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/GrupoComensales.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Log.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Parser.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/GeneradorClientes.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Recepcionista.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Mozo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Cocinero.cpp" isTestSource="false" />
@@ -38,8 +39,9 @@
       <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/Fifo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/FifoLectura.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/FifoEscritura.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/SharedMem/MemoriaCompartida2.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Semaforos/Semaforo.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Semaforos/Semaforo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Signal/SignalHandler.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Signal/SignalHandler.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/config/restaurante.config" isTestSource="false" />

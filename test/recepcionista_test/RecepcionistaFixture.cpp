@@ -24,6 +24,7 @@ public:
 
     virtual ~RecepcionistaFixture() {
         delete recepcionista;
+        delete canal;
     }
 
     Pipe* canal;
@@ -36,7 +37,7 @@ TEST_F(RecepcionistaFixture, mi_test){
     recepcionista->start();
 
     // escritor
-    std::string dato = "Hola mundo pipes!!";
+    std::string dato = std::string("Numero 9");
     sleep(5);
     canal->escribir(static_cast<const void *>(dato.c_str()), dato.size());
 
@@ -45,6 +46,7 @@ TEST_F(RecepcionistaFixture, mi_test){
 
     // espero a que termine el hijo
     //wait ( NULL );
+    kill(recepcionista->get_pid(), SIGINT);
     recepcionista->stop();
 
     canal->cerrar();
