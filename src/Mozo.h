@@ -16,9 +16,10 @@ typedef enum ESTADO_MOZO {
     ESPERANDO_COMIDA,
     ENTREGANDO_COMIDA,
     ENTREGANDO_CUENTA,
-    APAGON} e_mozo;
+    APAGON_MOZO
+} e_mozo;
 
-class Mozo: public Forkeable {
+class Mozo : public Forkeable {
 private:
     int id;
     Pipe& pedidos;
@@ -33,19 +34,26 @@ private:
     Mozo& operator=(const Mozo& object);
 
     virtual void run() override;
+
     void rutinaMozo();
 
     void esperandoComida();
+
     void recibiendoOrden();
+
     void entregandoComida();
+
     void entregandoCuenta();
+
     void apagon();
 
     void avanzarEstado();
 
 public:
     Mozo(int id,Pipe& pedidos, Pipe& escrCocinero, Pipe& lectCocinero, Semaforo& semaforo);
+
     virtual ~Mozo();
+
 
 
 };

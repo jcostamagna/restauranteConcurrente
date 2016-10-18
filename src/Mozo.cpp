@@ -2,7 +2,6 @@
 // Created by ale on 16/10/16.
 //
 
-#include <iostream>
 #include "Mozo.h"
 
 Mozo::Mozo(int id, Pipe& pedidos, Pipe& escrCocinero, Pipe& lectCocinero, Semaforo& semaforo)
@@ -10,6 +9,7 @@ Mozo::Mozo(int id, Pipe& pedidos, Pipe& escrCocinero, Pipe& lectCocinero, Semafo
               estado (RECIBIENDO_ORDEN), semaforo(semaforo) {}
 
 Mozo::~Mozo() {
+
 }
 
 void Mozo::run() {
@@ -32,7 +32,7 @@ void Mozo::rutinaMozo() {
             case ENTREGANDO_CUENTA:
                 entregandoCuenta();
                 break;
-            case APAGON:
+            case APAGON_MOZO:
                 apagon();  // kill me
                 break;
             default:
@@ -58,7 +58,7 @@ void Mozo::avanzarEstado() {
         case ENTREGANDO_CUENTA:
             estado = RECIBIENDO_ORDEN;
             break;
-        case APAGON:
+        case APAGON_MOZO:
             estado = RECIBIENDO_ORDEN;  // kill me
             break;
         default:

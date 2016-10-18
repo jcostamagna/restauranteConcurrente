@@ -10,7 +10,7 @@
 typedef enum ESTADO_COCINERO {
     ESPERANDO_PEDIDO, //esperando que un mozo le de un pedido de comida
     ENTREGANDO_PEDIDO, //entrega la comida y hace...
-    APAGON
+    APAGON_COCINERO
 } e_cocinero;
 
 class Cocinero: public Forkeable {
