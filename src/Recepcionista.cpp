@@ -10,24 +10,24 @@
 #include "Recepcionista.h"
 
 
-Recepcionista::Recepcionista(Pipe& clientes) : clientes(clientes),vive(true), estado(ESPERANDO) {}
+Recepcionista::Recepcionista(Pipe &clientes) : clientes(clientes), vive(true), estado(ESPERANDO) {}
 
 void Recepcionista::run() {
 
     // se registra el event handler declarado antes
-    SignalHandler :: getInstance()->registrarHandler ( SIGINT,&sigint_handler );
+    SignalHandler::getInstance()->registrarHandler(SIGINT, &sigint_handler);
 
     this->rutinaRecepcionista();
 
-    // se recibio la senial SIGINT, el proceso termina
-    SignalHandler :: destruir ();
-    std::cout << "Termino el proceso" << getpid() << std::endl;
+    // se recibio la senial SIGINT, se sale del while y sigue aca,  el proceso termina
+    SignalHandler::destruir();
+    std::cout << "Termino el proceso " << getpid() << std::endl;
 
-    this->clientes.cerrar ();
-    exit ( 0 );
+    this->clientes.cerrar();
+    exit(0);
 }
 
-void Recepcionista::rutinaRecepcionista(){
+void Recepcionista::rutinaRecepcionista() {
     while (sigint_handler.getGracefulQuit() == 0) {
         switch (estado) {
             case ESPERANDO:
@@ -73,12 +73,13 @@ void Recepcionista::esperando() {
     char buffer[BUFFSIZE];
 
     std::cout << "Lector: esperando para leer..." << std::endl;
-    ssize_t bytesLeidos = this->clientes.leer ( static_cast<void*>(buffer),BUFFSIZE );
+    ssize_t bytesLeidos = this->clientes.leer(static_cast<void *>(buffer), BUFFSIZE);
     if (bytesLeidos <= 0) return;
     std::string mensaje = buffer;
-    mensaje.resize ( bytesLeidos );
+    mensaje.resize(bytesLeidos);
 
-    std::cout << "Lector: lei el dato [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe y soy el hijo " << getpid() << std::endl;
+    std::cout << "Lector: lei el dato [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe y soy el hijo "
+              << getpid() << std::endl;
     //std::cout << "Lector: fin del proceso" << std::endl;
     //vive = false;
 }

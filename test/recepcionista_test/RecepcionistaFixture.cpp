@@ -37,7 +37,7 @@ TEST_F(RecepcionistaFixture, mi_test){
     recepcionista->start();
 
     // escritor
-    std::string dato = "Hola mundo pipes!!";
+    std::string dato = std::string("Numero 9");
     sleep(5);
     canal->escribir(static_cast<const void *>(dato.c_str()), dato.size());
 
