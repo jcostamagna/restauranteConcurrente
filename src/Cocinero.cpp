@@ -23,7 +23,7 @@ void Cocinero::rutinaCocinero() {
                 esperandoPedido();
             case ENTREGANDO_PEDIDO:
                 entregandoPedido();
-            case APAGON:
+            case APAGON_COCINERO:
                 apagon();
             default:
                 esperandoPedido();

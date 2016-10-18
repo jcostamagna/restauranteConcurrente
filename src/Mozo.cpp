@@ -26,7 +26,7 @@ void Mozo::rutinaMozo() {
                 entregandoComida();
             case ENTREGANDO_CUENTA:
                 entregandoCuenta();
-            case APAGON:
+            case APAGON_MOZO:
                 apagon();  // kill me
             default:
                 estado = RECIBIENDO_ORDEN;
@@ -44,7 +44,7 @@ void Mozo::avanzarEstado() {
             estado = RECIBIENDO_ORDEN;
         case ENTREGANDO_CUENTA:
             estado = RECIBIENDO_ORDEN;
-        case APAGON:
+        case APAGON_MOZO:
             estado = RECIBIENDO_ORDEN;  // kill me
         default:
             estado = RECIBIENDO_ORDEN;
