@@ -6,6 +6,11 @@
 
 Semaforo :: Semaforo ( const std::string& nombre,const int valorInicial ):valorInicial(valorInicial) {
 	key_t clave = ftok ( nombre.c_str(),'a' );
+    if (clave <= 0){
+        std::string mensaje = std::string("Error en ftok() (crear) Semaforo: ") + std::string(strerror(errno));
+        std::cerr<<mensaje<<std::endl;
+        throw mensaje;
+    }
 	this->id = semget ( clave,1,0666 | IPC_CREAT );
 	if (this->id < 0){
 		std::string mensaje = std::string("Error en semget() (crear): ") + std::string(strerror(errno));
