@@ -10,12 +10,19 @@
 #include "Recepcionista.h"
 
 
-Recepcionista::Recepcionista(Pipe &clientes, LockFd& lecturaPuerta) : clientes(clientes), vive(true), estado(ESPERANDO), lecturaPuerta(lecturaPuerta) {}
+Recepcionista::Recepcionista(Pipe &clientes, LockFd& lecturaPuerta, Semaforo& escrituraLiving,Pipe &living, Pipe &clientesAMesa) :
+                            clientes(clientes),living(living), clientesAMesa(clientesAMesa), mesaLibre(false),
+                                 estado(ESPERANDO), lecturaPuerta(lecturaPuerta), escrituraLiving(escrituraLiving), cantClientesLiving("/bin/bash", 'z') {}
 
 void Recepcionista::run() {
 
+    //static const std::string NOMBRE = "/bin/bash";
+
     // se registra el event handler declarado antes
     SignalHandler::getInstance()->registrarHandler(SIGINT, &sigint_handler);
+
+    //Creo Memoria Compartida
+    //this->cantClientesLiving.crear(NOMBRE, 'z');
 
     this->rutinaRecepcionista();
 
@@ -23,7 +30,10 @@ void Recepcionista::run() {
     SignalHandler::destruir();
     std::cout << "Termino el proceso " << getpid() << std::endl;
 
+    //this->cantClientesLiving.liberar();
     this->clientes.cerrar();
+    this->clientesAMesa.cerrar();
+    this->living.cerrar();
     exit(0);
 }
 
@@ -69,10 +79,14 @@ void Recepcionista::avanzarEstado() {
 
 void Recepcionista::esperando() {
     static const int BUFFSIZE = 26;
+
     // lector
     char buffer[BUFFSIZE];
 
     std::cout << "Lector: esperando para leer..." << std::endl;
+
+
+    //Por ahora dejamos con un lock de lectura, tal vez no es necesario o se usa semaforo
     lecturaPuerta.tomarLock();
     ssize_t bytesLeidos = this->clientes.leer(static_cast<void *>(buffer), BUFFSIZE);
     lecturaPuerta.liberarLock();
@@ -83,8 +97,24 @@ void Recepcionista::esperando() {
 
     std::cout << "Lector: lei el dato [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe y soy el hijo "
               << getpid() << std::endl;
+
+    if (mesaLibre) {
+        this->clientesAMesa.escribir(static_cast<const void *>(mensaje.c_str()), mensaje.size());
+        return;
+    }
+
+    this->living.escribir(static_cast<const void *>(mensaje.c_str()), mensaje.size());
+
+    escrituraLiving.p();
+
+
+    int cantClientes = this->cantClientesLiving.leer();
+    std::cout << "Lector: Cantidad clientes[" << cantClientes << "] "<< getpid() << std::endl;
+    cantClientes ++;
+    this->cantClientesLiving.escribir(cantClientes);
+
+    escrituraLiving.v();
     //std::cout << "Lector: fin del proceso" << std::endl;
-    //vive = false;
 
 }
 

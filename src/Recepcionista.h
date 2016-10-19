@@ -8,6 +8,8 @@
 
 #include <Pipe.h>
 #include <LockFd.h>
+#include <Semaforo.h>
+#include <MemoriaCompartida2.h>
 #include "Forkeable.h"
 
 typedef enum ESTADO_RECEPCIONISTA {
@@ -19,10 +21,15 @@ typedef enum ESTADO_RECEPCIONISTA {
 
 class Recepcionista: public Forkeable {
 private:
-    Pipe& clientes;
-    bool vive;
+    Pipe &clientes;
+    Pipe& living;
+    Pipe &clientesAMesa;
+
+    bool mesaLibre;
     e_recepcionista estado;
     LockFd& lecturaPuerta;
+    Semaforo& escrituraLiving;
+    MemoriaCompartida2<int> cantClientesLiving;
 
 
 
@@ -40,7 +47,7 @@ private:
     void avanzarEstado();
 
 public:
-    Recepcionista (Pipe& clientes, LockFd& lecturaPuerta);
+    Recepcionista (Pipe& clientes, LockFd& lecturaPuerta, Semaforo& escrituraLiving,Pipe &living, Pipe &clientesAMesa);
 
 
 };
