@@ -1,0 +1,5 @@
+/home/juan/restaurantConcurrente/build/test/lib/googletest/CMakeFiles/gtest.dir
+/home/juan/restaurantConcurrente/build/test/lib/googletest/CMakeFiles/gtest_main.dir
+/home/juan/restaurantConcurrente/build/CMakeFiles/libRestaurantConcurrente.dir
+/home/juan/restaurantConcurrente/build/CMakeFiles/restaurantConcurrente.dir
+/home/juan/restaurantConcurrente/build/test/CMakeFiles/run_tests.dir
