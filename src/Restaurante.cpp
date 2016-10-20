@@ -7,13 +7,13 @@
 
 Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, const std::list<std::pair<std::string, int> > &menu)
         : recepCant(recepCant), mozosCant(mozosCant), mesasCant(mesasCant), menu(menu),
-          caja("CMakeCache.txt", 'A'), cantLiving("/bin/bash", 'z'), dineroNoAbonado("Makefile", 'b'),
-          escrituraLiving("/bin/bash", 0), generadorClientes(clientes), lockLecturaClientes(clientes.getFdLectura()) {}
+          caja("CMakeCache.txt", 'A'), cantLiving("CMakeCache.txt", 'h'), dineroNoAbonado("Makefile", 'b'),
+          escrituraLiving("CMakeCache.txt", 'z', 0), generadorClientes(clientes), lockLecturaClientes(clientes.getFdLectura()) {}
 
 void Restaurante::iniciarPersonal() {
+    iniciarMesas();
     iniciarMozos();
     iniciarCocinero();
-    iniciarMesas();
     iniciarRecepcionistas();
     iniciarGeneradorClientes();
 }
@@ -28,8 +28,9 @@ void Restaurante::abrirPuertas() {
 void Restaurante::iniciarMozos() {
     for (int i = 0; i < mozosCant; i++) {
         std::string path = "/bin/bash";
-        Semaforo *semaforo = new Semaforo(path,i);
-        Mozo* mozoi = new Mozo(i,pipeMesas,pipeECocinero,pipeLCocinero,*semaforo);
+        char sem = (char)'a'+i;
+        Semaforo *semaforo = new Semaforo(path, sem,i);
+        Mozo* mozoi = new Mozo(i,pipeMesas,pipeECocinero,pipeLCocinero,*semaforo, this->semaforosMesas);
         mozoi->start();
         mozos.push_back(mozoi);
         semaforos.push_back(semaforo);
@@ -61,8 +62,12 @@ void Restaurante::iniciarRecepcionistas() {
 
 void Restaurante::iniciarMesas() {
     for (int i = 0; i < mesasCant; i++){
-        Mesa* mesa = new Mesa(this->living, this->clientes, this->lockLecturaClientes,this->escrituraLiving,  this->escrituraLiving);
+        std::string path = "/bin/grep";
+        char sem = (char)'a'+i;
+        Semaforo *semaforo = new Semaforo(path, sem,i);
+        Mesa* mesa = new Mesa(this->living, this->pipeMesas, this->lockLecturaClientes, semaforo,  this->escrituraLiving);
         mesa->start();
+        this->semaforosMesas[mesa->get_pid()] = semaforo;
         this->mesas.push_back(mesa);
     }
 }
@@ -76,7 +81,13 @@ Restaurante::~Restaurante() {
     }
 
     for (std::list<Semaforo*>::iterator it = semaforos.begin(); it != semaforos.end(); ++it){
+        (*it)->eliminar();
         delete (*it);
+    }
+
+    for (std::map<int, Semaforo*>::iterator it = semaforosMesas.begin(); it != semaforosMesas.end(); ++it){
+        (*it).second->eliminar();
+        delete (*it).second;
     }
 
     for (std::list<Mesa*>::iterator it = mesas.begin(); it != mesas.end(); ++it){

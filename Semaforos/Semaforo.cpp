@@ -4,8 +4,8 @@
 #include <iostream>
 #include <errno.h>
 
-Semaforo :: Semaforo ( const std::string& nombre,const int valorInicial ):valorInicial(valorInicial) {
-	key_t clave = ftok ( nombre.c_str(),'a' );
+Semaforo :: Semaforo ( const std::string& nombre,const char character,const int valorInicial ):valorInicial(valorInicial) {
+	key_t clave = ftok ( nombre.c_str(),character );
     if (clave <= 0){
         std::string mensaje = std::string("Error en ftok() (crear) Semaforo: ") + std::string(strerror(errno));
         std::cerr<<mensaje<<std::endl;

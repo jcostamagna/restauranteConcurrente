@@ -31,6 +31,7 @@ class Restaurante {
 
     std::list<Mozo*> mozos;
     std::list<Semaforo*> semaforos;
+    std::map<int,Semaforo*> semaforosMesas;
     std::list<Recepcionista*> recepcionistas;
     std::list<Mesa*> mesas;
 

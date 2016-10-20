@@ -2,11 +2,13 @@
 // Created by nicolas on 20/10/16.
 //
 
+#include <iomanip>
+#include <sstream>
 #include "Mesa.h"
 
-Mesa::Mesa(Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo& sEsperandoMozo, Semaforo& escrituraLiving) :
+Mesa::Mesa(Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo* sEsperandoMozo, Semaforo& escrituraLiving) :
         living(living),pedidos(pedidos), lockLiving(lockLiving),estado(ESPERANDO_CLIENTE), sEsperandoMozo(sEsperandoMozo),
-        escrituraLiving(escrituraLiving), idCliente(-1), cantClientesLiving("/bin/bash", 'z'){}
+        escrituraLiving(escrituraLiving), idCliente(-1), cantClientesLiving("/bin/bash", 'z'), cuenta(0){}
 
 void Mesa::run() {
     this->rutinaMesa();
@@ -48,13 +50,13 @@ void Mesa::rutinaMesa() {
 void Mesa::avanzarEstado() {
     switch (estado) {
         case ESPERANDO_CLIENTE:
-            estado = ESPERANDO_CLIENTE;
+            estado = CLIENTE_SENTADO;
             break;
         case CLIENTE_SENTADO:
-            estado = CLIENTE_SENTADO;
+            estado = CLIENTE_ESPERA_PEDIDO;
             break;
         case CLIENTE_ESPERA_PEDIDO:
-            estado = CLIENTE_SENTADO;
+            estado = CLIENTE_ESPERA_CUENTA;
             break;
         case CLIENTE_ESPERA_CUENTA:
             estado = CLIENTE_SE_VA;
@@ -102,17 +104,38 @@ void Mesa::esperandoCliente() {
     this->cantClientesLiving.escribir(cantClientes);
 
     escrituraLiving.v();
+    avanzarEstado();
 }
 
 void Mesa::clienteSentado() {
+    //Hacer pedido
+    std::ostringstream ss;
+    ss << std::setfill('0') << std::setw(6) << getpid();
+    ss << std::setfill('0') << std::setw(4) << 50;
+    std::string dato(ss.str());
+    pedidos.escribir(static_cast<const void *>(dato.c_str()), dato.size());
+    std::cout << "Mesa: Hago pedido de [" << dato << "] en el pipe" << std::endl;
+    this->cuenta += 50;
+    avanzarEstado();
 }
 
 void Mesa::clienteEsperaPedido() {
-
+    this->sEsperandoMozo->p();
+    avanzarEstado();
 }
 
 void Mesa::clienteEsperaCuenta() {
-
+//Hacer pedido
+    //static const int BUFFSIZE = 10;
+    std::ostringstream ss;
+    ss << std::setfill('0') << std::setw(6) << getpid();
+    //Pedir algo de 0 pesos es pedir la cuenta
+    ss << std::setfill('0') << std::setw(4) << 0;
+    std::string dato(ss.str());
+    pedidos.escribir(static_cast<const void *>(dato.c_str()), dato.size());
+    std::cout << "Mesa("<<getpid()<<"): Hago pedido de cuenta en el pipe" << std::endl;
+    avanzarEstado();
+    avanzarEstado();
 }
 
 void Mesa::apagon() {

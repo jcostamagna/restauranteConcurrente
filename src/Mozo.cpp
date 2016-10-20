@@ -4,10 +4,11 @@
 
 #include <iostream>
 #include "Mozo.h"
+#include <sstream>
 
-Mozo::Mozo(int id, Pipe& pedidos, Pipe& escrCocinero, Pipe& lectCocinero, Semaforo& semaforo)
+Mozo::Mozo(int id, Pipe& pedidos, Pipe& escrCocinero, Pipe& lectCocinero, Semaforo& semaforo, const std::map<int, Semaforo*> &semaforosMesas)
             : id(id), pedidos(pedidos), eCocinero(escrCocinero), lCocinero(lectCocinero),vive(true),
-              estado (RECIBIENDO_ORDEN), semaforo(semaforo) {}
+              estado (RECIBIENDO_ORDEN), semaforo(semaforo), semaforosMesas(semaforosMesas), cuenta("/bin/bash", 'j'), idMesa(-1) {}
 
 Mozo::~Mozo() {
 
@@ -90,7 +91,7 @@ void Mozo::esperandoComida() {
 }
 
 void Mozo::recibiendoOrden() {
-    static const int BUFFSIZE = 12;
+    static const int BUFFSIZE = 10;
     char buffer[BUFFSIZE];
 
     std::cout << "Mozo[" << id << "]: esperando para leer..." << std::endl;
@@ -99,21 +100,40 @@ void Mozo::recibiendoOrden() {
     std::string mensaje = buffer;
     mensaje.resize ( bytesLeidos );
     std::cout << "PEDIDO: " << mensaje << std::endl;
-    if(mensaje == "comida      ") {
+    std::stringstream ss1, ss2;
+    unsigned i;
+    int pedido;
+    for (i=0; i<6; ++i)
+    {
+        ss1 << mensaje.at(i);
+    }
+    for (; i<mensaje.length(); ++i)
+    {
+        ss2 << mensaje.at(i);
+    }
+
+    ss1 >> this->idMesa;
+    ss2 >> pedido;
+
+    if(pedido != 0) {
         estado = ESPERANDO_COMIDA;
-    } else if (mensaje == "cuenta      ") {
+    } else {
         estado = ENTREGANDO_CUENTA;
     }
 }
 
 void Mozo::entregandoComida() {
     std::cout << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir Ordenes" << std::endl;
+    //Desbloqueo mesa
+    semaforosMesas.at(idMesa)->v();
     avanzarEstado();
 }
 
 void Mozo::entregandoCuenta() {
     std::cout << "Mozo[" << id << "] entrega cuenta" << std::endl;
-    vive = false;
+    semaforosMesas.at(idMesa)->v();
+    avanzarEstado();
+    //vive = false;
 }
 
 void Mozo::apagon() {

@@ -1,7 +1,7 @@
 //
 // Created by nicolas on 17/10/16.
 //
-
+/*
 #include <gtest/gtest.h>
 #include <list>
 #include <Mozo.h>
@@ -70,3 +70,4 @@ TEST_F(MozoRealizaPedidoComida, mi_test1) {
     Cocinero* cocinero = new Cocinero(*pipeECocinero,*pipeLCocinero,semaforos);
     cocinero->start();
 }
+ */

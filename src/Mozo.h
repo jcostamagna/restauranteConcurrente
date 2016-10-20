@@ -9,6 +9,8 @@
 #include <Pipe.h>
 #include <LockFd.h>
 #include <Semaforo.h>
+#include <map>
+#include <MemoriaCompartida2.h>
 #include "Forkeable.h"
 
 typedef enum ESTADO_MOZO {
@@ -28,7 +30,9 @@ private:
     bool vive;
     e_mozo estado;
     Semaforo& semaforo;
-
+    const std::map<int, Semaforo*> &semaforosMesas;
+    MemoriaCompartida2<int> cuenta;
+    int idMesa;
 
     Mozo(const Mozo& object);
     Mozo& operator=(const Mozo& object);
@@ -50,7 +54,7 @@ private:
     void avanzarEstado();
 
 public:
-    Mozo(int id,Pipe& pedidos, Pipe& escrCocinero, Pipe& lectCocinero, Semaforo& semaforo);
+    Mozo(int id,Pipe& pedidos, Pipe& escrCocinero, Pipe& lectCocinero, Semaforo& semaforo,const std::map<int, Semaforo*> &semaforosMesas);
 
     virtual ~Mozo();
 

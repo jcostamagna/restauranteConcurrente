@@ -29,11 +29,12 @@ private:
     LockFd& lockLiving;
 
     e_mesa estado;
-    Semaforo& sEsperandoMozo;
+    Semaforo* sEsperandoMozo;
     Semaforo& escrituraLiving;
     int idCliente;
 
     MemoriaCompartida2<int> cantClientesLiving;
+    int cuenta;
 
     Mesa(const Mesa& object);
     Mesa& operator=(const Mesa& object);
@@ -50,7 +51,7 @@ private:
     void avanzarEstado();
 
 public:
-    Mesa (Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo& sEsperandoMozo, Semaforo& escrituraLiving);
+    Mesa (Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo* sEsperandoMozo, Semaforo& escrituraLiving);
 };
 
 
