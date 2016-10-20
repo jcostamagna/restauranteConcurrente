@@ -1,16 +1,13 @@
 
 #include <iostream>
-#include <sys/wait.h>
 #include <list>
-#include <GeneradorClientes.h>
-#include <Semaforo.h>
-#include <MemoriaCompartida2.h>
-#include "Pipe&Fifo/Pipe.h"
+#include <Restaurante.h>
 #include "src/Parser.h"
-#include "src/Recepcionista.h"
 #define SALIR "q"
 
 int main() {
+
+
 
 //    static const int BUFFSIZE = 100;
     static const std::string NOMBRE = "/bin/bash";
@@ -43,9 +40,11 @@ int main() {
         std::cout << "\t\t" << (*it).first << "\t" << (*it).second << "\n";
     }
     std::cout << '\n';
-    std::cout << "ESTO ANDA" << std::endl;
 
-    Pipe clientes, living, clientesAMesa;
+    Restaurante resto(recepCant, mozosCant, mesasCant, menu);
+    resto.iniciarPersonal();
+
+ /*   Pipe clientes, living, clientesAMesa;
     LockFd lockLectura(clientes.getFdLectura());
 
 
@@ -53,7 +52,6 @@ int main() {
 
     //Inicializo cantidad de Clientes en el Living en 0
     //escrituraLiving.p();
-
 
 
     std::list<Recepcionista*> recepcionistas;
@@ -70,7 +68,7 @@ int main() {
 
     GeneradorClientes generador(clientes);
     generador.start();
-
+*/
 
 
     // espero a que termine el hijo
@@ -83,15 +81,10 @@ int main() {
     }
 
 
-    for (std::list<Recepcionista*>::iterator it = recepcionistas.begin(); it != recepcionistas.end(); ++it){
-        kill((*it)->get_pid(), SIGINT);
-        (*it)->stop();
-        delete (*it);
-    }
 
-    kill(generador.get_pid(), SIGINT);
-    generador.stop();
-    escrituraLiving.eliminar();
-    cantClientesLiving.liberar();
-    exit(0);
+
+    //clienteMem.liberar();
+
+    //cantClientesLiving.liberar();
+    //exit(0);
 }

@@ -11,6 +11,7 @@
 #include <Semaforo.h>
 #include <MemoriaCompartida2.h>
 #include "Forkeable.h"
+#include "GrupoComensales.h"
 
 typedef enum ESTADO_RECEPCIONISTA {
     ESPERANDO,

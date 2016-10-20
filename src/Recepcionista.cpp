@@ -12,29 +12,27 @@
 
 Recepcionista::Recepcionista(Pipe &clientes, LockFd& lecturaPuerta, Semaforo& escrituraLiving,Pipe &living, Pipe &clientesAMesa) :
                             clientes(clientes),living(living), clientesAMesa(clientesAMesa), mesaLibre(false),
-                                 estado(ESPERANDO), lecturaPuerta(lecturaPuerta), escrituraLiving(escrituraLiving), cantClientesLiving("/bin/bash", 'z') {}
+                                 estado(ESPERANDO), lecturaPuerta(lecturaPuerta), escrituraLiving(escrituraLiving), cantClientesLiving("/bin/bash", 'z'){}
 
 void Recepcionista::run() {
 
     //static const std::string NOMBRE = "/bin/bash";
 
-    // se registra el event handler declarado antes
-    SignalHandler::getInstance()->registrarHandler(SIGINT, &sigint_handler);
+
 
     //Creo Memoria Compartida
     //this->cantClientesLiving.crear(NOMBRE, 'z');
 
     this->rutinaRecepcionista();
 
-    // se recibio la senial SIGINT, se sale del while y sigue aca,  el proceso termina
-    SignalHandler::destruir();
-    std::cout << "Termino el proceso " << getpid() << std::endl;
+
 
     //this->cantClientesLiving.liberar();
     this->clientes.cerrar();
     this->clientesAMesa.cerrar();
     this->living.cerrar();
-    exit(0);
+    std::cout << "Termino el proceso " << getpid() << std::endl;
+
 }
 
 void Recepcionista::rutinaRecepcionista() {

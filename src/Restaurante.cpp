@@ -5,14 +5,20 @@
 #include "Restaurante.h"
 #include "Cocinero.h"
 
-Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, const std::map<std::string, int> &menu)
-        : recepCant(recepCant), mozosCant(mozosCant), mesasCant(mesasCant), menu(menu), living(),
-          caja("CMakeCache.txt", 'A'), cantLiving("Makefile", 'A') {}
+Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, const std::list<std::pair<std::string, int> > &menu)
+        : recepCant(recepCant), mozosCant(mozosCant), mesasCant(mesasCant), menu(menu),
+          caja("CMakeCache.txt", 'A'), cantLiving("/bin/bash", 'z'), dineroNoAbonado("Makefile", 'b'),
+          escrituraLiving("/bin/bash", 0), generadorClientes(clientes), lockLecturaClientes(clientes.getFdLectura()) {}
 
 void Restaurante::iniciarPersonal() {
-    iniciarMozos();
-    iniciarCocinero();
+    //iniciarMozos();
+    //iniciarCocinero();
     iniciarRecepcionistas();
+    iniciarGeneradorClientes();
+}
+
+void Restaurante::iniciarGeneradorClientes(){
+    this->generadorClientes.start();
 }
 
 void Restaurante::abrirPuertas() {
@@ -37,12 +43,19 @@ void Restaurante::iniciarCocinero() {
 }
 
 void Restaurante::iniciarRecepcionistas() {
-/*    for (int i = 0; i < recepCant; i++) {
-        Recepcionista *recepcionista = new Recepcionista(living);
+
+    for (int i = 0; i < recepCant; i++){
+        Recepcionista* recepcionista = new Recepcionista(this->clientes,this->lockLecturaClientes, this->escrituraLiving, this->living, this->clientesAMesa);
         recepcionista->start();
-        recepcionistas.insert(std::make_pair(recepcionista->get_pid(), recepcionista));
+        this->recepcionistas.push_back(recepcionista);
     }
-    */
+
+    //Inicializo en 0
+    MemoriaCompartida2<int> cantClientesLiving;
+    cantClientesLiving.crear("/bin/bash", 'z');
+    cantClientesLiving.escribir(0);
+
+    escrituraLiving.v();
 }
 
 
@@ -56,4 +69,14 @@ Restaurante::~Restaurante() {
     for (std::list<Semaforo*>::iterator it = semaforos.begin(); it != semaforos.end(); ++it){
         delete (*it);
     }
+
+    for (std::list<Recepcionista*>::iterator it = recepcionistas.begin(); it != recepcionistas.end(); ++it){
+        kill((*it)->get_pid(), SIGINT);
+        (*it)->stop();
+        delete (*it);
+    }
+
+    kill(this->generadorClientes.get_pid(), SIGINT);
+    this->generadorClientes.stop();
+    escrituraLiving.eliminar();
 }

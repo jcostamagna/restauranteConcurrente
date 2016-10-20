@@ -11,29 +11,38 @@
 #include "Cocinero.h"
 #include "Recepcionista.h"
 #include "Mozo.h"
+#include "GeneradorClientes.h"
 
 class Restaurante {
 
     int recepCant, mozosCant, mesasCant;
-    std::map<std::string, int> menu;
+    //std::map<std::string, int> menu;
+    std::list<std::pair<std::string, int> > menu;
 
     Cocinero *cocinero;
-    std::map<pid_t, Recepcionista *> recepcionistas;
+    std::map<pid_t, Recepcionista *> recepcionistasMap;
     std::map<pid_t, Mozo *> mozosMap;
 
     Pipe living;
-
+    Pipe clientes;
     Pipe pipeMesas;
     Pipe pipeECocinero;
     Pipe pipeLCocinero;
+    Pipe clientesAMesa;
 
     std::list<Mozo*> mozos;
     std::list<Semaforo*> semaforos;
-
+    std::list<Recepcionista*> recepcionistas;
 
     MemoriaCompartida2<int> caja;
     MemoriaCompartida2<int> cantLiving;
+    MemoriaCompartida2<int> dineroNoAbonado;
 
+    Semaforo escrituraLiving;
+
+    GeneradorClientes generadorClientes;
+
+    LockFd lockLecturaClientes;
 
     void iniciarMozos();
 
@@ -42,7 +51,7 @@ class Restaurante {
     void iniciarRecepcionistas();
 
 public:
-    Restaurante(int recepCant, int mozosCant, int mesasCant, const std::map<std::string, int> &menu);
+    Restaurante(int recepCant, int mozosCant, int mesasCant, const std::list<std::pair<std::string, int> > &menu);
 
     void iniciarPersonal();
 
@@ -51,6 +60,7 @@ public:
     virtual ~Restaurante();
 
 
+    void iniciarGeneradorClientes();
 };
 
 
