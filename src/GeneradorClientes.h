@@ -12,7 +12,6 @@
 class GeneradorClientes: public Forkeable {
 private:
     Pipe& clientes;
-    //bool vive;
 
     GeneradorClientes(const GeneradorClientes& object);
     GeneradorClientes& operator=(const GeneradorClientes& object);

@@ -76,15 +76,15 @@ void Recepcionista::avanzarEstado() {
 }
 
 void Recepcionista::esperando() {
-    static const int BUFFSIZE = 26;
+    static const int BUFFSIZE = 8;
 
     // lector
     char buffer[BUFFSIZE];
 
-    std::cout << "Lector: esperando para leer..." << std::endl;
+    std::cout << "Recepcionista("<< getpid() <<"): Esperando clientes..." << std::endl;
 
 
-    //Por ahora dejamos con un lock de lectura, tal vez no es necesario o se usa semaforo
+    //Leemos con un lock de lectura
     lecturaPuerta.tomarLock();
     ssize_t bytesLeidos = this->clientes.leer(static_cast<void *>(buffer), BUFFSIZE);
     lecturaPuerta.liberarLock();
@@ -93,27 +93,21 @@ void Recepcionista::esperando() {
     std::string mensaje = buffer;
     mensaje.resize(bytesLeidos);
 
-    std::cout << "Lector: lei el dato [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe y soy el hijo "
-              << getpid() << std::endl;
+    std::cout << "Recepcionista("<< getpid() <<"): LLego el cliente [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe"
+              << std::endl;
 
-    if (mesaLibre) {
-        this->clientesAMesa.escribir(static_cast<const void *>(mensaje.c_str()), mensaje.size());
-        return;
-    }
-
+    //LLevo clientes al living, o mesa si hay disponible
     this->living.escribir(static_cast<const void *>(mensaje.c_str()), mensaje.size());
 
     escrituraLiving.p();
 
 
     int cantClientes = this->cantClientesLiving.leer();
-    std::cout << "Lector: Cantidad clientes[" << cantClientes << "] "<< getpid() << std::endl;
+    std::cout << "Recepcionista("<< getpid() <<"): Cantidad clientes en living [" << cantClientes << "] "<< std::endl;
     cantClientes ++;
     this->cantClientesLiving.escribir(cantClientes);
 
     escrituraLiving.v();
-    //std::cout << "Lector: fin del proceso" << std::endl;
-
 }
 
 void Recepcionista::ubicandoEnLiving() {

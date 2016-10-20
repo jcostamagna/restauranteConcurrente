@@ -9,11 +9,6 @@ int main() {
 
 
 
-//    static const int BUFFSIZE = 100;
-    static const std::string NOMBRE = "/bin/bash";
-    //static const std::string NOMBRE2 = "README.md";
-
-
     std::string string("restaurante.config");
 
     Parser parser(string);
@@ -44,35 +39,7 @@ int main() {
     Restaurante resto(recepCant, mozosCant, mesasCant, menu);
     resto.iniciarPersonal();
 
- /*   Pipe clientes, living, clientesAMesa;
-    LockFd lockLectura(clientes.getFdLectura());
 
-
-    Semaforo escrituraLiving(NOMBRE, 0);
-
-    //Inicializo cantidad de Clientes en el Living en 0
-    //escrituraLiving.p();
-
-
-    std::list<Recepcionista*> recepcionistas;
-    for (int i = 0; i < recepCant; i++){
-        Recepcionista* recepcionista = new Recepcionista(clientes,lockLectura, escrituraLiving, living, clientesAMesa);
-        recepcionista->start();
-        recepcionistas.push_back(recepcionista);
-    }
-    MemoriaCompartida2<int> cantClientesLiving;
-    cantClientesLiving.crear(NOMBRE, 'z');
-    cantClientesLiving.escribir(0);
-
-    escrituraLiving.v();
-
-    GeneradorClientes generador(clientes);
-    generador.start();
-*/
-
-
-    // espero a que termine el hijo
-    //wait ( NULL );
     std::cout << "Salir ingresando tecla 'q'" << std::endl;
     std::string mensaje;
     std::getline(std::cin,mensaje);
@@ -80,11 +47,4 @@ int main() {
         std::getline(std::cin,mensaje);
     }
 
-
-
-
-    //clienteMem.liberar();
-
-    //cantClientesLiving.liberar();
-    //exit(0);
 }
