@@ -12,6 +12,7 @@
 #include "Recepcionista.h"
 #include "Mozo.h"
 #include "GeneradorClientes.h"
+#include "Mesa.h"
 
 class Restaurante {
 
@@ -31,6 +32,7 @@ class Restaurante {
     std::list<Mozo*> mozos;
     std::list<Semaforo*> semaforos;
     std::list<Recepcionista*> recepcionistas;
+    std::list<Mesa*> mesas;
 
     MemoriaCompartida2<int> caja;
     MemoriaCompartida2<int> cantLiving;
@@ -48,6 +50,10 @@ class Restaurante {
 
     void iniciarRecepcionistas();
 
+    void iniciarMesas();
+
+    void iniciarGeneradorClientes();
+
 public:
     Restaurante(int recepCant, int mozosCant, int mesasCant, const std::list<std::pair<std::string, int> > &menu);
 
@@ -58,7 +64,9 @@ public:
     virtual ~Restaurante();
 
 
-    void iniciarGeneradorClientes();
+
+
+
 };
 
 

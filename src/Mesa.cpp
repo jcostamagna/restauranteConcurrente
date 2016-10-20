@@ -4,17 +4,19 @@
 
 #include "Mesa.h"
 
-Mesa::Mesa(Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo& sEsperandoMozo) :
-        living(living),pedidos(pedidos), lockLiving(lockLiving),sEsperandoMozo(sEsperandoMozo), estado(ESPERANDO_CLIENTE),{}
+Mesa::Mesa(Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo& sEsperandoMozo, Semaforo& escrituraLiving) :
+        living(living),pedidos(pedidos), lockLiving(lockLiving),estado(ESPERANDO_CLIENTE), sEsperandoMozo(sEsperandoMozo),
+        escrituraLiving(escrituraLiving), idCliente(-1), cantClientesLiving("/bin/bash", 'z'){}
 
 void Mesa::run() {
     this->rutinaMesa();
 
     this->living.cerrar();
-    this->pedidos.cerrar();
-    this->living.cerrar();
-    this->sEsperandoMozo.eliminar();
-    std::cout << "Termino el proceso " << getpid() << std::endl;
+    //this->pedidos.cerrar();
+    //this->living.cerrar();
+    //this->escrituraLiving.eliminar();
+    //this->sEsperandoMozo.eliminar();
+    std::cout << "Termino el proceso mesa " << getpid() << std::endl;
 
 }
 
@@ -67,6 +69,39 @@ void Mesa::avanzarEstado() {
 }
 
 void Mesa::esperandoCliente() {
+    static const int BUFFSIZE = 8;
+
+    // lector
+    char buffer[BUFFSIZE];
+
+    std::cout << "Mesa("<< getpid() <<"): Esperando clientes..." << std::endl;
+
+
+    //Leemos con un lock de lectura
+    this->lockLiving.tomarLock();
+    ssize_t bytesLeidos = this->living.leer(static_cast<void *>(buffer), BUFFSIZE);
+    this->lockLiving.liberarLock();
+
+    if (bytesLeidos <= 0) return;
+    std::string mensaje = buffer;
+    mensaje.resize(bytesLeidos);
+    std::string::size_type sz;
+
+    this->idCliente = std::stoi(mensaje,&sz);
+
+    std::cout << "Mesa("<< getpid() <<"): Tengo al cliente [" << idCliente << "] (" << bytesLeidos << " bytes) del pipe"
+              << std::endl;
+
+
+    escrituraLiving.p();
+
+
+    int cantClientes = this->cantClientesLiving.leer();
+    std::cout << "Mesa("<< getpid() <<"): Cantidad clientes en living [" << cantClientes << "] "<< std::endl;
+    cantClientes--;
+    this->cantClientesLiving.escribir(cantClientes);
+
+    escrituraLiving.v();
 }
 
 void Mesa::clienteSentado() {
