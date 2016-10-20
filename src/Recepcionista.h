@@ -16,7 +16,7 @@ typedef enum ESTADO_RECEPCIONISTA {
     ESPERANDO,
     UBICANDO_EN_LIVING,
     UBICANDO_EN_MESA,
-    APAGON
+    APAGON_RECEPCIONISTA
 } e_recepcionista;
 
 class Recepcionista: public Forkeable {

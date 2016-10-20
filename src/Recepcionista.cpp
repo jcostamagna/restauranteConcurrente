@@ -49,7 +49,7 @@ void Recepcionista::rutinaRecepcionista() {
             case UBICANDO_EN_MESA:
                 ubicandoEnMesa();
                 break;
-            case APAGON:
+            case APAGON_RECEPCIONISTA:
                 apagon();
                 break;
             default:
@@ -68,7 +68,7 @@ void Recepcionista::avanzarEstado() {
         case UBICANDO_EN_MESA:
             estado = ESPERANDO;
             break;
-        case APAGON:
+        case APAGON_RECEPCIONISTA:
             estado = ESPERANDO;
             break;
         default:
