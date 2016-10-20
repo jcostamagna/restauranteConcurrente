@@ -27,7 +27,6 @@ class Restaurante {
     Pipe pipeMesas;
     Pipe pipeECocinero;
     Pipe pipeLCocinero;
-    Pipe clientesAMesa;
 
     std::list<Mozo*> mozos;
     std::list<Semaforo*> semaforos;

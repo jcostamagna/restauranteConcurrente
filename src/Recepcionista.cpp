@@ -10,26 +10,15 @@
 #include "Recepcionista.h"
 
 
-Recepcionista::Recepcionista(Pipe &clientes, LockFd& lecturaPuerta, Semaforo& escrituraLiving,Pipe &living, Pipe &clientesAMesa) :
-                            clientes(clientes),living(living), clientesAMesa(clientesAMesa), mesaLibre(false),
+Recepcionista::Recepcionista(Pipe &clientes, LockFd& lecturaPuerta, Semaforo& escrituraLiving,Pipe &living) :
+                            clientes(clientes),living(living), mesaLibre(false),
                                  estado(ESPERANDO), lecturaPuerta(lecturaPuerta), escrituraLiving(escrituraLiving), cantClientesLiving("/bin/bash", 'z'){}
 
 void Recepcionista::run() {
 
-    //static const std::string NOMBRE = "/bin/bash";
-
-
-
-    //Creo Memoria Compartida
-    //this->cantClientesLiving.crear(NOMBRE, 'z');
-
     this->rutinaRecepcionista();
 
-
-
-    //this->cantClientesLiving.liberar();
     this->clientes.cerrar();
-    this->clientesAMesa.cerrar();
     this->living.cerrar();
     std::cout << "Termino el proceso " << getpid() << std::endl;
 

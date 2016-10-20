@@ -45,7 +45,7 @@ void Restaurante::iniciarCocinero() {
 void Restaurante::iniciarRecepcionistas() {
 
     for (int i = 0; i < recepCant; i++){
-        Recepcionista* recepcionista = new Recepcionista(this->clientes,this->lockLecturaClientes, this->escrituraLiving, this->living, this->clientesAMesa);
+        Recepcionista* recepcionista = new Recepcionista(this->clientes,this->lockLecturaClientes, this->escrituraLiving, this->living);
         recepcionista->start();
         this->recepcionistas.push_back(recepcionista);
     }
@@ -67,6 +67,7 @@ Restaurante::~Restaurante() {
     }
 
     for (std::list<Semaforo*>::iterator it = semaforos.begin(); it != semaforos.end(); ++it){
+        (*it)->eliminar();
         delete (*it);
     }
 

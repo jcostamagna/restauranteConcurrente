@@ -24,7 +24,6 @@ class Recepcionista: public Forkeable {
 private:
     Pipe &clientes;
     Pipe& living;
-    Pipe &clientesAMesa;
 
     bool mesaLibre;
     e_recepcionista estado;
@@ -48,7 +47,7 @@ private:
     void avanzarEstado();
 
 public:
-    Recepcionista (Pipe& clientes, LockFd& lecturaPuerta, Semaforo& escrituraLiving,Pipe &living, Pipe &clientesAMesa);
+    Recepcionista (Pipe& clientes, LockFd& lecturaPuerta, Semaforo& escrituraLiving,Pipe &living);
 
 
 };
