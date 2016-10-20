@@ -40,6 +40,6 @@ void GeneradorClientes::rutinaGenerador(){
         i++;
         sleep(1);
         //Reinicio contador
-        if (i == 99999999) i = 0;
+        i = i % 100000000;//if (i == 99999999) i = 0;
     }
 }

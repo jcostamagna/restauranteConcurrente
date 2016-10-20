@@ -23,11 +23,11 @@ class Restaurante {
     Cocinero *cocinero;
     std::map<pid_t, Mozo *> mozosMap;
 
-    Pipe living;
-    Pipe clientes;
-    Pipe pipeMesas;
-    Pipe pipeECocinero;
-    Pipe pipeLCocinero;
+    Pipe living; //clientes en el living
+    Pipe clientes;  // clientes que entran por la puerta
+    Pipe pipeMesas; // clientes en mesas esperando por pedido
+    Pipe pipeECocinero;  // Pipe escritura cocinero de comidas cocinadas
+    Pipe pipeLCocinero;  // Pipe lectura de cocinero de pedidos
 
     std::list<Mozo*> mozos;
     std::list<Semaforo*> semaforos;
@@ -43,7 +43,7 @@ class Restaurante {
 
     GeneradorClientes generadorClientes;
 
-    LockFd lockLecturaClientes;
+    LockFd lockLecturaClientes;  // lock de lectura de la puerta (pipe clientes)
 
     void iniciarMozos();
 

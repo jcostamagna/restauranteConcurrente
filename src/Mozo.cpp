@@ -123,7 +123,7 @@ void Mozo::recibiendoOrden() {
 }
 
 void Mozo::entregandoComida() {
-    std::cout << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir Ordenes" << std::endl;
+    std::cout << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir ordenes" << std::endl;
     //Desbloqueo mesa
     semaforosMesas.at(idMesa)->v();
     avanzarEstado();
