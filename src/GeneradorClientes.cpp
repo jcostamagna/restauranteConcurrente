@@ -22,7 +22,7 @@ void GeneradorClientes::run() {
 
     // se recibio la senial SIGINT, el proceso termina
     SignalHandler :: destruir ();
-    std::cout << "Escritor: fin del proceso" << std::endl;
+    std::cout << "Generador: fin del proceso" << std::endl;
     clientes.cerrar();
     exit(0);
 }

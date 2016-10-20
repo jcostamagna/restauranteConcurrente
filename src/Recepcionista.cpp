@@ -20,7 +20,7 @@ void Recepcionista::run() {
 
     this->clientes.cerrar();
     this->living.cerrar();
-    std::cout << "Termino el proceso " << getpid() << std::endl;
+    std::cout << "Termino el proceso recepcionista" << getpid() << std::endl;
 
 }
 
