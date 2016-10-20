@@ -13,6 +13,9 @@ Cocinero::Cocinero(Pipe& escrCocinero, Pipe& lectCocinero, std::list<Semaforo *>
 
 void Cocinero::run() {
     this->rutinaCocinero();
+
+    this->eCocinero.cerrar();
+    this->lCocinero.cerrar();
 }
 
 void Cocinero::rutinaCocinero() {

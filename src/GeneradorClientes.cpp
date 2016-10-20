@@ -22,7 +22,7 @@ void GeneradorClientes::run() {
 
     // se recibio la senial SIGINT, el proceso termina
     SignalHandler :: destruir ();
-    std::cout << "Escritor: fin del proceso" << std::endl;
+    std::cout << "Generador: fin del proceso" << std::endl;
     clientes.cerrar();
     exit(0);
 }
@@ -38,6 +38,7 @@ void GeneradorClientes::rutinaGenerador(){
         clientes.escribir(static_cast<const void *>(dato.c_str()), dato.size());
         std::cout << "Generador: escribi el cliente [" << dato << "] en el pipe" << std::endl;
         i++;
+        sleep(1);
         //Reinicio contador
         if (i == 99999999) i = 0;
     }

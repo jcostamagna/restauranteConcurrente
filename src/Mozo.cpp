@@ -15,6 +15,9 @@ Mozo::~Mozo() {
 
 void Mozo::run() {
     this->rutinaMozo();
+
+    this->pedidos.cerrar ();
+    std::cout << "Termino el proceso mozo " << getpid() << std::endl;
 }
 
 
@@ -41,8 +44,7 @@ void Mozo::rutinaMozo() {
                 break;
         }
     }
-    this->pedidos.cerrar ();
-    exit ( 0 );
+
 }
 
 void Mozo::avanzarEstado() {
@@ -79,6 +81,7 @@ void Mozo::esperandoComida() {
     std::cout << "Mozo[" << id << "]: SEMAFORO VERDE" << std::endl;
     char buffer[BUFFSIZE];
     ssize_t bytesLeidos = this->lCocinero.leer(static_cast<void*>(buffer),BUFFSIZE );
+    if (bytesLeidos <= 0) return;
     std::string mensaje = buffer;
     mensaje.resize ( bytesLeidos );
     std::cout << "Mozo[" << id << "] recibio de cocinero: " << mensaje << std::endl;
@@ -92,6 +95,7 @@ void Mozo::recibiendoOrden() {
 
     std::cout << "Mozo[" << id << "]: esperando para leer..." << std::endl;
     ssize_t bytesLeidos = this->pedidos.leer ( static_cast<void*>(buffer),BUFFSIZE );
+    if (bytesLeidos <= 0) return;
     std::string mensaje = buffer;
     mensaje.resize ( bytesLeidos );
     std::cout << "PEDIDO: " << mensaje << std::endl;

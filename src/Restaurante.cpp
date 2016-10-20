@@ -14,7 +14,8 @@ Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, const std:
 
 void Restaurante::iniciarPersonal() {
     iniciarMozos();
-    iniciarCocinero();
+    //iniciarCocinero();
+    iniciarMesas();
     iniciarRecepcionistas();
     iniciarGeneradorClientes();
     iniciarMesas();
@@ -72,6 +73,15 @@ void Restaurante::iniciarMesas() {
 }
 
 
+void Restaurante::iniciarMesas() {
+    for (int i = 0; i < mesasCant; i++){
+        Mesa* mesa = new Mesa(this->living, this->clientes, this->lockLecturaClientes,this->escrituraLiving,  this->escrituraLiving);
+        mesa->start();
+        this->mesas.push_back(mesa);
+    }
+}
+
+
 Restaurante::~Restaurante() {
     for (std::list<Mozo*>::iterator it = mozos.begin(); it != mozos.end(); ++it){
         kill((*it)->get_pid(), SIGINT);
@@ -80,7 +90,13 @@ Restaurante::~Restaurante() {
     }
 
     for (std::list<Semaforo*>::iterator it = semaforos.begin(); it != semaforos.end(); ++it){
-        (*it)->eliminar();
+        //(*it)->eliminar();
+        delete (*it);
+    }
+
+    for (std::list<Mesa*>::iterator it = mesas.begin(); it != mesas.end(); ++it){
+        kill((*it)->get_pid(), SIGINT);
+        (*it)->stop();
         delete (*it);
     }
 
@@ -90,7 +106,12 @@ Restaurante::~Restaurante() {
         delete (*it);
     }
 
+    //kill(this->cocinero->get_pid(), SIGINT);
+    //this->cocinero->stop();
+
+
     kill(this->generadorClientes.get_pid(), SIGINT);
     this->generadorClientes.stop();
     escrituraLiving.eliminar();
 }
+
