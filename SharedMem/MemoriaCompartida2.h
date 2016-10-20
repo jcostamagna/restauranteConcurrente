@@ -54,7 +54,7 @@ template <class T> void MemoriaCompartida2<T>::crear ( const std::string& archiv
 			throw mensaje;
 		}
 	} else {
-		std::string mensaje = std::string("Error en ftok() (crear): ") + std::string(strerror(errno));
+		std::string mensaje = std::string("Error en ftok() (crear) Memoria: ") + std::string(strerror(errno));
 		std::cerr<<mensaje<<std::endl;
 		throw mensaje;
 	}

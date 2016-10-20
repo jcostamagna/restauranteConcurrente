@@ -4,8 +4,7 @@
 #include <list>
 #include <GeneradorClientes.h>
 #include <Semaforo.h>
-#include <map>
-#include <Restaurante.h>
+#include <MemoriaCompartida2.h>
 #include "Pipe&Fifo/Pipe.h"
 #include "src/Parser.h"
 #include "src/Recepcionista.h"
@@ -15,6 +14,8 @@
 int main() {
 
 //    static const int BUFFSIZE = 100;
+    static const std::string NOMBRE = "/bin/bash";
+    //static const std::string NOMBRE2 = "README.md";
 
 
     std::string string("restaurante.config");
@@ -45,27 +46,33 @@ int main() {
     std::cout << '\n';
     std::cout << "ESTO ANDA" << std::endl;
 
-    Restaurante restaurante(recepCant,mozosCant,mesasCant,menu);
+    Pipe clientes, living, clientesAMesa;
+    LockFd lockLectura(clientes.getFdLectura());
 
-    restaurante.iniciarPersonal();
-    restaurante.abrirPuertas();
 
-    /*
-    Pipe canal;
-    //int pid = fork ();
+    Semaforo escrituraLiving(NOMBRE, 0);
+
+    //Inicializo cantidad de Clientes en el Living en 0
+    //escrituraLiving.p();
+
+
+
     std::list<Recepcionista*> recepcionistas;
     for (int i = 0; i < recepCant; i++){
-        Recepcionista* recepcionista = new Recepcionista(canal);
+        Recepcionista* recepcionista = new Recepcionista(clientes,lockLectura, escrituraLiving, living, clientesAMesa);
         recepcionista->start();
         recepcionistas.push_back(recepcionista);
     }
-    //Recepcionista recepcionista(canal);
-    //recepcionista.start();
+    MemoriaCompartida2<int> cantClientesLiving;
+    cantClientesLiving.crear(NOMBRE, 'z');
+    cantClientesLiving.escribir(0);
 
-    // escritor
+    escrituraLiving.v();
 
-    GeneradorClientes generador(canal);
+    GeneradorClientes generador(clientes);
     generador.start();
+
+
 
     // espero a que termine el hijo
     //wait ( NULL );
@@ -83,9 +90,9 @@ int main() {
         delete (*it);
     }
 
-
     kill(generador.get_pid(), SIGINT);
     generador.stop();
+    escrituraLiving.eliminar();
+    cantClientesLiving.liberar();
     exit(0);
-    */
 }
