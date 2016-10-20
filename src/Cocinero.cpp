@@ -14,6 +14,8 @@ Cocinero::Cocinero(Pipe& escrCocinero, Pipe& lectCocinero, std::list<Semaforo *>
 void Cocinero::run() {
     this->rutinaCocinero();
 
+    std::cout << "Termino el proceso cocinero" << getpid() << std::endl;
+
     this->eCocinero.cerrar();
     this->lCocinero.cerrar();
 }
@@ -61,6 +63,7 @@ void Cocinero::esperandoPedido() {
 
     std::cout << "Cocinero: esperando pedido..." << std::endl;
     ssize_t bytesLeidos = eCocinero.leer ( static_cast<void*>(buffer),BUFFSIZE);
+    if (bytesLeidos <= 0) return;
     std::string mensaje = buffer;
     mensaje.resize ( bytesLeidos );
     std::cout << "Cocinero: Leo al mozo ->" << mensaje << "<-" << std::endl;

@@ -12,7 +12,7 @@ Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, const std:
 
 void Restaurante::iniciarPersonal() {
     iniciarMozos();
-    //iniciarCocinero();
+    iniciarCocinero();
     iniciarMesas();
     iniciarRecepcionistas();
     iniciarGeneradorClientes();
@@ -23,7 +23,6 @@ void Restaurante::iniciarGeneradorClientes(){
 }
 
 void Restaurante::abrirPuertas() {
-
 }
 
 void Restaurante::iniciarMozos() {
@@ -77,7 +76,6 @@ Restaurante::~Restaurante() {
     }
 
     for (std::list<Semaforo*>::iterator it = semaforos.begin(); it != semaforos.end(); ++it){
-        //(*it)->eliminar();
         delete (*it);
     }
 
@@ -93,8 +91,8 @@ Restaurante::~Restaurante() {
         delete (*it);
     }
 
-    //kill(this->cocinero->get_pid(), SIGINT);
-    //this->cocinero->stop();
+    kill(this->cocinero->get_pid(), SIGINT);
+    this->cocinero->stop();
 
 
     kill(this->generadorClientes.get_pid(), SIGINT);
