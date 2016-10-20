@@ -19,7 +19,7 @@ void Mozo::run() {
 
 
 void Mozo::rutinaMozo() {
-    while (vive) {
+    while (sigint_handler.getGracefulQuit() == 0) {
         switch (estado) {
             case RECIBIENDO_ORDEN:
                 recibiendoOrden();

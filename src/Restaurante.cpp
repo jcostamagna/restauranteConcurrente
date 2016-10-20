@@ -11,8 +11,8 @@ Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, const std:
           escrituraLiving("/bin/bash", 0), generadorClientes(clientes), lockLecturaClientes(clientes.getFdLectura()) {}
 
 void Restaurante::iniciarPersonal() {
-    //iniciarMozos();
-    //iniciarCocinero();
+    iniciarMozos();
+    iniciarCocinero();
     iniciarRecepcionistas();
     iniciarGeneradorClientes();
 }
@@ -27,8 +27,8 @@ void Restaurante::abrirPuertas() {
 
 void Restaurante::iniciarMozos() {
     for (int i = 0; i < mozosCant; i++) {
-        std::string path = "main" + std::to_string(i) + ".cc";
-        Semaforo *semaforo = new Semaforo(path,0);
+        std::string path = "/bin/bash";
+        Semaforo *semaforo = new Semaforo(path,i);
         Mozo* mozoi = new Mozo(i,pipeMesas,pipeECocinero,pipeLCocinero,*semaforo);
         mozoi->start();
         mozos.push_back(mozoi);
