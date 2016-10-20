@@ -68,8 +68,8 @@ TEST_F(MozoRealizaPedidoComida, mi_test3) {
     //CREO LOS MOZOS
     static const int CANTMOZOS = 4;
     for(int i=0; i<CANTMOZOS; i++){
-        std::string path = "main" + std::to_string(i) + ".cc";
-        Semaforo *semaforo_ = new Semaforo(path,0);
+        std::string path = "/home/nicolas/ClionProjects/restauranteConcurrente/main.cpp";
+        Semaforo *semaforo_ = new Semaforo(path,i);
         Mozo* mozoi = new Mozo(i,*pipeMesas,*pipeECocinero,*pipeLCocinero,*semaforo_);
         mozoi->start();
         mozos.push_back(mozoi);

@@ -10,7 +10,6 @@
 #include "src/Recepcionista.h"
 #define SALIR "q"
 
-
 int main() {
 
 //    static const int BUFFSIZE = 100;
