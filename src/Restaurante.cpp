@@ -4,17 +4,20 @@
 
 #include "Restaurante.h"
 #include "Cocinero.h"
+#include "Mesa.h"
 
 Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, const std::list<std::pair<std::string, int> > &menu)
         : recepCant(recepCant), mozosCant(mozosCant), mesasCant(mesasCant), menu(menu),
           caja("CMakeCache.txt", 'A'), cantLiving("/bin/bash", 'z'), dineroNoAbonado("Makefile", 'b'),
-          escrituraLiving("/bin/bash", 0), generadorClientes(clientes), lockLecturaClientes(clientes.getFdLectura()) {}
+          escrituraLiving("/bin/bash", 0), generadorClientes(clientes),
+          lockLecturaClientes(clientes.getFdLectura()), lockLecturaMesas(living.getFdLectura()) {}
 
 void Restaurante::iniciarPersonal() {
     iniciarMozos();
     iniciarCocinero();
     iniciarRecepcionistas();
     iniciarGeneradorClientes();
+    iniciarMesas();
 }
 
 void Restaurante::iniciarGeneradorClientes(){
@@ -56,6 +59,16 @@ void Restaurante::iniciarRecepcionistas() {
     cantClientesLiving.escribir(0);
 
     escrituraLiving.v();
+}
+
+void Restaurante::iniciarMesas() {
+    for (unsigned i = 0; i < mesasCant; i++) {
+        std::string path = "/bin/grep";
+        Semaforo *semaforo = new Semaforo(path,i);
+        Mesa* mesai = new Mesa(i,living,pipeMesas,lockLecturaMesas,*semaforo);
+        mesai->start();
+        semaforos.push_back(semaforo);
+    }
 }
 
 

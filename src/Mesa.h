@@ -23,6 +23,7 @@ typedef enum ESTADO_MESA {
 
 class Mesa : public Forkeable {
 private:
+    unsigned id;
     Pipe& living;
     Pipe& pedidos;
 
@@ -46,7 +47,7 @@ private:
     void avanzarEstado();
 
 public:
-    Mesa (Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo& sEsperandoMozo);
+    Mesa (unsigned id, Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo& sEsperandoMozo);
 };
 
 

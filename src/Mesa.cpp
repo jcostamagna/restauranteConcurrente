@@ -4,8 +4,8 @@
 
 #include "Mesa.h"
 
-Mesa::Mesa(Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo& sEsperandoMozo) :
-        living(living),pedidos(pedidos), lockLiving(lockLiving),sEsperandoMozo(sEsperandoMozo), estado(ESPERANDO_CLIENTE),{}
+Mesa::Mesa(unsigned id, Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo& sEsperandoMozo) :
+        living(living),pedidos(pedidos), lockLiving(lockLiving),sEsperandoMozo(sEsperandoMozo), estado(ESPERANDO_CLIENTE) {}
 
 void Mesa::run() {
     this->rutinaMesa();
@@ -46,7 +46,7 @@ void Mesa::rutinaMesa() {
 void Mesa::avanzarEstado() {
     switch (estado) {
         case ESPERANDO_CLIENTE:
-            estado = ESPERANDO_CLIENTE;
+            estado = CLIENTE_SENTADO;
             break;
         case CLIENTE_SENTADO:
             estado = CLIENTE_SENTADO;

@@ -41,12 +41,15 @@ class Restaurante {
     GeneradorClientes generadorClientes;
 
     LockFd lockLecturaClientes;
+    LockFd lockLecturaMesas;
 
     void iniciarMozos();
 
     void iniciarCocinero();
 
     void iniciarRecepcionistas();
+
+    void iniciarMesas();
 
 public:
     Restaurante(int recepCant, int mozosCant, int mesasCant, const std::list<std::pair<std::string, int> > &menu);
