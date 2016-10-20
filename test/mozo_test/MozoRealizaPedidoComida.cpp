@@ -46,25 +46,7 @@ public:
 };
 
 
-/*
-TEST_F(MozoRealizaPedidoComida, mi_test2){
-    mozo->start();
-
-    // escritor
-    std::string dato = "comida";
-    sleep(5);
-    pipeMesas->escribir(static_cast<const void *>(dato.c_str()), dato.size());
-
-    std::cout << "Pedido: escribi el dato [" << dato << "] en el pipe" << std::endl;
-    std::cout << "Pedido: fin del proceso" << std::endl;
-
-    mozo->stop();
-
-    pipeMesas->cerrar();
-    EXPECT_EQ(1,1);
-}*/
-
-TEST_F(MozoRealizaPedidoComida, mi_test3) {
+TEST_F(MozoRealizaPedidoComida, mi_test1) {
     //CREO LOS MOZOS
     static const int CANTMOZOS = 4;
     for(int i=0; i<CANTMOZOS; i++){
