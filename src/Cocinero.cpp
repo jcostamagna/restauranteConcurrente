@@ -62,7 +62,12 @@ void Cocinero::esperandoPedido() {
     mensaje.resize ( bytesLeidos );
     std::cout << "Cocinero: Leo al mozo ->" << mensaje << "<-" << std::endl;
 
-    int N = std::stoi(mensaje);
+    int N;
+    try {
+        N = std::stoi(mensaje);
+    } catch (...) {
+        std::cout << "Problema parseando id mozo" << std::endl;
+    }
     std::cout << "Cocinero: Pongo en verde el semaforo ->" << N << "<-" << std::endl;
     if (semaforos.size() > (unsigned)N)
     {
