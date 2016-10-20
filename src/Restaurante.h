@@ -20,7 +20,6 @@ class Restaurante {
     std::list<std::pair<std::string, int> > menu;
 
     Cocinero *cocinero;
-    std::map<pid_t, Recepcionista *> recepcionistasMap;
     std::map<pid_t, Mozo *> mozosMap;
 
     Pipe living;
@@ -28,7 +27,6 @@ class Restaurante {
     Pipe pipeMesas;
     Pipe pipeECocinero;
     Pipe pipeLCocinero;
-    Pipe clientesAMesa;
 
     std::list<Mozo*> mozos;
     std::list<Semaforo*> semaforos;

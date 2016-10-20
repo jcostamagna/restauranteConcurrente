@@ -5,6 +5,8 @@
 #include <string>
 #include <iostream>
 #include <SignalHandler.h>
+#include <iomanip>
+#include <sstream>
 #include "GeneradorClientes.h"
 
 GeneradorClientes::GeneradorClientes (Pipe& clientes): clientes(clientes){}
@@ -26,15 +28,17 @@ void GeneradorClientes::run() {
 }
 
 void GeneradorClientes::rutinaGenerador(){
-    std::string dato = "Hola mundo pipes!!";
+    //std::string dato = "Hola mundo pipes!!";
     int i = 0;
 
     while ( sigint_handler.getGracefulQuit() == 0 ){
-        std::string datoNew = dato + std::string("Numero ") +std::to_string(i);
-        clientes.escribir(static_cast<const void *>(datoNew.c_str()), datoNew.size());
-        std::cout << "Escritor: escribi el dato [" << datoNew << "] en el pipe" << std::endl;
+        std::ostringstream ss;
+        ss << std::setfill('0') << std::setw(8) << i;
+        std::string dato(ss.str());
+        clientes.escribir(static_cast<const void *>(dato.c_str()), dato.size());
+        std::cout << "Generador: escribi el cliente [" << dato << "] en el pipe" << std::endl;
         i++;
-        sleep(1);
-        if (i%10==0) i=0;
+        //Reinicio contador
+        if (i == 99999999) i = 0;
     }
 }
