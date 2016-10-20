@@ -11,7 +11,7 @@ typedef enum ESTADO_GRUPO {
     ESPERANDO_EN_PUERTA,
     ESPERANDO_EN_LIVING,
     ESPERANDO_ORDENAR,
-    ESPERANDO_COMIDA,
+    ESPERANDO_MOZO_COMIDA,
     COMIENDO,
     ESPERANDO_PAGAR,  // espera que haya un mozo disponible para pagar
     PAGAR_RETIRARSE,
@@ -22,6 +22,7 @@ class GrupoComensales: public Forkeable {
 private:
     bool vive;
     e_grupo estado;
+    int cantidad;
 
     virtual void run() override;
     void rutinaComensal();
@@ -42,6 +43,8 @@ public:
     GrupoComensales();
 
     virtual ~GrupoComensales();
+    void sumarCantidad();
+    int getCantidad();
 
 
 };

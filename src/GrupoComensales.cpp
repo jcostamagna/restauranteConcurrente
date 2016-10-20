@@ -6,13 +6,21 @@
 #include <ctime>
 #include "GrupoComensales.h"
 
-GrupoComensales::GrupoComensales(): vive(true), estado (ESPERANDO_EN_PUERTA) {}
+GrupoComensales::GrupoComensales(): vive(true), estado (ESPERANDO_EN_PUERTA), cantidad(0) {}
 
 GrupoComensales::~GrupoComensales() {
 }
 
 void GrupoComensales::run() {
     this->rutinaComensal();
+}
+
+
+void GrupoComensales::sumarCantidad(){
+    this->cantidad++;
+}
+int GrupoComensales::getCantidad(){
+    return this->cantidad;
 }
 
 
@@ -25,7 +33,7 @@ void GrupoComensales::rutinaComensal()  {
                 esperandoEnLiving();
             case ESPERANDO_ORDENAR:
                 esperandoOrdenar();
-            case ESPERANDO_COMIDA:
+            case ESPERANDO_MOZO_COMIDA:
                 esperandoComida();
             case COMIENDO:
                 comiendo();
@@ -46,8 +54,8 @@ void GrupoComensales::avanzarEstado() {
         case ESPERANDO_EN_LIVING:
             estado = ESPERANDO_ORDENAR;
         case ESPERANDO_ORDENAR:
-            estado = ESPERANDO_COMIDA;
-        case ESPERANDO_COMIDA:
+            estado = ESPERANDO_MOZO_COMIDA;
+        case ESPERANDO_MOZO_COMIDA:
             estado = COMIENDO;
         case COMIENDO:
             if (calcularRandom(10) < 3)
