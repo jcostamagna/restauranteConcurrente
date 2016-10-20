@@ -16,7 +16,7 @@ void Cocinero::run() {
 }
 
 void Cocinero::rutinaCocinero() {
-    while (vive) {
+    while (sigint_handler.getGracefulQuit() == 0) {
         switch (estado) {
             case ESPERANDO_PEDIDO:
                 esperandoPedido();
