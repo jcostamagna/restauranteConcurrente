@@ -37,7 +37,7 @@ bool Log::setearArchivo(const char *archivo) {
     return false;
 }
 
-void Log::log(std::string &msg) {
+void Log::log(std::string msg) {
     log(msg.c_str());
 }
 

@@ -6,8 +6,9 @@
 #include <unistd.h>
 #include <iostream>
 #include <SIGINT_Handler.h>
-#include <SignalHandler.h>
 #include "Recepcionista.h"
+#include <Log.h>
+#include <sstream>
 
 
 Recepcionista::Recepcionista(Pipe &clientes, LockFd& lecturaPuerta, Semaforo& escrituraLiving,Pipe &living) :
@@ -20,7 +21,7 @@ void Recepcionista::run() {
 
     this->clientes.cerrar();
     this->living.cerrar();
-    std::cout << "Termino el proceso recepcionista" << getpid() << std::endl;
+    std::cout << "Termino el proceso recepcionista " << getpid() << std::endl;
 
 }
 
@@ -70,6 +71,9 @@ void Recepcionista::esperando() {
     // lector
     char buffer[BUFFSIZE];
 
+    std::stringstream ss;
+    ss << "Recepcionista("<< getpid() <<"): Esperando clientes..." << std::endl;
+    Log::getInstance()->log(ss.str());
     std::cout << "Recepcionista("<< getpid() <<"): Esperando clientes..." << std::endl;
 
 
@@ -82,8 +86,13 @@ void Recepcionista::esperando() {
     std::string mensaje = buffer;
     mensaje.resize(bytesLeidos);
 
+    ss.flush();
     std::cout << "Recepcionista("<< getpid() <<"): LLego el cliente [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe"
               << std::endl;
+    std::stringstream ssa;
+    ssa << "Recepcionista("<< getpid() <<"): LLego el cliente [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe"
+          << std::endl;
+    Log::getInstance()->log(ssa.str());
 
     //LLevo clientes al living, o mesa si hay disponible
     this->living.escribir(static_cast<const void *>(mensaje.c_str()), mensaje.size());
@@ -92,6 +101,9 @@ void Recepcionista::esperando() {
 
 
     int cantClientes = this->cantClientesLiving.leer();
+    ss.flush();
+    ss << "Recepcionista("<< getpid() <<"): Cantidad clientes en living [" << cantClientes << "] "<< std::endl;
+    Log::getInstance()->log(ss.str());
     std::cout << "Recepcionista("<< getpid() <<"): Cantidad clientes en living [" << cantClientes << "] "<< std::endl;
     cantClientes ++;
     this->cantClientesLiving.escribir(cantClientes);

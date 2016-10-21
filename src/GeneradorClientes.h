@@ -11,6 +11,7 @@
 
 class GeneradorClientes: public Forkeable {
 private:
+    int cantClientes;
     Pipe& clientes;
 
     GeneradorClientes(const GeneradorClientes& object);

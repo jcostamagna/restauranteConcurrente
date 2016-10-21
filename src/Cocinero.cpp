@@ -3,7 +3,9 @@
 //
 
 #include <iostream>
+#include <sstream>
 #include "Cocinero.h"
+#include "Log.h"
 
 Cocinero::Cocinero(Pipe& escrCocinero, Pipe& lectCocinero, std::list<Semaforo *>& semaforos) :
         eCocinero(escrCocinero), lCocinero(lectCocinero), semaforos(semaforos), vive(true), estado(ESPERANDO_PEDIDO) {
@@ -61,11 +63,19 @@ void Cocinero::esperandoPedido() {
     static const int BUFFSIZE = 12;
     char buffer[BUFFSIZE];
 
+    std::stringstream ss;
+    ss << "Cocinero: esperando pedido..." << std::endl;
+    Log::getInstance()->log(ss.str());
+
     std::cout << "Cocinero: esperando pedido..." << std::endl;
     ssize_t bytesLeidos = eCocinero.leer ( static_cast<void*>(buffer),BUFFSIZE);
     if (bytesLeidos <= 0) return;
     std::string mensaje = buffer;
     mensaje.resize ( bytesLeidos );
+
+    ss.flush();
+    ss << "Cocinero: Leo al mozo ->" << mensaje << "<-" << std::endl;
+    Log::getInstance()->log(ss.str());
     std::cout << "Cocinero: Leo al mozo ->" << mensaje << "<-" << std::endl;
 
     int N;
@@ -74,6 +84,10 @@ void Cocinero::esperandoPedido() {
     } catch (...) {
         std::cout << "Problema parseando id mozo" << std::endl;
     }
+
+    ss.flush();
+    ss << "Cocinero: Pongo en verde el semaforo ->" << N << "<-" << std::endl;
+    Log::getInstance()->log(ss.str());
     std::cout << "Cocinero: Pongo en verde el semaforo ->" << N << "<-" << std::endl;
     if (semaforos.size() > (unsigned)N)
     {
@@ -86,7 +100,13 @@ void Cocinero::esperandoPedido() {
 
 void Cocinero::entregandoPedido() {
     std::string dato = "Pedido listo";
+
+    std::stringstream ss;
+    ss << "Cocinero: Escribo en mozo: " << dato << std::endl;
+    Log::getInstance()->log(ss.str());
     std::cout << "Cocinero: Escribo en mozo: " << dato << std::endl;
+
+
     lCocinero.escribir(static_cast<const void *>(dato.c_str()), dato.size());
     avanzarEstado();
 }

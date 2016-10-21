@@ -3,7 +3,6 @@
 //
 
 #include "Restaurante.h"
-#include "Cocinero.h"
 
 Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, const std::list<std::pair<std::string, int> > &menu)
         : recepCant(recepCant), mozosCant(mozosCant), mesasCant(mesasCant), menu(menu),
@@ -64,10 +63,11 @@ void Restaurante::iniciarMesas() {
     for (int i = 0; i < mesasCant; i++){
         std::string path = "/bin/grep";
         char sem = (char)'a'+i;
-        Semaforo *semaforo = new Semaforo(path, sem,i);
+        Semaforo *semaforo = new Semaforo(path, sem,0);
         Mesa* mesa = new Mesa(this->living, this->pipeMesas, this->lockLecturaClientes, semaforo,  this->escrituraLiving);
         mesa->start();
-        this->semaforosMesas[mesa->get_pid()] = semaforo;
+        //this->semaforosMesas[mesa->get_pid()] = semaforo;
+        this->semaforosMesas.insert(std::make_pair(mesa->get_pid(), semaforo));
         this->mesas.push_back(mesa);
     }
 }

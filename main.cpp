@@ -2,12 +2,13 @@
 #include <iostream>
 #include <list>
 #include <Restaurante.h>
+#include <Log.h>
 #include "src/Parser.h"
 #define SALIR "q"
 
 int main() {
 
-
+    Log::getInstance()->setearArchivo("log.txt");
 
     std::string string("restaurante.config");
 

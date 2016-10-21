@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "Mozo.h"
+#include "Log.h"
 #include <sstream>
 
 Mozo::Mozo(int id, Pipe& pedidos, Pipe& escrCocinero, Pipe& lectCocinero, Semaforo& semaforo, const std::map<int, Semaforo*> &semaforosMesas)
@@ -94,12 +95,23 @@ void Mozo::recibiendoOrden() {
     static const int BUFFSIZE = 10;
     char buffer[BUFFSIZE];
 
-    std::cout << "Mozo[" << id << "]: esperando para leer..." << std::endl;
+    std::stringstream ssa;
+    ssa << "Mozo[" << id << "]: esperando para leer pedido..." << std::endl;
+    Log::getInstance()->log(ssa.str());
+    std::cout << "Mozo[" << id << "]: esperando para leer pedido..." << std::endl;
+
+
     ssize_t bytesLeidos = this->pedidos.leer ( static_cast<void*>(buffer),BUFFSIZE );
     if (bytesLeidos <= 0) return;
     std::string mensaje = buffer;
     mensaje.resize ( bytesLeidos );
-    std::cout << "PEDIDO: " << mensaje << std::endl;
+
+    ssa.flush();
+    ssa << "Mozo[" << id << "]: Leí el PEDIDO " << mensaje << std::endl;
+    Log::getInstance()->log(ssa.str());
+    std::cout << "Mozo[" << id << "]: Leí el PEDIDO " << mensaje << std::endl;
+
+
     std::stringstream ss1, ss2;
     unsigned i;
     int pedido;
@@ -123,6 +135,9 @@ void Mozo::recibiendoOrden() {
 }
 
 void Mozo::entregandoComida() {
+    std::stringstream ssa;
+    ssa << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir ordenes" << std::endl;
+    Log::getInstance()->log(ssa.str());
     std::cout << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir ordenes" << std::endl;
     //Desbloqueo mesa
     semaforosMesas.at(idMesa)->v();
@@ -130,6 +145,9 @@ void Mozo::entregandoComida() {
 }
 
 void Mozo::entregandoCuenta() {
+    std::stringstream ssa;
+    ssa << "Mozo[" << id << "] entrega cuenta" << std::endl;
+    Log::getInstance()->log(ssa.str());
     std::cout << "Mozo[" << id << "] entrega cuenta" << std::endl;
     semaforosMesas.at(idMesa)->v();
     avanzarEstado();

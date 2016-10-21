@@ -8,8 +8,9 @@
 #include <iomanip>
 #include <sstream>
 #include "GeneradorClientes.h"
+#include "Log.h"
 
-GeneradorClientes::GeneradorClientes (Pipe& clientes): clientes(clientes){}
+GeneradorClientes::GeneradorClientes (Pipe& clientes): cantClientes(15), clientes(clientes){}
 
 
 void GeneradorClientes::run() {
@@ -36,10 +37,18 @@ void GeneradorClientes::rutinaGenerador(){
         ss << std::setfill('0') << std::setw(8) << i;
         std::string dato(ss.str());
         clientes.escribir(static_cast<const void *>(dato.c_str()), dato.size());
+
+        std::stringstream ssa;
+        ssa << "Generador: escribi el cliente [" << dato << "] en el pipe" << std::endl;
+        Log::getInstance()->log(ssa.str());
         std::cout << "Generador: escribi el cliente [" << dato << "] en el pipe" << std::endl;
+
+
         i++;
         sleep(1);
+
+        if (i>= cantClientes) break;
         //Reinicio contador
-        i = i % 100000000;//if (i == 99999999) i = 0;
+        //i = i % 100000000;//if (i == 99999999) i = 0;
     }
 }

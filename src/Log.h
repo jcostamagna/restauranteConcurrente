@@ -22,7 +22,7 @@ public:
     bool setearArchivo(const char* archivo);
 
     void log(const char* msg);
-    void log(std::string &msg);
+    void log(std::string msg);
 
 };
 
