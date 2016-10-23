@@ -7,9 +7,10 @@
 #include "Mesa.h"
 #include "Log.h"
 
-Mesa::Mesa(Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo* sEsperandoMozo, Semaforo& escrituraLiving) :
-        living(living),pedidos(pedidos), lockLiving(lockLiving),estado(ESPERANDO_CLIENTE), sEsperandoMozo(sEsperandoMozo),
-        escrituraLiving(escrituraLiving), idCliente(-1), cantClientesLiving("/bin/bash", 'z'), cuenta(0){}
+Mesa::Mesa(Pipe &living, Pipe &pedidos, LockFd &lockLiving, Semaforo *sEsperandoMozo, Semaforo &escrituraLiving) :
+        living(living), pedidos(pedidos), lockLiving(lockLiving), estado(ESPERANDO_CLIENTE),
+        sEsperandoMozo(sEsperandoMozo),
+        escrituraLiving(escrituraLiving), idCliente(-1), cantClientesLiving("/bin/bash", 'z'), cuenta(0) {}
 
 void Mesa::run() {
     this->rutinaMesa();
@@ -35,6 +36,8 @@ void Mesa::rutinaMesa() {
             case CLIENTE_ESPERA_PEDIDO:
                 clienteEsperaPedido();
                 break;
+            case CLIENTE_COMIENDO:
+                comer();
             case CLIENTE_ESPERA_CUENTA:
                 clienteEsperaCuenta();
                 break;
@@ -57,7 +60,14 @@ void Mesa::avanzarEstado() {
             estado = CLIENTE_ESPERA_PEDIDO;
             break;
         case CLIENTE_ESPERA_PEDIDO:
-            estado = CLIENTE_ESPERA_CUENTA;
+            estado = CLIENTE_COMIENDO;
+            break;
+        case CLIENTE_COMIENDO:
+            // Con una probabilidad de 0.3 vuelve a pedir comida. Podria ser interminable...
+            if (calcularRandom() < 3)
+                estado = CLIENTE_SENTADO;
+            else
+                estado = CLIENTE_ESPERA_CUENTA;
             break;
         case CLIENTE_ESPERA_CUENTA:
             estado = CLIENTE_SE_VA;
@@ -78,12 +88,12 @@ void Mesa::esperandoCliente() {
     char buffer[BUFFSIZE];
 
     std::stringstream ss;
-    ss << "Mesa("<< getpid() <<"): Esperando clientes..." << std::endl;
+    ss << "Mesa(" << getpid() << "): Esperando que clientes vayan al living..." << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Mesa("<< getpid() <<"): Esperando clientes..." << std::endl;
+    std::cout << "Mesa(" << getpid() << "): Esperando que clientes vayan al living..." << std::endl;
 
 
-    //Leemos con un lock de lectura
+    //Leemos del pipe living con un lock de lectura
     this->lockLiving.tomarLock();
     ssize_t bytesLeidos = this->living.leer(static_cast<void *>(buffer), BUFFSIZE);
     this->lockLiving.liberarLock();
@@ -93,27 +103,30 @@ void Mesa::esperandoCliente() {
     mensaje.resize(bytesLeidos);
     std::string::size_type sz;
 
-    this->idCliente = std::stoi(mensaje,&sz);
+    this->idCliente = std::stoi(mensaje, &sz);
 
     ss.str("");
-    ss << "Mesa("<< getpid() <<"): Tengo al cliente [" << idCliente << "] (" << bytesLeidos << " bytes) del pipe"
+    ss << "Mesa(" << getpid() << "): Tengo al cliente [" << idCliente << "] (" << bytesLeidos
+       << " bytes) del pipe living"
        << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Mesa("<< getpid() <<"): Tengo al cliente [" << idCliente << "] (" << bytesLeidos << " bytes) del pipe"
+    std::cout << "Mesa(" << getpid() << "): Tengo al cliente [" << idCliente << "] (" << bytesLeidos
+              << " bytes) del pipe living"
               << std::endl;
 
 
+    //TODO: sacar del pipe y actualizar cantidad en el mismo bloque critico
+    //Bloqueo para que no puedan cambiar la cantidad de gente en el living
     escrituraLiving.p();
-
 
     int cantClientes = this->cantClientesLiving.leer();
     cantClientes--;
 
     ss.str("");
-    ss << "Mesa("<< getpid() <<"): Cantidad clientes en living [" << cantClientes << "] "<< std::endl;
+    ss << "Mesa(" << getpid() << "): Cantidad clientes en living [" << cantClientes << "] " << std::endl;
     Log::getInstance()->log(ss.str());
 
-    std::cout << "Mesa("<< getpid() <<"): Cantidad clientes en living [" << cantClientes << "] "<< std::endl;
+    std::cout << "Mesa(" << getpid() << "): Cantidad clientes en living [" << cantClientes << "] " << std::endl;
     this->cantClientesLiving.escribir(cantClientes);
 
     escrituraLiving.v();
@@ -127,31 +140,49 @@ void Mesa::clienteSentado() {
     ss << std::setfill('0') << std::setw(4) << 50;
     std::string dato(ss.str());
     pedidos.escribir(static_cast<const void *>(dato.c_str()), dato.size());
-    // tomar comida al azar del menu y su precio
+    // TODO: tomar comida al azar del menu y su precio
 
     ss.str("");
-    ss << "Mesa("<< getpid() <<"): Hago pedido de [" << dato << "] en el pipe " << "del cliente [" << idCliente << "]" << std::endl;
+    ss << "Mesa(" << getpid() << "): Hago pedido de [" << dato << "] en el pipe del cliente [" << idCliente << "]"
+       << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Mesa("<< getpid() <<"): Hago pedido de [" << dato << "] en el pipe " << "del cliente [" << idCliente << "]" << std::endl;
+    std::cout << "Mesa(" << getpid() << "): Hago pedido de [" << dato << "] en el pipe del cliente [" << idCliente
+              << "]" << std::endl;
 
-
+    // EL PRECIO
     this->cuenta += 50;
     avanzarEstado();
 }
 
 void Mesa::clienteEsperaPedido() {
     std::stringstream ss;
-    ss <<  "Mesa("<< getpid() <<"): Esperando Comida " << "del cliente [" << idCliente << "]"<< std::endl;
+    ss << "Mesa(" << getpid() << "): Esperando Comida " << "del cliente [" << idCliente << "]" << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Mesa("<< getpid() <<"): Esperando Comida " << "del cliente [" << idCliente << "]"<< std::endl;
+    std::cout << "Mesa(" << getpid() << "): Esperando Comida " << "del cliente [" << idCliente << "]" << std::endl;
 
 
-    this->sEsperandoMozo->p();
+    this->sEsperandoMozo->p(); //me bloqueo mientras espero al mozo. Me desbloqueo cuando el mozo me hace v()
+    avanzarEstado();
+}
+
+void Mesa::comer() {
+    std::stringstream ss;
+    ss << "Mesa(" << getpid() << ") del cliente [" << idCliente << "]: COMIENDO" << std::endl;
+    Log::getInstance()->log(ss.str());
+    std::cout << "Mesa(" << getpid() << ") del cliente [" << idCliente << "]: COMIENDO" << std::endl;
+
+    sleep(1);
+
+    ss.str("");
+    ss << "Mesa(" << getpid() << ") del cliente [" << idCliente << "]: Ya comi, que rico!!" << std::endl;
+    Log::getInstance()->log(ss.str());
+    std::cout << "Mesa(" << getpid() << ") del cliente [" << idCliente << "]: Ya comi, que rico!!" << std::endl;
+
     avanzarEstado();
 }
 
 void Mesa::clienteEsperaCuenta() {
-//Hacer pedido
+//Hacer pedido de cuenta
     //static const int BUFFSIZE = 10;
     std::ostringstream ss;
     ss << std::setfill('0') << std::setw(6) << getpid();
@@ -161,17 +192,25 @@ void Mesa::clienteEsperaCuenta() {
     pedidos.escribir(static_cast<const void *>(dato.c_str()), dato.size());
 
     ss.str("");
-    ss << "Mesa("<<getpid()<<"): Hago pedido de cuenta en el pipe " << "del cliente [" << idCliente << "]"<< std::endl;
+    ss << "Mesa(" << getpid() << "): Hago pedido de cuenta en el pipe del mozo [" << idCliente << "]"
+       << std::endl;
     Log::getInstance()->log(ss.str());
 
-    std::cout << "Mesa("<<getpid()<<"): Hago pedido de cuenta en el pipe " << "del cliente [" << idCliente << "]"<< std::endl;
+    std::cout << "Mesa(" << getpid() << "): Hago pedido de cuenta en el pipe del mozo [" << idCliente << "]"
+              << std::endl;
 
-    this->sEsperandoMozo->p();
+    this->sEsperandoMozo->p(); //me bloqueo mientras espero al mozo. Me desbloqueo cuando el mozo me hace v()
 
     avanzarEstado();
-    avanzarEstado();
+    avanzarEstado(); //Vuelvo al estado ESPERANDO_CLIENTE por si viene otro cliente.
 }
 
 void Mesa::apagon() {
 
+}
+
+int Mesa::calcularRandom () {
+    srand ( time(NULL) );
+    int resultado = rand() % 10;
+    return resultado;
 }

@@ -10,7 +10,7 @@
 #include "GeneradorClientes.h"
 #include "Log.h"
 
-GeneradorClientes::GeneradorClientes (Pipe& clientes): cantClientes(15), clientes(clientes){}
+GeneradorClientes::GeneradorClientes (Pipe& clientes): cantClientes(1), puerta(clientes){}
 
 
 void GeneradorClientes::run() {
@@ -24,7 +24,7 @@ void GeneradorClientes::run() {
     // se recibio la senial SIGINT, el proceso termina
     SignalHandler :: destruir ();
     std::cout << "Generador: fin del proceso" << std::endl;
-    clientes.cerrar();
+    puerta.cerrar();
     exit(0);
 }
 
@@ -36,11 +36,13 @@ void GeneradorClientes::rutinaGenerador(){
         std::ostringstream ss;
         ss << std::setfill('0') << std::setw(8) << i;
         std::string dato(ss.str());
-        clientes.escribir(static_cast<const void *>(dato.c_str()), dato.size());
 
         ss.str("");
-        ss << "Generador: escribi el cliente [" << dato << "] en el pipe" << std::endl;
+        ss << "Generador: escribo el cliente [" << dato << "] en el pipe puerta" << std::endl;
         Log::getInstance()->log(ss.str());
+        puerta.escribir(static_cast<const void *>(dato.c_str()), dato.size());
+
+
         std::cout << "Generador: escribi el cliente [" << dato << "] en el pipe" << std::endl;
 
 

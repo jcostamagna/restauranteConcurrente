@@ -12,7 +12,7 @@
 class GeneradorClientes: public Forkeable {
 private:
     int cantClientes;
-    Pipe& clientes;
+    Pipe& puerta;
 
     GeneradorClientes(const GeneradorClientes& object);
     GeneradorClientes& operator=(const GeneradorClientes& object);
