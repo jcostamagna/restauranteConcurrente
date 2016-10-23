@@ -98,7 +98,7 @@ void Recepcionista::esperando() {
     ss.str("");
 
 
-    escrituraLiving.p(); //semaforo cantidad de grupos en el living
+    escrituraLiving.p(); //semaforoConCocinero cantidad de grupos en el living
 
     int cantClientes = this->cantClientesLiving.leer();
     ss << "Recepcionista("<< getpid() <<"): Cantidad clientes en living [" << cantClientes << "] "<< std::endl;

@@ -24,13 +24,15 @@ typedef enum ESTADO_MOZO {
 class Mozo : public Forkeable {
 private:
     int id;
-    Pipe& pedidos;
-    Pipe& eCocinero;
-    Pipe& lCocinero;
+    Pipe& pedidos;  // Pipe de pedidos de todas las mesas y todos los mozos
+    Pipe& eCocinero;  // Mozo escribe pedidos en el pipe, cocinero los lee
+    Pipe& lCocinero;  // Cocinero escribe
     bool vive;
     e_mozo estado;
-    Semaforo& semaforo;
-    const std::map<int, Semaforo*> &semaforosMesas;
+
+    Semaforo& semaforoConCocinero;  // Me bloqueo cuando espero que el cocinero cocine la comida
+    const std::map<int, Semaforo*> &semaforosMesas; // Para que las mesas puedan continuar cuando les devuelvo su pedido
+
     MemoriaCompartida2<int> cuenta;
     int idMesa;
 
@@ -41,7 +43,7 @@ private:
 
     void rutinaMozo();
 
-    void esperandoComida();
+    void pedirComida();
 
     void recibiendoOrden();
 
@@ -59,7 +61,7 @@ public:
     virtual ~Mozo();
 
 
-
+    void esperarComida();
 };
 
 

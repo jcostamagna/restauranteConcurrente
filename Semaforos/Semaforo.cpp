@@ -1,8 +1,6 @@
 #include "Semaforo.h"
-#include <string>
 #include <string.h>
 #include <iostream>
-#include <errno.h>
 
 Semaforo :: Semaforo ( const std::string& nombre,const char character,const int valorInicial ):valorInicial(valorInicial) {
 	key_t clave = ftok ( nombre.c_str(),character );
@@ -46,8 +44,8 @@ int Semaforo :: p () const {
 
 	struct sembuf operacion;
 
-	operacion.sem_num = 0;	// numero de semaforo
-	operacion.sem_op  = -1;	// restar 1 al semaforo
+	operacion.sem_num = 0;	// numero de semaforoConCocinero
+	operacion.sem_op  = -1;	// restar 1 al semaforoConCocinero
 	operacion.sem_flg = SEM_UNDO;
 
 	int resultado = semop ( this->id,&operacion,1 );
@@ -63,8 +61,8 @@ int Semaforo :: v () const {
 
 	struct sembuf operacion;
 
-	operacion.sem_num = 0;	// numero de semaforo
-	operacion.sem_op  = 1;	// sumar 1 al semaforo
+	operacion.sem_num = 0;	// numero de semaforoConCocinero
+	operacion.sem_op  = 1;	// sumar 1 al semaforoConCocinero
 	operacion.sem_flg = SEM_UNDO;
 
 	int resultado = semop ( this->id,&operacion,1 );

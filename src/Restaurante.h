@@ -23,25 +23,25 @@ class Restaurante {
     Cocinero *cocinero;
     std::map<pid_t, Mozo *> mozosMap;
 
-    Pipe living; //clientes en el living
-    Pipe clientes;  // clientes que entran por la puerta
-    Pipe pipeMesas; // clientes en mesas esperando por pedido
+    Pipe living; //clientes en el living, mesas que los sacan
+    Pipe puerta;  // clientes que entran por la puerta, recepcionistas que los atienden
+    Pipe pipePedidosMesas; // clientes en mesas escriben sus pedidos, los mozos leen los pedidos
     Pipe pipeECocinero;  // Pipe escritura cocinero de comidas cocinadas
     Pipe pipeLCocinero;  // Pipe lectura de cocinero de pedidos
 
     std::list<Mozo*> mozos;
-    std::list<Semaforo*> semaforos;
-    std::map<int,Semaforo*> semaforosMesas;
+    std::list<Semaforo*> semaforosCocineroMozos;
+    std::map<int,Semaforo*> semaforosMesas;  // Un semaforoConCocinero por mesa. Se bloquean cuando esperan al mozo. El mozo las desbloquea
     std::list<Recepcionista*> recepcionistas;
     std::list<Mesa*> mesas;
 
     MemoriaCompartida2<int> caja;
-    MemoriaCompartida2<int> cantLiving;
-    MemoriaCompartida2<int> dineroNoAbonado;
+    MemoriaCompartida2<int> cantLiving;  // Cantidad de clientes en el living
+    MemoriaCompartida2<int> dineroNoAbonado;  // De comidas que se ordenaron pero no se pagaron
 
-    Semaforo escrituraLiving;
+    Semaforo escrituraLiving;  // Para que solo escriban en el cantLiving de a uno por vez
 
-    GeneradorClientes generadorClientes;
+    GeneradorClientes generadorClientes;  // Genera clientes y los mete en el pipe puerta
 
     LockFd lockLecturaClientes;  // lock de lectura de la puerta (pipe clientes)
 

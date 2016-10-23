@@ -18,9 +18,9 @@ typedef enum ESTADO_COCINERO {
 
 class Cocinero: public Forkeable {
 private:
-    Pipe& eCocinero;
-    Pipe& lCocinero;
-    std::list<Semaforo*> semaforos;
+    Pipe& eCocinero;  // pipe donde leo los pedidos que hacen los mozos
+    Pipe& lCocinero;  // pipe donde escribo la comida ya cocinada
+    std::list<Semaforo*> semaforosCocineroMozos;  // Para poder desbloquear a los mozos cuando la comida esta lista
     bool vive;
     e_cocinero estado;
 

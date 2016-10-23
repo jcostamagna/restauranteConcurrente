@@ -7,8 +7,9 @@
 #include "Cocinero.h"
 #include "Log.h"
 
-Cocinero::Cocinero(Pipe& escrCocinero, Pipe& lectCocinero, std::list<Semaforo *>& semaforos) :
-        eCocinero(escrCocinero), lCocinero(lectCocinero), semaforos(semaforos), vive(true), estado(ESPERANDO_PEDIDO) {
+Cocinero::Cocinero(Pipe &escrCocinero, Pipe &lectCocinero, std::list<Semaforo *> &semaforos) :
+        eCocinero(escrCocinero), lCocinero(lectCocinero), semaforosCocineroMozos(semaforos), vive(true),
+        estado(ESPERANDO_PEDIDO) {
 
 }
 
@@ -69,10 +70,11 @@ void Cocinero::esperandoPedido() {
     std::cout << "Cocinero: esperando pedido..." << std::endl;
 
 
-    ssize_t bytesLeidos = eCocinero.leer ( static_cast<void*>(buffer),BUFFSIZE);
+    //como es un solo lector, no necesito lock
+    ssize_t bytesLeidos = eCocinero.leer(static_cast<void *>(buffer), BUFFSIZE);
     if (bytesLeidos <= 0) return;
     std::string mensaje = buffer;
-    mensaje.resize ( bytesLeidos );
+    mensaje.resize(bytesLeidos);
 
     ss.str("");
     ss << "Cocinero: Leo al mozo ->" << mensaje << "<-" << std::endl;
@@ -87,12 +89,11 @@ void Cocinero::esperandoPedido() {
     }
 
     ss.str("");
-    ss << "Cocinero: Pongo en verde el semaforo ->" << N << "<-" << std::endl;
+    ss << "Cocinero: Pongo en verde el semaforoConCocinero ->" << N << "<-" << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Cocinero: Pongo en verde el semaforo ->" << N << "<-" << std::endl;
-    if (semaforos.size() > (unsigned)N)
-    {
-        std::list<Semaforo*>::iterator it = semaforos.begin();
+    std::cout << "Cocinero: Pongo en verde el semaforoConCocinero ->" << N << "<-" << std::endl;
+    if (semaforosCocineroMozos.size() > (unsigned) N) {
+        std::list<Semaforo *>::iterator it = semaforosCocineroMozos.begin();
         std::advance(it, N);
         (*it)->v();
     }
@@ -106,7 +107,6 @@ void Cocinero::entregandoPedido() {
     ss << "Cocinero: Escribo en mozo: " << dato << std::endl;
     Log::getInstance()->log(ss.str());
     std::cout << "Cocinero: Escribo en mozo: " << dato << std::endl;
-
 
     lCocinero.escribir(static_cast<const void *>(dato.c_str()), dato.size());
     avanzarEstado();
