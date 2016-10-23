@@ -7,6 +7,8 @@
 #include <iostream>
 #include <sstream>
 #include <cstring>
+#include <chrono>
+#include <sys/time.h>
 
 Log* Log:: instance = NULL;
 LockFile* Log:: lockFile = NULL;
@@ -43,15 +45,20 @@ void Log::log(std::string msg) {
 
 void Log::log(const char *msg) {
     std::stringstream ss;
-    time_t rawtime;
-    struct tm *timeinfo;
 
-    time(&rawtime);
-    timeinfo = localtime(&rawtime);
-    char* time = asctime(timeinfo);
-    time[strlen(time) - 1] = 0; //le saco el \n
 
-    ss << std::string(time) << "\t";
+    struct timeval tv;
+    time_t nowtime;
+    struct tm *nowtm;
+    char tmbuf[64], buf[64];
+
+    gettimeofday(&tv, NULL);
+    nowtime = tv.tv_sec;
+    nowtm = localtime(&nowtime);
+    strftime(tmbuf, sizeof tmbuf, "%Y-%m-%d %H:%M:%S", nowtm);
+    snprintf(buf, sizeof buf, "%s.%06ld", tmbuf, tv.tv_usec);
+
+    ss << std::string(buf) << "\t";
     ss << "[" << getpid() << "]" << "\t\t";
     ss << msg << std::endl;
 
