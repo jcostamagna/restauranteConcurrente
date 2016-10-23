@@ -10,24 +10,24 @@
 #include <chrono>
 #include <sys/time.h>
 
-Log* Log:: instance = NULL;
-LockFile* Log:: lockFile = NULL;
+Log *Log::instance = NULL;
+LockFile *Log::lockFile = NULL;
 
 Log::Log() {}
 
 
-Log* Log::getInstance () {
+Log *Log::getInstance() {
 
-    if ( instance == NULL )
-        instance = new Log ();
+    if (instance == NULL)
+        instance = new Log();
 
     return instance;
 }
 
 void Log::destruir() {
-    if ( instance != NULL ) {
+    if (instance != NULL) {
         delete lockFile;
-        delete ( instance );
+        delete (instance);
         instance = NULL;
     }
 }
@@ -46,23 +46,29 @@ void Log::log(std::string msg) {
 void Log::log(const char *msg) {
     std::stringstream ss;
 
-
-    struct timeval tv;
-    time_t nowtime;
-    struct tm *nowtm;
-    char tmbuf[64], buf[64];
-
-    gettimeofday(&tv, NULL);
-    nowtime = tv.tv_sec;
-    nowtm = localtime(&nowtime);
-    strftime(tmbuf, sizeof tmbuf, "%Y-%m-%d %H:%M:%S", nowtm);
-    snprintf(buf, sizeof buf, "%s.%06ld", tmbuf, tv.tv_usec);
+    char buf[64];
+    setActualTime(buf);
 
     ss << std::string(buf) << "\t";
     ss << "[" << getpid() << "]" << "\t\t";
     ss << msg << std::endl;
 
     lockFile->tomarLock();
-    lockFile->escribir(ss.str().c_str(),ss.str().size());
+    lockFile->escribir(ss.str().c_str(), ss.str().size());
     lockFile->liberarLock();
 }
+
+void Log::setActualTime(char *buf) {
+    struct timeval tv;
+    time_t nowtime;
+    struct tm *nowtm;
+    char tmbuf[64];
+
+    gettimeofday(&tv, NULL);
+    nowtime = tv.tv_sec;
+    nowtm = localtime(&nowtime);
+    strftime(tmbuf, sizeof tmbuf, "%Y-%m-%d %H:%M:%S", nowtm);
+    snprintf(buf, sizeof buf, "%s.%06ld", tmbuf, tv.tv_usec);
+}
+
+
