@@ -66,14 +66,15 @@ void Cocinero::esperandoPedido() {
     std::stringstream ss;
     ss << "Cocinero: esperando pedido..." << std::endl;
     Log::getInstance()->log(ss.str());
-
     std::cout << "Cocinero: esperando pedido..." << std::endl;
+
+
     ssize_t bytesLeidos = eCocinero.leer ( static_cast<void*>(buffer),BUFFSIZE);
     if (bytesLeidos <= 0) return;
     std::string mensaje = buffer;
     mensaje.resize ( bytesLeidos );
 
-    ss.flush();
+    ss.str("");
     ss << "Cocinero: Leo al mozo ->" << mensaje << "<-" << std::endl;
     Log::getInstance()->log(ss.str());
     std::cout << "Cocinero: Leo al mozo ->" << mensaje << "<-" << std::endl;
@@ -85,7 +86,7 @@ void Cocinero::esperandoPedido() {
         std::cout << "Problema parseando id mozo" << std::endl;
     }
 
-    ss.flush();
+    ss.str("");
     ss << "Cocinero: Pongo en verde el semaforo ->" << N << "<-" << std::endl;
     Log::getInstance()->log(ss.str());
     std::cout << "Cocinero: Pongo en verde el semaforo ->" << N << "<-" << std::endl;

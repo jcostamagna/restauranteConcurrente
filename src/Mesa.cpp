@@ -95,7 +95,7 @@ void Mesa::esperandoCliente() {
 
     this->idCliente = std::stoi(mensaje,&sz);
 
-    ss = std::stringstream();
+    ss.str("");
     ss << "Mesa("<< getpid() <<"): Tengo al cliente [" << idCliente << "] (" << bytesLeidos << " bytes) del pipe"
        << std::endl;
     Log::getInstance()->log(ss.str());
@@ -109,7 +109,7 @@ void Mesa::esperandoCliente() {
     int cantClientes = this->cantClientesLiving.leer();
     cantClientes--;
 
-    ss.flush();
+    ss.str("");
     ss << "Mesa("<< getpid() <<"): Cantidad clientes en living [" << cantClientes << "] "<< std::endl;
     Log::getInstance()->log(ss.str());
 
@@ -129,9 +129,9 @@ void Mesa::clienteSentado() {
     pedidos.escribir(static_cast<const void *>(dato.c_str()), dato.size());
     // tomar comida al azar del menu y su precio
 
-    std::stringstream ssa;
-    ssa << "Mesa("<< getpid() <<"): Hago pedido de [" << dato << "] en el pipe " << "del cliente [" << idCliente << "]" << std::endl;
-    Log::getInstance()->log(ssa.str());
+    ss.str("");
+    ss << "Mesa("<< getpid() <<"): Hago pedido de [" << dato << "] en el pipe " << "del cliente [" << idCliente << "]" << std::endl;
+    Log::getInstance()->log(ss.str());
     std::cout << "Mesa("<< getpid() <<"): Hago pedido de [" << dato << "] en el pipe " << "del cliente [" << idCliente << "]" << std::endl;
 
 
@@ -160,9 +160,9 @@ void Mesa::clienteEsperaCuenta() {
     std::string dato(ss.str());
     pedidos.escribir(static_cast<const void *>(dato.c_str()), dato.size());
 
-    std::stringstream ssa;
-    ssa << "Mesa("<<getpid()<<"): Hago pedido de cuenta en el pipe " << "del cliente [" << idCliente << "]"<< std::endl;
-    Log::getInstance()->log(ssa.str());
+    ss.str("");
+    ss << "Mesa("<<getpid()<<"): Hago pedido de cuenta en el pipe " << "del cliente [" << idCliente << "]"<< std::endl;
+    Log::getInstance()->log(ss.str());
 
     std::cout << "Mesa("<<getpid()<<"): Hago pedido de cuenta en el pipe " << "del cliente [" << idCliente << "]"<< std::endl;
 

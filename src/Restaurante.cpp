@@ -28,7 +28,7 @@ void Restaurante::iniciarMozos() {
     for (int i = 0; i < mozosCant; i++) {
         std::string path = "/bin/bash";
         char sem = (char)'a'+i;
-        Semaforo *semaforo = new Semaforo(path, sem,i);
+        Semaforo *semaforo = new Semaforo(path, sem,i); //TODO: aca no lo habiamos cambiado??
         Mozo* mozoi = new Mozo(i,pipeMesas,pipeECocinero,pipeLCocinero,*semaforo, this->semaforosMesas);
         mozoi->start();
         mozos.push_back(mozoi);

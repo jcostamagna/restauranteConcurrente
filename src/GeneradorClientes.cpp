@@ -38,9 +38,9 @@ void GeneradorClientes::rutinaGenerador(){
         std::string dato(ss.str());
         clientes.escribir(static_cast<const void *>(dato.c_str()), dato.size());
 
-        std::stringstream ssa;
-        ssa << "Generador: escribi el cliente [" << dato << "] en el pipe" << std::endl;
-        Log::getInstance()->log(ssa.str());
+        ss.str("");
+        ss << "Generador: escribi el cliente [" << dato << "] en el pipe" << std::endl;
+        Log::getInstance()->log(ss.str());
         std::cout << "Generador: escribi el cliente [" << dato << "] en el pipe" << std::endl;
 
 
