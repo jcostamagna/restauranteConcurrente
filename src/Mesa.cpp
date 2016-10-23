@@ -82,7 +82,7 @@ void Mesa::avanzarEstado() {
 }
 
 void Mesa::esperandoCliente() {
-    static const int BUFFSIZE = 8;
+    //static const int BUFFSIZE = 8;
 
     // lector
     char buffer[BUFFSIZE];
@@ -134,10 +134,10 @@ void Mesa::esperandoCliente() {
 }
 
 void Mesa::clienteSentado() {
-    //Hacer pedido
+    //Hacer pedido, los primeros 10 bytes son el pid, el resto es la comida
     std::ostringstream ss;
-    ss << std::setfill('0') << std::setw(6) << getpid();
-    ss << std::setfill('0') << std::setw(4) << 50;
+    ss << std::setfill('0') << std::setw(PID_LENGHT) << getpid();
+    ss << std::setfill('0') << std::setw(BUFFSIZE-PID_LENGHT) << 50;
     std::string dato(ss.str());
     pedidos.escribir(static_cast<const void *>(dato.c_str()), dato.size());
     // TODO: tomar comida al azar del menu y su precio
@@ -185,9 +185,9 @@ void Mesa::clienteEsperaCuenta() {
 //Hacer pedido de cuenta
     //static const int BUFFSIZE = 10;
     std::ostringstream ss;
-    ss << std::setfill('0') << std::setw(6) << getpid();
+    ss << std::setfill('0') << std::setw(PID_LENGHT) << getpid();
     //Pedir algo de 0 pesos es pedir la cuenta
-    ss << std::setfill('0') << std::setw(4) << 0;
+    ss << std::setfill('0') << std::setw(BUFFSIZE-PID_LENGHT) << 0;
     std::string dato(ss.str());
     pedidos.escribir(static_cast<const void *>(dato.c_str()), dato.size());
 

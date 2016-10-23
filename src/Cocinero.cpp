@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 #include "Cocinero.h"
 #include "Log.h"
 
@@ -61,7 +62,7 @@ void Cocinero::avanzarEstado() {
 }
 
 void Cocinero::esperandoPedido() {
-    static const int BUFFSIZE = 12;
+    //static const int BUFFSIZE = 12;
     char buffer[BUFFSIZE];
 
     std::stringstream ss;
@@ -75,11 +76,14 @@ void Cocinero::esperandoPedido() {
     if (bytesLeidos <= 0) return;
     std::string mensaje = buffer;
     mensaje.resize(bytesLeidos);
+    ss.str(mensaje);
+    int mozo;
+    ss >> mozo;
 
     ss.str("");
-    ss << "Cocinero: Leo al mozo ->" << mensaje << "<-" << std::endl;
+    ss << "Cocinero: Leo al mozo ->" << mozo << "<-" << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Cocinero: Leo al mozo ->" << mensaje << "<-" << std::endl;
+    std::cout << "Cocinero: Leo al mozo ->" << mozo << "<-" << std::endl;
 
     int N;
     try {
@@ -101,12 +105,14 @@ void Cocinero::esperandoPedido() {
 }
 
 void Cocinero::entregandoPedido() {
-    std::string dato = "Pedido listo";
+    std::ostringstream datoStream;
+    datoStream << std::setfill('0') << std::setw(BUFFSIZE) << "Pedido listo";
+    std::string dato = datoStream.str();
 
     std::stringstream ss;
-    ss << "Cocinero: Escribo en mozo: " << dato << std::endl;
+    ss << "Cocinero: Escribo en mozo: [" << dato << "]" << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Cocinero: Escribo en mozo: " << dato << std::endl;
+    std::cout << "Cocinero: Escribo en mozo: [" << dato << "]" << std::endl;
 
     lCocinero.escribir(static_cast<const void *>(dato.c_str()), dato.size());
     avanzarEstado();

@@ -6,6 +6,7 @@
 #include "Mozo.h"
 #include "Log.h"
 #include <sstream>
+#include <iomanip>
 
 Mozo::Mozo(int id, Pipe &pedidos, Pipe &escrCocinero, Pipe &lectCocinero, Semaforo &semaforo,
            const std::map<int, Semaforo *> &semaforosMesas)
@@ -75,7 +76,7 @@ void Mozo::avanzarEstado() {
 }
 
 void Mozo::recibiendoOrden() {
-    static const int BUFFSIZE = 10;
+    //static const int BUFFSIZE = 10;
     char buffer[BUFFSIZE];
 
     std::stringstream ss;
@@ -93,15 +94,15 @@ void Mozo::recibiendoOrden() {
     mensaje.resize(bytesLeidos);
 
     ss.str("");
-    ss << "Mozo[" << id << "]: Leí el PEDIDO " << mensaje << std::endl;
+    ss << "Mozo[" << id << "]: Leí el PEDIDO [" << mensaje << "]" << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Mozo[" << id << "]: Leí el PEDIDO " << mensaje << std::endl;
+    std::cout << "Mozo[" << id << "]: Leí el PEDIDO [" << mensaje << "]" << std::endl;
 
 
     std::stringstream ss1, ss2;
     unsigned i;
     int pedido;
-    for (i = 0; i < 6; ++i) {
+    for (i = 0; i < PID_LENGHT; ++i) {
         ss1 << mensaje.at(i);
     }
     for (; i < mensaje.length(); ++i) {
@@ -110,6 +111,13 @@ void Mozo::recibiendoOrden() {
 
     ss1 >> this->idMesa;
     ss2 >> pedido;
+
+    /*ss.str("");
+    ss << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: ";
+    ss << pedido << std::endl;
+    Log::getInstance()->log(ss.str());
+    std::cout << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: ";
+    ss << pedido << std::endl;*/
 
     if (pedido != 0) {
         estado = ESPERANDO_COMIDA;  // Si hay pedido va a pedir la comida
@@ -120,7 +128,7 @@ void Mozo::recibiendoOrden() {
 
 
 void Mozo::pedirComida() {
-    const int BUFFSIZE = 12;
+    //const int BUFFSIZE = 12;
 
     std::stringstream ss;
     ss << "Mozo[" << id << "]: Intentando acceder al cocinero" << std::endl;
@@ -128,7 +136,7 @@ void Mozo::pedirComida() {
     ss.str("");
     std::cout << "Mozo[" << id << "]: Intentando acceder al cocinero" << std::endl;
 
-    std::string dato = std::to_string(id) + "           ";
+    // std::string dato = std::to_string(id) + "           ";
 
     ss << "Mozo[" << id << "]: Escribo mi ID en cocinero y me pongo rojo" << std::endl;
     Log::getInstance()->log(ss.str());
@@ -136,6 +144,10 @@ void Mozo::pedirComida() {
 
     std::cout << "Mozo[" << id << "]: Escribo mi ID en cocinero y me pongo rojo" << std::endl;
 
+
+    std::ostringstream datoStream;
+    datoStream << std::setfill(' ') << std::setw(BUFFSIZE) << id;
+    std::string dato = datoStream.str();
 
     this->eCocinero.escribir(static_cast<const void *>(dato.c_str()), BUFFSIZE);  // Pido la comida
 
@@ -147,7 +159,7 @@ void Mozo::pedirComida() {
 
 
 void Mozo::esperarComida() {
-    static const int BUFFSIZE = 12;
+    //static const int BUFFSIZE = 12;
 
     std::stringstream ss;
     ss << "Mozo[" << id << "]: SEMAFORO VERDE, puedo buscar la comida cocinada" << std::endl;
@@ -162,10 +174,10 @@ void Mozo::esperarComida() {
     std::string mensaje = buffer;
     mensaje.resize(bytesLeidos);
 
-    ss << "Mozo[" << id << "] recibio de cocinero: " << mensaje << std::endl;
+    ss << "Mozo[" << id << "] recibio de cocinero: [" << mensaje << "]" << std::endl;
     Log::getInstance()->log(ss.str());
     ss.str("");
-    std::cout << "Mozo[" << id << "] recibio de cocinero: " << mensaje << std::endl;
+    std::cout << "Mozo[" << id << "] recibio de cocinero: [" << mensaje << "]" << std::endl;
 
     avanzarEstado();
 }

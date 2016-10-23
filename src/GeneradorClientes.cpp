@@ -34,7 +34,7 @@ void GeneradorClientes::rutinaGenerador(){
 
     while ( sigint_handler.getGracefulQuit() == 0 ){
         std::ostringstream ss;
-        ss << std::setfill('0') << std::setw(8) << i;
+        ss << std::setfill('0') << std::setw(PID_LENGHT) << i;
         std::string dato(ss.str());
 
         ss.str("");

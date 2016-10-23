@@ -59,7 +59,7 @@ void Recepcionista::avanzarEstado() {
 }
 
 void Recepcionista::esperando() {
-    static const int BUFFSIZE = 8;
+    //const int BUFFSIZE = 8;
 
     // lector
     char buffer[BUFFSIZE];
@@ -90,9 +90,9 @@ void Recepcionista::esperando() {
     //LLevo clientes al living, o mesa si hay disponible
     this->living.escribir(static_cast<const void *>(mensaje.c_str()), mensaje.size());
 
-    std::cout << "Recepcionista("<< getpid() <<"): LLeve al cliente [" << mensaje << "] " << bytesLeidos << "al living"
+    std::cout << "Recepcionista("<< getpid() <<"): LLeve al cliente [" << mensaje << "] " << "al living"
               << std::endl;
-    ss << "Recepcionista("<< getpid() <<"): Lleve al cliente [" << mensaje << "] " << bytesLeidos << "al living"
+    ss << "Recepcionista("<< getpid() <<"): Lleve al cliente [" << mensaje << "] " << "al living"
        << std::endl;
     Log::getInstance()->log(ss.str());
     ss.str("");
