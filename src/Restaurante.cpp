@@ -4,10 +4,10 @@
 
 #include "Restaurante.h"
 
-Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, const std::list<std::pair<std::string, int> > &menu)
-        : recepCant(recepCant), mozosCant(mozosCant), mesasCant(mesasCant), menu(menu),
+Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, int clientesCant, std::list<std::pair<std::string, int>> menu)
+        : recepCant(recepCant), mozosCant(mozosCant), mesasCant(mesasCant), clientesCant(clientesCant), menu(menu),
           caja("CMakeCache.txt", 'A'), cantLiving("CMakeCache.txt", 'h'), dineroNoAbonado("Makefile", 'b'),
-          escrituraLiving("CMakeCache.txt", 'z', 0), generadorClientes(puerta), lockLecturaClientes(puerta.getFdLectura()) {}
+          escrituraLiving("CMakeCache.txt", 'z', 0), generadorClientes(puerta, clientesCant), lockLecturaClientes(puerta.getFdLectura()) {}
 
 void Restaurante::iniciarPersonal() {
     iniciarMesas();

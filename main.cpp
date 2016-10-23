@@ -14,7 +14,7 @@ int main() {
 
     Parser parser(string);
     std::string header;
-    int recepCant, mozosCant, mesasCant, precio;
+    int recepCant, mozosCant, mesasCant, clientesCant, precio;
 
     //Leo la cantidad de recepcionistas, mozos y mesas
     parser.obtenerTupla(header, &recepCant);
@@ -23,6 +23,8 @@ int main() {
     std::cout << "\nitem: " << header << "\tvalor: " << mozosCant;
     parser.obtenerTupla(header, &mesasCant);
     std::cout << "\nitem: " << header << "\tvalor: " << mesasCant;
+    parser.obtenerTupla(header, &clientesCant);
+    std::cout << "\nitem: " << header << "\tvalor: " << clientesCant;
 
     std::list<std::pair<std::string, int> > menu;
 
@@ -37,7 +39,7 @@ int main() {
     }
     std::cout << '\n';
 
-    Restaurante resto(recepCant, mozosCant, mesasCant, menu);
+    Restaurante resto(recepCant, mozosCant, mesasCant, clientesCant, menu);
     resto.iniciarPersonal();
 
 

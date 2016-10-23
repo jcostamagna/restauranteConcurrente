@@ -10,7 +10,7 @@
 #include "GeneradorClientes.h"
 #include "Log.h"
 
-GeneradorClientes::GeneradorClientes (Pipe& clientes): cantClientes(1), puerta(clientes){}
+GeneradorClientes::GeneradorClientes (Pipe& clientes, int cantClientes): cantClientes(cantClientes), puerta(clientes){}
 
 
 void GeneradorClientes::run() {

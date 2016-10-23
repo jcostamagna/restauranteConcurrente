@@ -16,7 +16,7 @@
 
 class Restaurante {
 
-    int recepCant, mozosCant, mesasCant;
+    int recepCant, mozosCant, mesasCant, clientesCant;
     //std::map<std::string, int> menu;
     std::list<std::pair<std::string, int> > menu;
 
@@ -56,7 +56,7 @@ class Restaurante {
     void iniciarGeneradorClientes();
 
 public:
-    Restaurante(int recepCant, int mozosCant, int mesasCant, const std::list<std::pair<std::string, int> > &menu);
+    Restaurante(int recepCant, int mozosCant, int mesasCant, int menu, std::list<std::pair<std::string, int>> list);
 
     void iniciarPersonal();
 
