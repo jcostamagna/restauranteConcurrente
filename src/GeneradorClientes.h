@@ -12,16 +12,16 @@
 class GeneradorClientes: public Forkeable {
 private:
     int cantClientes;
-    Pipe& clientes;
+    Pipe& puerta;
 
-    GeneradorClientes(const GeneradorClientes& object);
+    GeneradorClientes(Pipe object);
     GeneradorClientes& operator=(const GeneradorClientes& object);
 
     virtual void run() override;
     void rutinaGenerador();
 
 public:
-    GeneradorClientes (Pipe& clientes);
+    GeneradorClientes (Pipe& clientes, int cantClientes);
 };
 
 

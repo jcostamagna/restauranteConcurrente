@@ -173,7 +173,7 @@ void Mesa::comer() {
     Log::getInstance()->log(ss.str());
     std::cout << "Mesa(" << getpid() << ") del cliente [" << idCliente << "]: COMIENDO" << std::endl;
 
-    sleep(1); //miamiamiamiamiam
+    sleep(1);
 
     ss.str("");
     ss << "Mesa(" << getpid() << ") del cliente [" << idCliente << "]: Ya comi, que rico!!" << std::endl;

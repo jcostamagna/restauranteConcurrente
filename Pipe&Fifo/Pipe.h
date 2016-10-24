@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#define BUFFSIZE 128 // el PIPE_BUF para linux es 4096, hasta ahi las escrituras son atomicas
+
 class Pipe {
 
 private:

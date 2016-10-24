@@ -21,7 +21,7 @@ typedef enum ESTADO_RECEPCIONISTA {
 
 class Recepcionista: public Forkeable {
 private:
-    Pipe &clientes;
+    Pipe &puerta;
     Pipe& living;
 
     bool mesaLibre;

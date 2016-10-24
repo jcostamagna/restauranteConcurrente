@@ -7,6 +7,7 @@
 
 #include <unistd.h>
 #include <SIGINT_Handler.h>
+#define PID_LENGHT 10
 
 class Forkeable {
 public:
