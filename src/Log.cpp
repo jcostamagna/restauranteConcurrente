@@ -68,7 +68,7 @@ void Log::setActualTime(char *buf) {
     nowtime = tv.tv_sec;
     nowtm = localtime(&nowtime);
     strftime(tmbuf, sizeof tmbuf, "%Y-%m-%d %H:%M:%S", nowtm);
-    snprintf(buf, sizeof buf, "%s.%06ld", tmbuf, tv.tv_usec);
+    snprintf(buf, sizeof (tmbuf), "%s.%06ld", tmbuf, tv.tv_usec);
 }
 
 
