@@ -44,8 +44,8 @@ int Semaforo :: p () const {
 
 	struct sembuf operacion;
 
-	operacion.sem_num = 0;	// numero de semaforoConCocinero
-	operacion.sem_op  = -1;	// restar 1 al semaforoConCocinero
+	operacion.sem_num = 0;	// numero de semaforo
+	operacion.sem_op  = -1;	// restar 1 al semaforo
 	operacion.sem_flg = SEM_UNDO;
 
 	int resultado = semop ( this->id,&operacion,1 );
@@ -61,8 +61,8 @@ int Semaforo :: v () const {
 
 	struct sembuf operacion;
 
-	operacion.sem_num = 0;	// numero de semaforoConCocinero
-	operacion.sem_op  = 1;	// sumar 1 al semaforoConCocinero
+	operacion.sem_num = 0;	// numero de semaforo
+	operacion.sem_op  = 1;	// sumar 1 al semaforo
 	operacion.sem_flg = SEM_UNDO;
 
 	int resultado = semop ( this->id,&operacion,1 );
