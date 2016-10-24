@@ -7,10 +7,11 @@
 #include "Mesa.h"
 #include "Log.h"
 
-Mesa::Mesa(Pipe &living, Pipe &pedidos, LockFd &lockLiving, Semaforo *sEsperandoMozo, Semaforo &escrituraLiving) :
+Mesa::Mesa(Pipe &living, Pipe &pedidos, LockFd &lockLiving, Semaforo *sEsperandoMozo, Semaforo &escrituraLiving,
+           std::vector<std::pair<std::string, int> > menu) :
         living(living), pedidos(pedidos), lockLiving(lockLiving), estado(ESPERANDO_CLIENTE),
-        sEsperandoMozo(sEsperandoMozo),
-        escrituraLiving(escrituraLiving), idCliente(-1), cantClientesLiving("/bin/bash", 'z'), cuenta(0) {}
+        sEsperandoMozo(sEsperandoMozo), escrituraLiving(escrituraLiving), idCliente(-1),
+        cantClientesLiving("/bin/bash", 'z'), cuenta(0), menu(menu) {}
 
 void Mesa::run() {
     this->rutinaMesa();
@@ -64,7 +65,7 @@ void Mesa::avanzarEstado() {
             break;
         case CLIENTE_COMIENDO:
             // Con una probabilidad de 0.3 vuelve a pedir comida. Podria ser interminable...
-            if (calcularRandom() < 3)
+            if (calcularRandom(10) < 3)
                 estado = CLIENTE_SENTADO;
             else
                 estado = CLIENTE_ESPERA_CUENTA;
@@ -136,8 +137,9 @@ void Mesa::esperandoCliente() {
 void Mesa::clienteSentado() {
     //Hacer pedido, los primeros 10 bytes son el pid, el resto es la comida
     std::ostringstream ss;
-    ss << std::setfill('0') << std::setw(PID_LENGHT) << getpid();
-    ss << std::setfill('0') << std::setw(BUFFSIZE-PID_LENGHT) << 50;
+    pedirComida(ss);
+    //ss << std::setfill('0') << std::setw(PID_LENGHT) << getpid();
+    //ss << std::setfill('0') << std::setw(BUFFSIZE-PID_LENGHT) << 50;
     std::string dato(ss.str());
     pedidos.escribir(static_cast<const void *>(dato.c_str()), dato.size());
     // TODO: tomar comida al azar del menu y su precio
@@ -150,7 +152,7 @@ void Mesa::clienteSentado() {
               << "]" << std::endl;
 
     // EL PRECIO
-    this->cuenta += 50;
+    //this->cuenta += 50;
     avanzarEstado();
 }
 
@@ -209,8 +211,21 @@ void Mesa::apagon() {
 
 }
 
-int Mesa::calcularRandom () {
+
+
+void Mesa::pedirComida(std::ostringstream &stream) {
+    stream << std::setfill('0') << std::setw(PID_LENGHT) << getpid();
+    std::pair<std::string, int> plato = menu[calcularRandom(menu.size())];
+    std::string comida = plato.first;
+    int precio = plato.second;
+    cuenta += precio;
+
+    stream << std::setfill('0') << std::setw(BUFFSIZE-PID_LENGHT) << comida;
+}
+
+
+int Mesa::calcularRandom (int max) {
     srand ( time(NULL) );
-    int resultado = rand() % 10;
+    int resultado = rand() % max;
     return resultado;
 }

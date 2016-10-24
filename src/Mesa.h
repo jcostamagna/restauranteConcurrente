@@ -10,6 +10,8 @@
 #include <Semaforo.h>
 #include <MemoriaCompartida2.h>
 #include <LockFd.h>
+#include <list>
+#include <vector>
 #include "Forkeable.h"
 
 typedef enum ESTADO_MESA {
@@ -37,6 +39,8 @@ private:
     MemoriaCompartida2<int> cantClientesLiving;  // cantidad de clientes en el living compartido
     int cuenta;
 
+    std::vector<std::pair<std::string, int> > menu;
+
     Mesa(const Mesa& object);
     Mesa& operator=(const Mesa& object);
 
@@ -52,10 +56,12 @@ private:
 
     void avanzarEstado();
 
-    int calcularRandom();
+    int calcularRandom(int max);
 
 public:
-    Mesa (Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo* sEsperandoMozo, Semaforo& escrituraLiving);
+    Mesa (Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo* sEsperandoMozo, Semaforo& escrituraLiving, std::vector<std::pair<std::string, int> > menu);
+
+    void pedirComida(std::ostringstream &stream);
 };
 
 

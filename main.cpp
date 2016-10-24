@@ -26,7 +26,7 @@ int main() {
     parser.obtenerTupla(header, &clientesCant);
     std::cout << "\nitem: " << header << "\tvalor: " << clientesCant;
 
-    std::list<std::pair<std::string, int> > menu;
+    std::vector<std::pair<std::string, int> > menu;
 
     while (parser.obtenerTupla(header, &precio)) {
         menu.push_back(std::make_pair(header, precio));
@@ -34,7 +34,7 @@ int main() {
 
 
     std::cout << "\nmylist contains:\n";
-    for (std::list<std::pair<std::string, int> >::iterator it = menu.begin(); it != menu.end(); ++it) {
+    for (std::vector<std::pair<std::string, int> >::iterator it = menu.begin(); it != menu.end(); ++it) {
         std::cout << "\t\t" << (*it).first << "\t" << (*it).second << "\n";
     }
     std::cout << '\n';

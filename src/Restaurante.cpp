@@ -4,7 +4,7 @@
 
 #include "Restaurante.h"
 
-Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, int clientesCant, std::list<std::pair<std::string, int>> menu)
+Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, int clientesCant, std::vector<std::pair<std::string, int>> menu)
         : recepCant(recepCant), mozosCant(mozosCant), mesasCant(mesasCant), clientesCant(clientesCant), menu(menu),
           caja("CMakeCache.txt", 'A'), cantLiving("CMakeCache.txt", 'h'), dineroNoAbonado("Makefile", 'b'),
           escrituraLiving("CMakeCache.txt", 'z', 0), generadorClientes(puerta, clientesCant), lockLecturaClientes(puerta.getFdLectura()) {}
@@ -64,7 +64,7 @@ void Restaurante::iniciarMesas() {
         std::string path = "/bin/grep";
         char sem = (char)'a'+i;
         Semaforo *semaforo = new Semaforo(path, sem,0);
-        Mesa* mesa = new Mesa(this->living, this->pipePedidosMesas, this->lockLecturaClientes, semaforo,  this->escrituraLiving);
+        Mesa* mesa = new Mesa(this->living, this->pipePedidosMesas, this->lockLecturaClientes, semaforo,  this->escrituraLiving, menu);
         mesa->start();
         //this->semaforosMesas[mesa->get_pid()] = semaforoConCocinero;
         this->semaforosMesas.insert(std::make_pair(mesa->get_pid(), semaforo));

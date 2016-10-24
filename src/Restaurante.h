@@ -18,7 +18,7 @@ class Restaurante {
 
     int recepCant, mozosCant, mesasCant, clientesCant;
     //std::map<std::string, int> menu;
-    std::list<std::pair<std::string, int> > menu;
+    std::vector<std::pair<std::string, int> > menu;
 
     Cocinero *cocinero;
     std::map<pid_t, Mozo *> mozosMap;
@@ -56,7 +56,7 @@ class Restaurante {
     void iniciarGeneradorClientes();
 
 public:
-    Restaurante(int recepCant, int mozosCant, int mesasCant, int menu, std::list<std::pair<std::string, int>> list);
+    Restaurante(int recepCant, int mozosCant, int mesasCant, int clientesCant, std::vector<std::pair<std::string, int>> menu);
 
     void iniciarPersonal();
 

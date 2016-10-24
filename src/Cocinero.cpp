@@ -76,29 +76,43 @@ void Cocinero::esperandoPedido() {
     if (bytesLeidos <= 0) return;
     std::string mensaje = buffer;
     mensaje.resize(bytesLeidos);
-    ss.str(mensaje);
-    int mozo;
-    ss >> mozo;
+
+    std::stringstream ss1, ss2;
+    unsigned i;
+    unsigned int idMozo;
+    std::string pedido;
+    for (i = 0; i < PID_LENGHT; ++i) {
+        ss1 << mensaje.at(i);
+    }
+
+    for (; i < mensaje.length(); ++i) {
+        ss2 << mensaje.at(i);
+    }
+
+    ss1 >> idMozo;
+    ss2 >> pedido;
 
     ss.str("");
-    ss << "Cocinero: Leo al mozo ->" << mozo << "<-" << std::endl;
+    ss << "Cocinero: Leo al mozo ->" << idMozo << "<-"
+       << "Cocinando " << pedido << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Cocinero: Leo al mozo ->" << mozo << "<-" << std::endl;
+    std::cout << "Cocinero: Leo al mozo ->" << idMozo << "<-"
+              << "Cocinando " << pedido << std::endl;
 
-    int N;
+    /*int N;
     try {
         N = std::stoi(mensaje);
     } catch (...) {
         std::cout << "Problema parseando id mozo" << std::endl;
-    }
+    }*/
 
     ss.str("");
-    ss << "Cocinero: Pongo en verde el semaforoConCocinero ->" << N << "<-" << std::endl;
+    ss << "Cocinero: Pongo en verde el semaforoConCocinero ->" << idMozo << "<-" << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Cocinero: Pongo en verde el semaforoConCocinero ->" << N << "<-" << std::endl;
-    if (semaforosCocineroMozos.size() > (unsigned) N) {
+    std::cout << "Cocinero: Pongo en verde el semaforoConCocinero ->" << idMozo << "<-" << std::endl;
+    if (semaforosCocineroMozos.size() > idMozo) {
         std::list<Semaforo *>::iterator it = semaforosCocineroMozos.begin();
-        std::advance(it, N);
+        std::advance(it, idMozo);
         (*it)->v();
     }
     avanzarEstado();

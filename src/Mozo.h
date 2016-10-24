@@ -35,6 +35,7 @@ private:
 
     MemoriaCompartida2<int> cuenta;
     int idMesa;
+    std::string pedido;
 
     Mozo(const Mozo& object);
     Mozo& operator=(const Mozo& object);
@@ -62,6 +63,8 @@ public:
 
 
     void esperarComida();
+
+
 };
 
 
