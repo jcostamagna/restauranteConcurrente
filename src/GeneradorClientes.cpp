@@ -8,8 +8,9 @@
 #include <iomanip>
 #include <sstream>
 #include "GeneradorClientes.h"
+#include "Log.h"
 
-GeneradorClientes::GeneradorClientes (Pipe& clientes): clientes(clientes){}
+GeneradorClientes::GeneradorClientes (Pipe& clientes, int cantClientes): cantClientes(cantClientes), puerta(clientes){}
 
 
 void GeneradorClientes::run() {
@@ -23,7 +24,7 @@ void GeneradorClientes::run() {
     // se recibio la senial SIGINT, el proceso termina
     SignalHandler :: destruir ();
     std::cout << "Generador: fin del proceso" << std::endl;
-    clientes.cerrar();
+    puerta.cerrar();
     exit(0);
 }
 
@@ -33,13 +34,23 @@ void GeneradorClientes::rutinaGenerador(){
 
     while ( sigint_handler.getGracefulQuit() == 0 ){
         std::ostringstream ss;
-        ss << std::setfill('0') << std::setw(8) << i;
+        ss << std::setfill('0') << std::setw(PID_LENGHT) << i;
         std::string dato(ss.str());
-        clientes.escribir(static_cast<const void *>(dato.c_str()), dato.size());
+
+        ss.str("");
+        ss << "Generador: escribo el cliente [" << dato << "] en el pipe puerta" << std::endl;
+        Log::getInstance()->log(ss.str());
+        puerta.escribir(static_cast<const void *>(dato.c_str()), dato.size());
+
+
         std::cout << "Generador: escribi el cliente [" << dato << "] en el pipe" << std::endl;
+
+
         i++;
         sleep(1);
+
+        if (i>= cantClientes) break;
         //Reinicio contador
-        if (i == 99999999) i = 0;
+        //i = i % 100000000;//if (i == 99999999) i = 0;
     }
 }

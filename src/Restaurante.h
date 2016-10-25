@@ -16,33 +16,34 @@
 
 class Restaurante {
 
-    int recepCant, mozosCant, mesasCant;
+    int recepCant, mozosCant, mesasCant, clientesCant;
     //std::map<std::string, int> menu;
-    std::list<std::pair<std::string, int> > menu;
+    std::vector<std::pair<std::string, int> > menu;
 
     Cocinero *cocinero;
     std::map<pid_t, Mozo *> mozosMap;
 
-    Pipe living;
-    Pipe clientes;
-    Pipe pipeMesas;
-    Pipe pipeECocinero;
-    Pipe pipeLCocinero;
+    Pipe living; //clientes en el living, mesas que los sacan
+    Pipe puerta;  // clientes que entran por la puerta, recepcionistas que los atienden
+    Pipe pipePedidosMesas; // clientes en mesas escriben sus pedidos, los mozos leen los pedidos
+    Pipe pipeECocinero;  // Pipe escritura cocinero de comidas cocinadas
+    Pipe pipeLCocinero;  // Pipe lectura de cocinero de pedidos
 
     std::list<Mozo*> mozos;
-    std::list<Semaforo*> semaforos;
+    std::list<Semaforo*> semaforosCocineroMozos;
+    std::map<int,Semaforo*> semaforosMesas;  // Un semaforoConCocinero por mesa. Se bloquean cuando esperan al mozo. El mozo las desbloquea
     std::list<Recepcionista*> recepcionistas;
     std::list<Mesa*> mesas;
 
     MemoriaCompartida2<int> caja;
-    MemoriaCompartida2<int> cantLiving;
-    MemoriaCompartida2<int> dineroNoAbonado;
+    MemoriaCompartida2<int> cantLiving;  // Cantidad de clientes en el living
+    MemoriaCompartida2<int> dineroNoAbonado;  // De comidas que se ordenaron pero no se pagaron
 
-    Semaforo escrituraLiving;
+    Semaforo escrituraLiving;  // Para que solo escriban en el cantLiving de a uno por vez
 
-    GeneradorClientes generadorClientes;
+    GeneradorClientes generadorClientes;  // Genera clientes y los mete en el pipe puerta
 
-    LockFd lockLecturaClientes;
+    LockFd lockLecturaClientes;  // lock de lectura de la puerta (pipe clientes)
 
     void iniciarMozos();
 
@@ -55,17 +56,13 @@ class Restaurante {
     void iniciarGeneradorClientes();
 
 public:
-    Restaurante(int recepCant, int mozosCant, int mesasCant, const std::list<std::pair<std::string, int> > &menu);
+    Restaurante(int recepCant, int mozosCant, int mesasCant, int clientesCant, std::vector<std::pair<std::string, int>> menu);
 
     void iniciarPersonal();
 
     void abrirPuertas();
 
     virtual ~Restaurante();
-
-
-
-
 
 };
 

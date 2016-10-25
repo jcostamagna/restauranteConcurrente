@@ -1,7 +1,7 @@
 //
 // Created by nicolas on 17/10/16.
 //
-
+/*
 #include <gtest/gtest.h>
 #include <list>
 #include <Mozo.h>
@@ -31,7 +31,7 @@ public:
             delete (*it);
         }
 
-        for (std::list<Semaforo*>::iterator it = semaforos.begin(); it != semaforos.end(); ++it){
+        for (std::list<Semaforo*>::iterator it = semaforosCocineroMozos.begin(); it != semaforosCocineroMozos.end(); ++it){
             delete (*it);
         }
     }
@@ -41,7 +41,7 @@ public:
     Pipe* pipeLCocinero;
 
     std::list<Mozo*> mozos;
-    std::list<Semaforo*> semaforos;
+    std::list<Semaforo*> semaforosCocineroMozos;
 
 };
 
@@ -55,7 +55,7 @@ TEST_F(MozoRealizaPedidoComida, mi_test1) {
         Mozo* mozoi = new Mozo(i,*pipeMesas,*pipeECocinero,*pipeLCocinero,*semaforo_);
         mozoi->start();
         mozos.push_back(mozoi);
-        semaforos.push_back(semaforo_);
+        semaforosCocineroMozos.push_back(semaforo_);
     }
 
     static const int CANTPEDIDOS = 4;
@@ -67,6 +67,7 @@ TEST_F(MozoRealizaPedidoComida, mi_test1) {
     }
 
     //COCINERO
-    Cocinero* cocinero = new Cocinero(*pipeECocinero,*pipeLCocinero,semaforos);
+    Cocinero* cocinero = new Cocinero(*pipeECocinero,*pipeLCocinero,semaforosCocineroMozos);
     cocinero->start();
 }
+ */

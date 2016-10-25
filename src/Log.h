@@ -15,6 +15,7 @@ private:
     static LockFile* lockFile;
 
     Log();
+    void setActualTime(char buf[64]);
 
 public:
     static Log* getInstance ();
@@ -22,8 +23,7 @@ public:
     bool setearArchivo(const char* archivo);
 
     void log(const char* msg);
-    void log(std::string &msg);
-
+    void log(std::string msg);
 };
 
 
