@@ -8,9 +8,9 @@
 #include <sstream>
 #include <iomanip>
 
-Mozo::Mozo(int id, Pipe &pedidos, Pipe &escrCocinero, Pipe &lectCocinero, Semaforo &semaforo,
+Mozo::Mozo(int id, Pipe &pedidos, Pipe &escrCocinero, Semaforo &semaforo,
            const std::map<int, Semaforo *> &semaforosMesas)
-        : id(id), pedidos(pedidos), eCocinero(escrCocinero), lCocinero(lectCocinero), vive(true),
+        : id(id), pedidos(pedidos), eCocinero(escrCocinero), vive(true),
           estado(RECIBIENDO_ORDEN), semaforoConCocinero(semaforo), semaforosMesas(semaforosMesas),
           cuenta("/bin/bash", 'j'), idMesa(-1) {}
 
@@ -76,7 +76,6 @@ void Mozo::avanzarEstado() {
 }
 
 void Mozo::recibiendoOrden() {
-    //static const int BUFFSIZE = 10;
     char buffer[BUFFSIZE];
 
     std::stringstream ss;
@@ -87,7 +86,6 @@ void Mozo::recibiendoOrden() {
     ss.flush();
     ss.clear();
 
-
     ssize_t bytesLeidos = this->pedidos.leer(static_cast<void *>(buffer), BUFFSIZE);  // Leo pedidos de cualquier mesa
     if (bytesLeidos <= 0) return;
     std::string mensaje = buffer;
@@ -97,7 +95,6 @@ void Mozo::recibiendoOrden() {
     ss << "Mozo[" << id << "]: Leí el PEDIDO [" << mensaje << "]" << std::endl;
     Log::getInstance()->log(ss.str());
     std::cout << "Mozo[" << id << "]: Leí el PEDIDO [" << mensaje << "]" << std::endl;
-
 
     std::stringstream ss1, ss2;
     unsigned i;
@@ -118,8 +115,7 @@ void Mozo::recibiendoOrden() {
     ss << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: ";
     ss << pedido << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: ";
-    ss << pedido << std::endl;
+    std::cout << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: " << pedido << std::endl;
 
     this-> pedido = pedido;
 
@@ -132,8 +128,6 @@ void Mozo::recibiendoOrden() {
 
 
 void Mozo::pedirComida() {
-    //const int BUFFSIZE = 12;
-
     std::ostringstream datoStream;
 
     datoStream << std::setfill('0') << std::setw(PID_LENGHT) << id;
@@ -143,13 +137,11 @@ void Mozo::pedirComida() {
 
     this->eCocinero.escribir(static_cast<const void *>(dato.c_str()), BUFFSIZE);  // Pido la comida
 
-
     std::stringstream ss;
     ss << "Mozo[" << id << "]: Intentando acceder al cocinero" << std::endl;
     Log::getInstance()->log(ss.str());
     ss.str("");
     std::cout << "Mozo[" << id << "]: Intentando acceder al cocinero" << std::endl;
-
 
     ss << "Mozo[" << id << "]: Escribo mi ID con el pedido en cocinero y me pongo rojo. "
        << "Pedido: " << dato << std::endl;
@@ -159,7 +151,6 @@ void Mozo::pedirComida() {
     std::cout << "Mozo[" << id << "]: Escribo mi ID con el pedido en cocinero y me pongo rojo. "
               << "Pedido: " << dato << std::endl;
 
-
     semaforoConCocinero.p();  // Me bloqueo mientras el cocinero cocina
 
     esperarComida();
@@ -167,25 +158,11 @@ void Mozo::pedirComida() {
 
 
 void Mozo::esperarComida() {
-    //static const int BUFFSIZE = 12;
-
     std::stringstream ss;
     ss << "Mozo[" << id << "]: SEMAFORO VERDE, puedo buscar la comida cocinada" << std::endl;
     Log::getInstance()->log(ss.str());
     ss.str("");
     std::cout << "Mozo[" << id << "]: SEMAFORO VERDE, puedo buscar la comida cocinada" << std::endl;
-
-
-    char buffer[BUFFSIZE];
-    ssize_t bytesLeidos = this->lCocinero.leer(static_cast<void *>(buffer), BUFFSIZE);
-    if (bytesLeidos <= 0) return;
-    std::string mensaje = buffer;
-    mensaje.resize(bytesLeidos);
-
-    ss << "Mozo[" << id << "] recibio de cocinero: [" << mensaje << "]" << std::endl;
-    Log::getInstance()->log(ss.str());
-    ss.str("");
-    std::cout << "Mozo[" << id << "] recibio de cocinero: [" << mensaje << "]" << std::endl;
 
     avanzarEstado();
 }
@@ -206,10 +183,8 @@ void Mozo::entregandoCuenta() {
     Log::getInstance()->log(ss.str());
     std::cout << "Mozo[" << id << "] entrega cuenta" << std::endl;
 
-
     semaforosMesas.at(idMesa)->v();
     avanzarEstado();
-    //vive = false;
 }
 
 void Mozo::apagon() {

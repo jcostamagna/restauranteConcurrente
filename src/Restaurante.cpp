@@ -28,8 +28,8 @@ void Restaurante::iniciarMozos() {
     for (int i = 0; i < mozosCant; i++) {
         std::string path = "/bin/bash";
         char sem = (char)'a'+i;
-        Semaforo *semaforo = new Semaforo(path, sem,i); // attentos, cada uno tiene un semaforoConCocinero distinto
-        Mozo* mozoi = new Mozo(i,pipePedidosMesas,pipeECocinero,pipeLCocinero,*semaforo, this->semaforosMesas);
+        Semaforo *semaforo = new Semaforo(path, sem,0); // attentos, cada uno tiene un semaforoConCocinero distinto
+        Mozo* mozoi = new Mozo(i,pipePedidosMesas,pipeECocinero,*semaforo, this->semaforosMesas);
         mozoi->start();
         mozos.push_back(mozoi);
         semaforosCocineroMozos.push_back(semaforo);
@@ -38,7 +38,7 @@ void Restaurante::iniciarMozos() {
 }
 
 void Restaurante::iniciarCocinero() {
-    cocinero = new Cocinero(pipeECocinero,pipeLCocinero,semaforosCocineroMozos);
+    cocinero = new Cocinero(pipeECocinero,semaforosCocineroMozos);
     cocinero->start();
 }
 

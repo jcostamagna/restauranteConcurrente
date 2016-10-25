@@ -8,8 +8,8 @@
 #include "Cocinero.h"
 #include "Log.h"
 
-Cocinero::Cocinero(Pipe &escrCocinero, Pipe &lectCocinero, std::list<Semaforo *> &semaforos) :
-        eCocinero(escrCocinero), lCocinero(lectCocinero), semaforosCocineroMozos(semaforos), vive(true),
+Cocinero::Cocinero(Pipe &escrCocinero, std::list<Semaforo *> &semaforos) :
+        eCocinero(escrCocinero), semaforosCocineroMozos(semaforos), vive(true),
         estado(ESPERANDO_PEDIDO) {
 
 }
@@ -21,7 +21,6 @@ void Cocinero::run() {
     std::cout << "Termino el proceso cocinero" << getpid() << std::endl;
 
     this->eCocinero.cerrar();
-    this->lCocinero.cerrar();
 }
 
 void Cocinero::rutinaCocinero() {
@@ -62,7 +61,6 @@ void Cocinero::avanzarEstado() {
 }
 
 void Cocinero::esperandoPedido() {
-    //static const int BUFFSIZE = 12;
     char buffer[BUFFSIZE];
 
     std::stringstream ss;
@@ -99,13 +97,6 @@ void Cocinero::esperandoPedido() {
     std::cout << "Cocinero: Leo al mozo ->" << idMozo << "<-"
               << "Cocinando " << pedido << std::endl;
 
-    /*int N;
-    try {
-        N = std::stoi(mensaje);
-    } catch (...) {
-        std::cout << "Problema parseando id mozo" << std::endl;
-    }*/
-
     ss.str("");
     ss << "Cocinero: Pongo en verde el semaforoConCocinero ->" << idMozo << "<-" << std::endl;
     Log::getInstance()->log(ss.str());
@@ -119,16 +110,11 @@ void Cocinero::esperandoPedido() {
 }
 
 void Cocinero::entregandoPedido() {
-    std::ostringstream datoStream;
-    datoStream << std::setfill('0') << std::setw(BUFFSIZE) << "Pedido listo";
-    std::string dato = datoStream.str();
-
     std::stringstream ss;
-    ss << "Cocinero: Escribo en mozo: [" << dato << "]" << std::endl;
+    ss << "Cocinero: Entrego pedido a mozo" << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Cocinero: Escribo en mozo: [" << dato << "]" << std::endl;
+    std::cout << "Cocinero: Entrego pedido a mozo" << std::endl;
 
-    lCocinero.escribir(static_cast<const void *>(dato.c_str()), dato.size());
     avanzarEstado();
 }
 

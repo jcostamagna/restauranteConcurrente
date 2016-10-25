@@ -17,7 +17,6 @@
 class Restaurante {
 
     int recepCant, mozosCant, mesasCant, clientesCant;
-    //std::map<std::string, int> menu;
     std::vector<std::pair<std::string, int> > menu;
 
     Cocinero *cocinero;
@@ -26,8 +25,7 @@ class Restaurante {
     Pipe living; //clientes en el living, mesas que los sacan
     Pipe puerta;  // clientes que entran por la puerta, recepcionistas que los atienden
     Pipe pipePedidosMesas; // clientes en mesas escriben sus pedidos, los mozos leen los pedidos
-    Pipe pipeECocinero;  // Pipe escritura cocinero de comidas cocinadas
-    Pipe pipeLCocinero;  // Pipe lectura de cocinero de pedidos
+    Pipe pipeECocinero;  // Pipe escritura cocinero de pedidos de comidas
 
     std::list<Mozo*> mozos;
     std::list<Semaforo*> semaforosCocineroMozos;
