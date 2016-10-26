@@ -19,7 +19,6 @@ typedef enum ESTADO_COCINERO {
 class Cocinero: public Forkeable {
 private:
     Pipe& eCocinero;  // pipe donde leo los pedidos que hacen los mozos
-    Pipe& lCocinero;  // pipe donde escribo la comida ya cocinada
     std::list<Semaforo*> semaforosCocineroMozos;  // Para poder desbloquear a los mozos cuando la comida esta lista
     bool vive;
     e_cocinero estado;
@@ -34,7 +33,7 @@ private:
     void avanzarEstado();
 
 public:
-    Cocinero(Pipe& escrCocinero, Pipe& lectCocinero, std::list<Semaforo *>& semaforos);
+    Cocinero(Pipe& escrCocinero, std::list<Semaforo *>& semaforos);
     virtual ~Cocinero();
 };
 

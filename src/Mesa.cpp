@@ -39,6 +39,7 @@ void Mesa::rutinaMesa() {
                 break;
             case CLIENTE_COMIENDO:
                 comer();
+                break;
             case CLIENTE_ESPERA_CUENTA:
                 clienteEsperaCuenta();
                 break;
@@ -83,8 +84,6 @@ void Mesa::avanzarEstado() {
 }
 
 void Mesa::esperandoCliente() {
-    //static const int BUFFSIZE = 8;
-
     // lector
     char buffer[BUFFSIZE];
 
@@ -185,7 +184,6 @@ void Mesa::comer() {
 
 void Mesa::clienteEsperaCuenta() {
 //Hacer pedido de cuenta
-    //static const int BUFFSIZE = 10;
     std::ostringstream ss;
     ss << std::setfill('0') << std::setw(PID_LENGHT) << getpid();
     //Pedir algo de 0 pesos es pedir la cuenta
@@ -194,11 +192,11 @@ void Mesa::clienteEsperaCuenta() {
     pedidos.escribir(static_cast<const void *>(dato.c_str()), dato.size());
 
     ss.str("");
-    ss << "Mesa(" << getpid() << "): Hago pedido de cuenta en el pipe del mozo [" << idCliente << "]"
+    ss << "Mesa(" << getpid() << "): Hago pedido de cuenta en el pipe del mozo, IdCliente: [" << idCliente << "]"
        << std::endl;
     Log::getInstance()->log(ss.str());
 
-    std::cout << "Mesa(" << getpid() << "): Hago pedido de cuenta en el pipe del mozo [" << idCliente << "]"
+    std::cout << "Mesa(" << getpid() << "): Hago pedido de cuenta en el pipe del mozo, IdCliente: [" << idCliente << "]"
               << std::endl;
 
     this->sEsperandoMozo->p(); //me bloqueo mientras espero al mozo. Me desbloqueo cuando el mozo me hace v()
