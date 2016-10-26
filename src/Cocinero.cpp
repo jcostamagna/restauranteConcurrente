@@ -91,7 +91,7 @@ void Cocinero::esperandoPedido() {
 
     ss.str("");
     ss << "Cocinero: Leo al mozo ->" << idMozoCocinarle << "<-"
-       << "Cocinando " << pedido << std::endl;
+       << "Cocinando [" << pedido << "]" << std::endl;
     Log::getInstance()->log(ss.str());
     std::cout << "Cocinero: Leo al mozo ->" << idMozoCocinarle << "<-"
               << "Cocinando [" << pedido << "]" << std::endl;
