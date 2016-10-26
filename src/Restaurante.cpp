@@ -120,10 +120,10 @@ void Restaurante::apagonRestaurante() {
     vaciar_living();
 
     for (std::list<Mesa*>::iterator it = mesas.begin(); it != mesas.end(); ++it){
-        kill((*it)->get_pid(),18);
+        kill((*it)->get_pid(),SIGCONT);
     }
 
-    kill(generadorClientes.get_pid(),18);
+    kill(generadorClientes.get_pid(),SIGCONT);
 }
 
 void Restaurante::vaciar_living() {
