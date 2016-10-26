@@ -100,25 +100,32 @@ void Mesa::esperandoCliente() {
     this->lockLiving.liberarLock();
 
     if (bytesLeidos <= 0) return;
+
+    escrituraLiving.p();
     std::string mensaje = buffer;
     mensaje.resize(bytesLeidos);
     std::string::size_type sz;
 
-    this->idCliente = std::stoi(mensaje, &sz);
+    std::stringstream ss1;
+    unsigned int i;
+    for (i = 0; i < PID_LENGHT && i < mensaje.size(); ++i) {
+        ss1 << mensaje.at(i);
+    }
+    ss1 >> idCliente;
 
     ss.str("");
-    ss << "Mesa(" << getpid() << "): Tengo al cliente [" << idCliente << "] (" << bytesLeidos
+    ss << "Mesa(" << getpid() << "): Me llevo al cliente [" << idCliente << "] (" << bytesLeidos
        << " bytes) del pipe living"
        << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Mesa(" << getpid() << "): Tengo al cliente [" << idCliente << "] (" << bytesLeidos
+    std::cout << "Mesa(" << getpid() << "): Me llevo al cliente [" << idCliente << "] (" << bytesLeidos
               << " bytes) del pipe living"
               << std::endl;
 
 
     //TODO: sacar del pipe y actualizar cantidad en el mismo bloque critico
     //Bloqueo para que no puedan cambiar la cantidad de gente en el living
-    escrituraLiving.p();
+
 
     int cantClientes = this->cantClientesLiving.leer();
     cantClientes--;

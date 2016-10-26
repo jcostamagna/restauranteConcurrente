@@ -97,7 +97,6 @@ void Mozo::recibiendoOrden() {
 
     std::stringstream ss1, ss2;
     unsigned i;
-    std::string pedido;
     for (i = 0; i < PID_LENGHT; ++i) {
         ss1 << mensaje.at(i);
     }
@@ -108,19 +107,23 @@ void Mozo::recibiendoOrden() {
     }
 
     ss1 >> this->idMesa;
-    ss2 >> pedido;
-
-    ss.str("");
-    ss << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: ";
-    ss << pedido << std::endl;
-    Log::getInstance()->log(ss.str());
-    std::cout << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: " << pedido << std::endl;
-
-    this-> pedido = pedido;
+    ss2 >> this->pedido;
 
     if (!pedirCuenta) {
+        ss.str("");
+        ss << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: ";
+        ss << pedido << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: [" << pedido << "] " << std::endl;
+
+
         estado = ESPERANDO_COMIDA;  // Si hay pedido va a pedir la comida al cocinero
     } else {
+
+        ss.str("");
+        ss << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio la CUENTA: " << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio la CUENTA: " << std::endl;
         estado = ENTREGANDO_CUENTA;  // Si el pedido es 00000 significa que quiere la cuenta
     }
 }
@@ -134,21 +137,18 @@ void Mozo::pedirComida() {
 
     std::string dato = datoStream.str();
 
-    this->eCocinero.escribir(static_cast<const void *>(dato.c_str()), BUFFSIZE);  // Pido la comida
+
 
     std::stringstream ss;
-    ss << "Mozo[" << id << "]: Intentando acceder al cocinero" << std::endl;
-    Log::getInstance()->log(ss.str());
-    ss.str("");
-    std::cout << "Mozo[" << id << "]: Intentando acceder al cocinero" << std::endl;
-
-    ss << "Mozo[" << id << "]: Escribo mi ID con el pedido en cocinero y me pongo rojo. "
+    ss << "Mozo[" << id << "]: Accediendo a Cocinero. Escribo mi ID con el pedido en cocinero y me pongo rojo. "
        << "Pedido: " << dato << std::endl;
     Log::getInstance()->log(ss.str());
     ss.str("");
 
-    std::cout << "Mozo[" << id << "]: Escribo mi ID con el pedido en cocinero y me pongo rojo. "
-              << "Pedido: " << dato << std::endl;
+    std::cout << "Mozo[" << id << "]: Accediendo a Cocinero. Escribo mi ID con el pedido en cocinero y me pongo rojo. "
+              << "Pedido: [" << dato << "]" << std::endl;
+
+    this->eCocinero.escribir(static_cast<const void *>(dato.c_str()), BUFFSIZE);  // Pido la comida
 
     semaforoConCocinero.p();  // Me bloqueo mientras el cocinero cocina
 

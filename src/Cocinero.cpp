@@ -10,7 +10,7 @@
 
 Cocinero::Cocinero(Pipe &escrCocinero, std::list<Semaforo *> &semaforos) :
         eCocinero(escrCocinero), semaforosCocineroMozos(semaforos), vive(true),
-        estado(ESPERANDO_PEDIDO) {
+        estado(ESPERANDO_PEDIDO), idMozoCocinarle(999) {
 
 }
 
@@ -77,7 +77,6 @@ void Cocinero::esperandoPedido() {
 
     std::stringstream ss1, ss2;
     unsigned i;
-    unsigned int idMozo;
     std::string pedido;
     for (i = 0; i < PID_LENGHT; ++i) {
         ss1 << mensaje.at(i);
@@ -87,25 +86,20 @@ void Cocinero::esperandoPedido() {
         ss2 << mensaje.at(i);
     }
 
-    ss1 >> idMozo;
+    ss1 >> this->idMozoCocinarle;
     ss2 >> pedido;
 
     ss.str("");
-    ss << "Cocinero: Leo al mozo ->" << idMozo << "<-"
+    ss << "Cocinero: Leo al mozo ->" << idMozoCocinarle << "<-"
        << "Cocinando " << pedido << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Cocinero: Leo al mozo ->" << idMozo << "<-"
-              << "Cocinando " << pedido << std::endl;
+    std::cout << "Cocinero: Leo al mozo ->" << idMozoCocinarle << "<-"
+              << "Cocinando [" << pedido << "]" << std::endl;
 
-    ss.str("");
-    ss << "Cocinero: Pongo en verde el semaforoConCocinero ->" << idMozo << "<-" << std::endl;
-    Log::getInstance()->log(ss.str());
-    std::cout << "Cocinero: Pongo en verde el semaforoConCocinero ->" << idMozo << "<-" << std::endl;
-    if (semaforosCocineroMozos.size() > idMozo) {
-        std::list<Semaforo *>::iterator it = semaforosCocineroMozos.begin();
-        std::advance(it, idMozo);
-        (*it)->v();
-    }
+
+    cocinar(pedido);
+
+
     avanzarEstado();
 }
 
@@ -115,6 +109,16 @@ void Cocinero::entregandoPedido() {
     Log::getInstance()->log(ss.str());
     std::cout << "Cocinero: Entrego pedido a mozo" << std::endl;
 
+    ss.str("");
+    ss << "Cocinero: Pongo en verde el semaforoConCocinero ->" << idMozoCocinarle << "<-" << std::endl;
+    Log::getInstance()->log(ss.str());
+    std::cout << "Cocinero: Pongo en verde el semaforoConCocinero ->" << idMozoCocinarle << "<-" << std::endl;
+    if (semaforosCocineroMozos.size() > idMozoCocinarle) {
+        std::list<Semaforo *>::iterator it = semaforosCocineroMozos.begin();
+        std::advance(it, idMozoCocinarle);
+        (*it)->v();
+    }
+    idMozoCocinarle = 999;
     avanzarEstado();
 }
 
@@ -124,4 +128,8 @@ void Cocinero::apagon() {
 
 Cocinero::~Cocinero() {
 
+}
+
+void Cocinero::cocinar(std::string pedido) {
+    sleep(1);  // dormir la cantidad de comidas * 0.5
 }

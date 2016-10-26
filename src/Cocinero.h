@@ -23,6 +23,8 @@ private:
     bool vive;
     e_cocinero estado;
 
+    unsigned int idMozoCocinarle;
+
 private:
     virtual void run() override;
     void rutinaCocinero();
@@ -35,6 +37,8 @@ private:
 public:
     Cocinero(Pipe& escrCocinero, std::list<Semaforo *>& semaforos);
     virtual ~Cocinero();
+
+    void cocinar(std::string pedido);
 };
 
 

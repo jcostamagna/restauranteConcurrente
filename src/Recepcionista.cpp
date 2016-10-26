@@ -76,16 +76,19 @@ void Recepcionista::esperando() {
     ssize_t bytesLeidos = this->puerta.leer(static_cast<void *>(buffer), BUFFSIZE);
     lecturaPuerta.liberarLock();
 
-    if (bytesLeidos <= 0) return;
+    if (bytesLeidos <= 0) return; // vuelve a esperando()
     std::string mensaje = buffer;
     mensaje.resize(bytesLeidos);
 
-    std::cout << "Recepcionista("<< getpid() <<"): LLego el cliente [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe"
+    std::cout << "Recepcionista("<< getpid() <<"): LLego el cliente [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe puerta"
               << std::endl;
-    ss << "Recepcionista("<< getpid() <<"): LLego el cliente [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe"
+    ss << "Recepcionista("<< getpid() <<"): LLego el cliente [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe puerta"
           << std::endl;
     Log::getInstance()->log(ss.str());
     ss.str("");
+
+
+    escrituraLiving.p(); //semaforo para que la cantidad de gente en el living sea siempre valida (nadie puede sumar ni restar)
 
     //LLevo clientes al living, o mesa si hay disponible
     this->living.escribir(static_cast<const void *>(mensaje.c_str()), mensaje.size());
@@ -97,14 +100,13 @@ void Recepcionista::esperando() {
     Log::getInstance()->log(ss.str());
     ss.str("");
 
-
-    escrituraLiving.p(); //semaforoConCocinero cantidad de grupos en el living
-
+    // aumento en 1 la cantidad de clientes en el living
     int cantClientes = this->cantClientesLiving.leer();
+    cantClientes ++;
     ss << "Recepcionista("<< getpid() <<"): Cantidad clientes en living [" << cantClientes << "] "<< std::endl;
     Log::getInstance()->log(ss.str());
     std::cout << "Recepcionista("<< getpid() <<"): Cantidad clientes en living [" << cantClientes << "] "<< std::endl;
-    cantClientes ++;
+
     ss.str("");
     this->cantClientesLiving.escribir(cantClientes);
 
