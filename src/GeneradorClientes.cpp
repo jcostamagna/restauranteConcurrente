@@ -34,6 +34,7 @@ void GeneradorClientes::rutinaGenerador() {
     while ( sigint_handler.getGracefulQuit() == 0 ){
         std::ostringstream ss;
         ss << std::setfill('0') << std::setw(PID_LENGHT) << i;
+        ss << std::setfill('0') << std::setw(BUFFSIZE-PID_LENGHT) << 0;
         std::string dato(ss.str());
 
         ss.str("");
@@ -46,7 +47,7 @@ void GeneradorClientes::rutinaGenerador() {
 
 
         i++;
-        sleep(1);
+        sleep(0.25);
 
         if (i>= cantClientes) break;
 /*

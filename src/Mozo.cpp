@@ -5,7 +5,6 @@
 #include <iostream>
 #include "Mozo.h"
 #include "Log.h"
-#include <sstream>
 #include <iomanip>
 
 Mozo::Mozo(int id, Pipe &pedidos,LockFd& lockLecturaMesas,Pipe &escrCocinero, Semaforo &semaforo,
@@ -111,8 +110,7 @@ void Mozo::recibiendoOrden() {
 
     if (!pedirCuenta) {
         ss.str("");
-        ss << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: ";
-        ss << pedido << std::endl;
+        ss << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: [" << pedido << "] " << std::endl;
         Log::getInstance()->log(ss.str());
         std::cout << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: [" << pedido << "] " << std::endl;
 

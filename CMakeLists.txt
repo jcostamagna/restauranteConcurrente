@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(CONFIG_FILES
-        config/restaurante.config src/Mesa.cpp src/Mesa.h Signal/Apagon_Handler.h Signal/Apagon_Handler_Procesos.h)
+        config/restaurante.config )
 
 
 set(SOURCE_FILES
@@ -26,7 +26,12 @@ set(SOURCE_FILES
         src/Forkeable.cpp src/Forkeable.h
         src/Mozo.cpp src/Mozo.h
         src/Restaurante.cpp src/Restaurante.h
-        src/Cocinero.cpp src/Cocinero.h src/GeneradorClientes.cpp src/GeneradorClientes.h Lock/LockFd.cpp Lock/LockFd.h)
+        src/Cocinero.cpp src/Cocinero.h
+        src/GeneradorClientes.cpp src/GeneradorClientes.h
+        Lock/LockFd.cpp Lock/LockFd.h
+        src/Mesa.cpp src/Mesa.h
+        Signal/Apagon_Handler.h
+        Signal/Apagon_Handler_Procesos.h)
 
 add_executable(restaurantConcurrente main.cpp ${SOURCE_FILES} ${CONFIG_FILES})#${HEADER_FILES})
 add_executable(apagon apagon.cpp)

@@ -110,9 +110,9 @@ void Cocinero::entregandoPedido() {
     std::cout << "Cocinero: Entrego pedido a mozo" << std::endl;
 
     ss.str("");
-    ss << "Cocinero: Pongo en verde el semaforoConCocinero ->" << idMozoCocinarle << "<-" << std::endl;
+    ss << "Cocinero: Pongo en verde el semaforo con el mozo ->" << idMozoCocinarle << "<-" << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Cocinero: Pongo en verde el semaforoConCocinero ->" << idMozoCocinarle << "<-" << std::endl;
+    std::cout << "Cocinero: Pongo en verde el semaforo con el mozo ->" << idMozoCocinarle << "<-" << std::endl;
     if (semaforosCocineroMozos.size() > idMozoCocinarle) {
         std::list<Semaforo *>::iterator it = semaforosCocineroMozos.begin();
         std::advance(it, idMozoCocinarle);

@@ -129,11 +129,6 @@ void Mesa::esperandoCliente() {
               << " bytes) del pipe living"
               << std::endl;
 
-
-    //TODO: sacar del pipe y actualizar cantidad en el mismo bloque critico
-    //Bloqueo para que no puedan cambiar la cantidad de gente en el living
-
-
     int cantClientes = this->cantClientesLiving.leer();
     cantClientes--;
 

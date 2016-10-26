@@ -44,6 +44,8 @@ void Log::log(std::string msg) {
 }
 
 void Log::log(const char *msg) {
+    lockFile->tomarLock();
+
     std::stringstream ss;
 
     char buf[64];
@@ -53,7 +55,6 @@ void Log::log(const char *msg) {
     ss << "[" << getpid() << "]" << "\t\t";
     ss << msg << std::endl;
 
-    lockFile->tomarLock();
     lockFile->escribir(ss.str().c_str(), ss.str().size());
     lockFile->liberarLock();
 }
