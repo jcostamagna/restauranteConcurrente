@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <fstream>
 #include <list>
 #include <Restaurante.h>
 #include <Log.h>
@@ -9,7 +10,14 @@
 #define SALIR "q"
 
 int main() {
-    std::cout << "THIS PID:   _->" << getpid() << std::endl;
+    std::ofstream myfile ("pid.txt");
+    if (myfile.is_open())
+    {
+        myfile << getpid();
+        myfile.close();
+    }
+    else
+        std::cout << "No se pudo crear archivo para el apagon";
 
     Log::getInstance()->setearArchivo("log.txt");
 

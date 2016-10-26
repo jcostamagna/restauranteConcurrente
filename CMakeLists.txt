@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(CONFIG_FILES
-        config/restaurante.config src/Mesa.cpp src/Mesa.h)
+        config/restaurante.config src/Mesa.cpp src/Mesa.h Signal/Apagon_Handler.h)
 
 
 set(SOURCE_FILES
@@ -29,6 +29,7 @@ set(SOURCE_FILES
         src/Cocinero.cpp src/Cocinero.h src/GeneradorClientes.cpp src/GeneradorClientes.h Lock/LockFd.cpp Lock/LockFd.h)
 
 add_executable(restaurantConcurrente main.cpp ${SOURCE_FILES} ${CONFIG_FILES})#${HEADER_FILES})
+add_executable(apagon apagon.cpp)
 
 add_custom_command(TARGET restaurantConcurrente POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
