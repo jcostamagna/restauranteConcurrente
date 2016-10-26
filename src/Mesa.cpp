@@ -39,6 +39,7 @@ void Mesa::rutinaMesa() {
                 break;
             case CLIENTE_COMIENDO:
                 comer();
+                break;
             case CLIENTE_ESPERA_CUENTA:
                 clienteEsperaCuenta();
                 break;
