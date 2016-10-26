@@ -3,7 +3,6 @@
 //
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <sstream>
 #include <signal.h>
 
@@ -17,7 +16,7 @@ int main(int argc, char* argv[]) {
             std::stringstream ss(line);
             int pid_main;
             ss >> pid_main;
-            kill((pid_t)pid_main,18);
+            kill((pid_t)pid_main,SIGCONT);
         }
         myfile.close();
     }
