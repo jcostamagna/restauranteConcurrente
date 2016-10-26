@@ -12,8 +12,8 @@
 
 
 Recepcionista::Recepcionista(Pipe &clientes, LockFd& lecturaPuerta, Semaforo& escrituraLiving,Pipe &living) :
-                            puerta(clientes),living(living), mesaLibre(false),
-                                 estado(ESPERANDO), lecturaPuerta(lecturaPuerta), escrituraLiving(escrituraLiving), cantClientesLiving("/bin/bash", 'z'){}
+                            puerta(clientes),living(living), mesaLibre(false), estado(ESPERANDO),
+                            lecturaPuerta(lecturaPuerta), escrituraLiving(escrituraLiving), cantClientesLiving("/bin/bash", 'z'){}
 
 void Recepcionista::run() {
 

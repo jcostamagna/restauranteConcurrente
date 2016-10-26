@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(CONFIG_FILES
-        config/restaurante.config src/Mesa.cpp src/Mesa.h Signal/Apagon_Handler.h)
+        config/restaurante.config src/Mesa.cpp src/Mesa.h Signal/Apagon_Handler.h Signal/Apagon_Handler_Procesos.h)
 
 
 set(SOURCE_FILES

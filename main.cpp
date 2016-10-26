@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <fstream>
 #include <list>
@@ -10,7 +9,8 @@
 #define SALIR "q"
 
 int main() {
-    std::ofstream myfile ("pid.txt");
+    std::string fileName = "pid.txt";
+    std::ofstream myfile (fileName);
     if (myfile.is_open())
     {
         myfile << getpid();
@@ -56,6 +56,7 @@ int main() {
     Apagon_Handler apagon_handler(resto);
     SignalHandler::getInstance()->registrarHandler(SIGCONT, &apagon_handler);
 
+
     std::cout << "Salir ingresando tecla 'q'" << std::endl;
     std::string mensaje;
     std::getline(std::cin,mensaje);
@@ -65,4 +66,5 @@ int main() {
     }
 
     SignalHandler::destruir();
+    remove(const_cast<char*>(fileName.c_str()));
 }
