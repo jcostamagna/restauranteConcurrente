@@ -61,6 +61,8 @@ public:
 
     void abrirPuertas();
 
+    void apagon();
+
     virtual ~Restaurante();
 
 };

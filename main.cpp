@@ -3,10 +3,13 @@
 #include <list>
 #include <Restaurante.h>
 #include <Log.h>
+#include <SignalHandler.h>
 #include "src/Parser.h"
+#include "Signal/Apagon_Handler.h"
 #define SALIR "q"
 
 int main() {
+    std::cout << "THIS PID:   _->" << getpid() << std::endl;
 
     Log::getInstance()->setearArchivo("log.txt");
 
@@ -42,12 +45,16 @@ int main() {
     Restaurante resto(recepCant, mozosCant, mesasCant, clientesCant, menu);
     resto.iniciarPersonal();
 
+    Apagon_Handler apagon_handler(resto);
+    SignalHandler::getInstance()->registrarHandler(SIGCONT, &apagon_handler);
 
     std::cout << "Salir ingresando tecla 'q'" << std::endl;
     std::string mensaje;
     std::getline(std::cin,mensaje);
     while (mensaje != SALIR){
         std::getline(std::cin,mensaje);
+        //std::cout << mensaje << std::endl;
     }
 
+    SignalHandler::destruir();
 }

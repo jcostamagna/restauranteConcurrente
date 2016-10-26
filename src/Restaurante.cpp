@@ -74,6 +74,7 @@ void Restaurante::iniciarMesas() {
 }
 
 
+
 Restaurante::~Restaurante() {
     for (std::list<Mozo*>::iterator it = mozos.begin(); it != mozos.end(); ++it){
         kill((*it)->get_pid(), SIGINT);
@@ -110,5 +111,11 @@ Restaurante::~Restaurante() {
     kill(this->generadorClientes.get_pid(), SIGINT);
     this->generadorClientes.stop();
     escrituraLiving.eliminar();
+}
+
+void Restaurante::apagon() {
+    std::cout << "APAGONNNNNNNNNNNNNNNNNNNNNNNNNNNN" << std::endl;
+    std::cout << "APAGONNNNNNNNNNNNNNNNNNNNNNNNNNNN" << std::endl;
+    std::cout << "APAGONNNNNNNNNNNNNNNNNNNNNNNNNNNN" << std::endl;
 }
 
