@@ -52,7 +52,7 @@ private:
     void clienteEsperaPedido();
     void comer();
     void clienteEsperaCuenta();
-    void apagon();
+    void apagonMesa();
 
     void avanzarEstado();
 

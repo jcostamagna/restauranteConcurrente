@@ -2,13 +2,16 @@
 // Created by ale on 18/10/16.
 //
 
+#include <sstream>
 #include "Restaurante.h"
+#include "Log.h"
 
 Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, int clientesCant, std::vector<std::pair<std::string, int>> menu)
         : recepCant(recepCant), mozosCant(mozosCant), mesasCant(mesasCant), clientesCant(clientesCant), menu(menu),
           caja("CMakeCache.txt", 'A'), cantLiving("CMakeCache.txt", 'h'), dineroNoAbonado("Makefile", 'b'),
           escrituraLiving("CMakeCache.txt", 'z', 0), generadorClientes(puerta, clientesCant),
-          lockLecturaClientes(puerta.getFdLectura()), lockLecturaMesas(pipePedidosMesas.getFdLectura()) {}
+          lockLecturaClientes(puerta.getFdLectura()), lockLecturaLiving(living.getFdLectura()),
+          lockLecturaMesas(pipePedidosMesas.getFdLectura()) {}
 
 void Restaurante::iniciarPersonal() {
     iniciarMesas();
@@ -65,13 +68,14 @@ void Restaurante::iniciarMesas() {
         std::string path = "/bin/grep";
         char sem = (char)'a'+i;
         Semaforo *semaforo = new Semaforo(path, sem,0);
-        Mesa* mesa = new Mesa(this->living, this->pipePedidosMesas, this->lockLecturaClientes, semaforo,  this->escrituraLiving, menu);
+        Mesa* mesa = new Mesa(this->living, this->pipePedidosMesas, this->lockLecturaLiving, semaforo,  this->escrituraLiving, menu);
         mesa->start();
         //this->semaforosMesas[mesa->get_pid()] = semaforoConCocinero;
         this->semaforosMesas.insert(std::make_pair(mesa->get_pid(), semaforo));
         this->mesas.push_back(mesa);
     }
 }
+
 
 
 Restaurante::~Restaurante() {
@@ -112,3 +116,42 @@ Restaurante::~Restaurante() {
     escrituraLiving.eliminar();
 }
 
+void Restaurante::apagonRestaurante() {
+    vaciar_living();
+    // MANDAR SIGNALS
+}
+
+void Restaurante::vaciar_living() {
+    char buffer[BUFFSIZE];
+
+    escrituraLiving.p();
+    this->lockLecturaLiving.tomarLock();
+    int cantClientes = this->cantLiving.leer();
+
+    std::stringstream ss;
+    ss.str("");
+    ss << "APAGON - LIVING: Cantidad de clientes al momento del apagon: " << cantClientes << std::endl;
+    Log::getInstance()->log(ss.str());
+    std::cout << "APAGON - LIVING: Cantidad de clientes al momento del apagon: " << cantClientes << std::endl;
+
+    for(int i=0; i<cantClientes; i++) {
+        ssize_t bytesLeidos = this->living.leer(static_cast<void *>(buffer), BUFFSIZE);
+
+        if (bytesLeidos <= 0) return;
+        std::string mensaje = buffer;
+        mensaje.resize(bytesLeidos);
+        std::string::size_type sz;
+
+        int idCliente = std::stoi(mensaje, &sz);
+
+        ss.str("");
+        ss << "APAGON - LIVING: El cliente [" << idCliente << "]  se va!" << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "APAGON - LIVING: El cliente [" << idCliente << "]  se va!" << std::endl;
+    }
+
+    this->cantLiving.escribir(0);
+    this->lockLecturaLiving.liberarLock();
+    escrituraLiving.v();
+    std::cout << "salio de aca" << std::endl;
+}

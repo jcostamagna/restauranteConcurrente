@@ -42,7 +42,10 @@ class Restaurante {
     GeneradorClientes generadorClientes;  // Genera clientes y los mete en el pipe puerta
 
     LockFd lockLecturaClientes;  // lock de lectura de la puerta (pipe clientes)
+    LockFd lockLecturaLiving;
     LockFd lockLecturaMesas;    // lock de lectura de mesas (pipe pedidos mesa)
+
+    bool apagon;
 
     void iniciarMozos();
 
@@ -60,6 +63,10 @@ public:
     void iniciarPersonal();
 
     void abrirPuertas();
+
+    void apagonRestaurante();
+
+    void vaciar_living();
 
     virtual ~Restaurante();
 

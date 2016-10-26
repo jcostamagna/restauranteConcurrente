@@ -28,8 +28,7 @@ void GeneradorClientes::run() {
     exit(0);
 }
 
-void GeneradorClientes::rutinaGenerador(){
-    //std::string dato = "Hola mundo pipes!!";
+void GeneradorClientes::rutinaGenerador() {
     int i = 0;
 
     while ( sigint_handler.getGracefulQuit() == 0 ){
@@ -50,7 +49,16 @@ void GeneradorClientes::rutinaGenerador(){
         sleep(1);
 
         if (i>= cantClientes) break;
-        //Reinicio contador
-        //i = i % 100000000;//if (i == 99999999) i = 0;
+/*
+        if (apagon) {
+            std::stringstream ss;
+            ss.str("");
+            ss << "APAGON GENERADOR CLIENTES"<< std::endl;
+            Log::getInstance()->log(ss.str());
+            std::cout << "APAGON GENERADOR CLIENTES"<< std::endl;
+            sleep(TIEMPO_APAGON);
+            *apagon = false;
+        }
+        */
     }
 }

@@ -44,10 +44,12 @@
       <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/Fifo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/FifoLectura.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Pipe&amp;Fifo/FifoEscritura.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/apagon.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/SharedMem/MemoriaCompartida2.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Semaforos/Semaforo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Semaforos/Semaforo.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Signal/SignalHandler.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Signal/Apagon_Handler.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Signal/SignalHandler.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/config/restaurante.config" isTestSource="false" />
     </content>
