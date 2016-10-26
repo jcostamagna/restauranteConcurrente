@@ -49,16 +49,15 @@ void GeneradorClientes::rutinaGenerador() {
         sleep(1);
 
         if (i>= cantClientes) break;
-/*
-        if (apagon) {
+
+        if (apagon_handler_procesos.getApagon() == 1) {
             std::stringstream ss;
             ss.str("");
             ss << "APAGON GENERADOR CLIENTES"<< std::endl;
             Log::getInstance()->log(ss.str());
             std::cout << "APAGON GENERADOR CLIENTES"<< std::endl;
             sleep(TIEMPO_APAGON);
-            *apagon = false;
+            apagon_handler_procesos.stopApagon();
         }
-        */
     }
 }

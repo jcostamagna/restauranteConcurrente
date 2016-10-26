@@ -31,6 +31,10 @@ public:
     sig_atomic_t getApagon () const {
         return this->apagon;
     }
+
+    void stopApagon () {
+        apagon = 0;
+    }
 };
 
 #endif //RESTAURANTCONCURRENTE_APAGON_HANDLER_PROCESOS_H
