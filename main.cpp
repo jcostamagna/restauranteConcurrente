@@ -59,8 +59,14 @@ int main() {
 
     std::cout << "Salir ingresando tecla 'q'" << std::endl;
     std::string mensaje;
+
+    if (std::cin.fail() || std::cin.eof())
+        std::cin.clear();
     std::getline(std::cin,mensaje);
+
     while (mensaje != SALIR){
+        if (std::cin.fail() || std::cin.eof())
+            std::cin.clear();
         std::getline(std::cin,mensaje);
         //std::cout << mensaje << std::endl;
     }

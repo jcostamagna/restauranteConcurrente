@@ -27,9 +27,9 @@ void Mesa::run() {
 
 void Mesa::rutinaMesa() {
     while (sigint_handler.getGracefulQuit() == 0) {
-        if (apagon_handler_procesos.getApagon()) {
-            std::cout << "APAGONNNNNNNNNNNNNN" << std::endl << std::endl << std::endl;
+        if (apagon_handler_procesos.getApagon() == 1) {
             estado = APAGON_MESA;
+            apagon_handler_procesos.stopApagon();
         }
         switch (estado) {
             case ESPERANDO_CLIENTE:
@@ -218,6 +218,7 @@ void Mesa::apagonMesa() {
     Log::getInstance()->log(ss.str());
     std::cout << "APAGON: Mesa(" << getpid() << ") del cliente [" << idCliente << "]" << std::endl;
 
+    sleep(TIEMPO_APAGON);
     avanzarEstado();
 }
 
