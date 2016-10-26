@@ -118,7 +118,7 @@ void Cocinero::entregandoPedido() {
         std::advance(it, idMozoCocinarle);
         (*it)->v();
     }
-    idMozoCocinarle = 999;
+    idMozoCocinarle = 999; //para que no entre en este if
     avanzarEstado();
 }
 
