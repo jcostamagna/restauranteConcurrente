@@ -7,7 +7,8 @@
 Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, int clientesCant, std::vector<std::pair<std::string, int>> menu)
         : recepCant(recepCant), mozosCant(mozosCant), mesasCant(mesasCant), clientesCant(clientesCant), menu(menu),
           caja("CMakeCache.txt", 'A'), cantLiving("CMakeCache.txt", 'h'), dineroNoAbonado("Makefile", 'b'),
-          escrituraLiving("CMakeCache.txt", 'z', 0), generadorClientes(puerta, clientesCant), lockLecturaClientes(puerta.getFdLectura()) {}
+          escrituraLiving("CMakeCache.txt", 'z', 0), generadorClientes(puerta, clientesCant),
+          lockLecturaClientes(puerta.getFdLectura()), lockLecturaMesas(pipePedidosMesas.getFdLectura()) {}
 
 void Restaurante::iniciarPersonal() {
     iniciarMesas();
@@ -29,7 +30,7 @@ void Restaurante::iniciarMozos() {
         std::string path = "/bin/bash";
         char sem = (char)'a'+i;
         Semaforo *semaforo = new Semaforo(path, sem,0); // attentos, cada uno tiene un semaforoConCocinero distinto
-        Mozo* mozoi = new Mozo(i,pipePedidosMesas,pipeECocinero,*semaforo, this->semaforosMesas);
+        Mozo* mozoi = new Mozo(i,pipePedidosMesas,lockLecturaMesas,pipeECocinero,*semaforo, this->semaforosMesas);
         mozoi->start();
         mozos.push_back(mozoi);
         semaforosCocineroMozos.push_back(semaforo);

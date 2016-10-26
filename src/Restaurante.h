@@ -42,6 +42,7 @@ class Restaurante {
     GeneradorClientes generadorClientes;  // Genera clientes y los mete en el pipe puerta
 
     LockFd lockLecturaClientes;  // lock de lectura de la puerta (pipe clientes)
+    LockFd lockLecturaMesas;    // lock de lectura de mesas (pipe pedidos mesa)
 
     void iniciarMozos();
 

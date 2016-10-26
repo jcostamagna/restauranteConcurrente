@@ -8,10 +8,10 @@
 #include <sstream>
 #include <iomanip>
 
-Mozo::Mozo(int id, Pipe &pedidos, Pipe &escrCocinero, Semaforo &semaforo,
+Mozo::Mozo(int id, Pipe &pedidos,LockFd& lockLecturaMesas,Pipe &escrCocinero, Semaforo &semaforo,
            const std::map<int, Semaforo *> &semaforosMesas)
-        : id(id), pedidos(pedidos), eCocinero(escrCocinero), vive(true),
-          estado(RECIBIENDO_ORDEN), semaforoConCocinero(semaforo), semaforosMesas(semaforosMesas),
+        : id(id), pedidos(pedidos), lockLecturaMesas(lockLecturaMesas),eCocinero(escrCocinero),
+          vive(true),estado(RECIBIENDO_ORDEN), semaforoConCocinero(semaforo), semaforosMesas(semaforosMesas),
           cuenta("/bin/bash", 'j'), idMesa(-1) {}
 
 Mozo::~Mozo() {
@@ -86,15 +86,14 @@ void Mozo::recibiendoOrden() {
     ss.flush();
     ss.clear();
 
+    //Leemos con un lock de lectura
+    lockLecturaMesas.tomarLock();
     ssize_t bytesLeidos = this->pedidos.leer(static_cast<void *>(buffer), BUFFSIZE);  // Leo pedidos de cualquier mesa
+    lockLecturaMesas.liberarLock();
+
     if (bytesLeidos <= 0) return;
     std::string mensaje = buffer;
     mensaje.resize(bytesLeidos); //Si todos escribimos BUFFSIZE no haria falta...
-
-    ss.str("");
-    ss << "Mozo[" << id << "]: Leí el PEDIDO [" << mensaje << "]" << std::endl;
-    Log::getInstance()->log(ss.str());
-    std::cout << "Mozo[" << id << "]: Leí el PEDIDO [" << mensaje << "]" << std::endl;
 
     std::stringstream ss1, ss2;
     unsigned i;

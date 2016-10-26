@@ -18,7 +18,7 @@ Cocinero::Cocinero(Pipe &escrCocinero, std::list<Semaforo *> &semaforos) :
 void Cocinero::run() {
     this->rutinaCocinero();
 
-    std::cout << "Termino el proceso cocinero" << getpid() << std::endl;
+    std::cout << "Termino el proceso cocinero " << getpid() << std::endl;
 
     this->eCocinero.cerrar();
 }
