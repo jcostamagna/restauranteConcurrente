@@ -118,7 +118,12 @@ Restaurante::~Restaurante() {
 
 void Restaurante::apagonRestaurante() {
     vaciar_living();
-    // MANDAR SIGNALS
+
+    for (std::list<Mesa*>::iterator it = mesas.begin(); it != mesas.end(); ++it){
+        kill((*it)->get_pid(),18);
+    }
+
+    kill(generadorClientes.get_pid(),18);
 }
 
 void Restaurante::vaciar_living() {
@@ -153,5 +158,4 @@ void Restaurante::vaciar_living() {
     this->cantLiving.escribir(0);
     this->lockLecturaLiving.liberarLock();
     escrituraLiving.v();
-    std::cout << "salio de aca" << std::endl;
 }
