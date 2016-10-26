@@ -25,8 +25,8 @@ class Mozo : public Forkeable {
 private:
     int id;
     Pipe& pedidos;  // Pipe de pedidos de todas las mesas y todos los mozos
+    LockFd& lockLecturaMesas;
     Pipe& eCocinero;  // Mozo escribe pedidos en el pipe, cocinero los lee
-    Pipe& lCocinero;  // Cocinero escribe
     bool vive;
     e_mozo estado;
 
@@ -57,7 +57,7 @@ private:
     void avanzarEstado();
 
 public:
-    Mozo(int id,Pipe& pedidos, Pipe& escrCocinero, Pipe& lectCocinero, Semaforo& semaforo,const std::map<int, Semaforo*> &semaforosMesas);
+    Mozo(int id, Pipe &pedidos,LockFd& lockLecturaMesas,Pipe &escrCocinero, Semaforo &semaforo,const std::map<int, Semaforo *> &semaforosMesas);
 
     virtual ~Mozo();
 

@@ -8,8 +8,8 @@
 #include "Cocinero.h"
 #include "Log.h"
 
-Cocinero::Cocinero(Pipe &escrCocinero, Pipe &lectCocinero, std::list<Semaforo *> &semaforos) :
-        eCocinero(escrCocinero), lCocinero(lectCocinero), semaforosCocineroMozos(semaforos), vive(true),
+Cocinero::Cocinero(Pipe &escrCocinero, std::list<Semaforo *> &semaforos) :
+        eCocinero(escrCocinero), semaforosCocineroMozos(semaforos), vive(true),
         estado(ESPERANDO_PEDIDO) {
 
 }
@@ -18,10 +18,9 @@ Cocinero::Cocinero(Pipe &escrCocinero, Pipe &lectCocinero, std::list<Semaforo *>
 void Cocinero::run() {
     this->rutinaCocinero();
 
-    std::cout << "Termino el proceso cocinero" << getpid() << std::endl;
+    std::cout << "Termino el proceso cocinero " << getpid() << std::endl;
 
     this->eCocinero.cerrar();
-    this->lCocinero.cerrar();
 }
 
 void Cocinero::rutinaCocinero() {
@@ -62,7 +61,6 @@ void Cocinero::avanzarEstado() {
 }
 
 void Cocinero::esperandoPedido() {
-    //static const int BUFFSIZE = 12;
     char buffer[BUFFSIZE];
 
     std::stringstream ss;
@@ -112,16 +110,11 @@ void Cocinero::esperandoPedido() {
 }
 
 void Cocinero::entregandoPedido() {
-    std::ostringstream datoStream;
-    datoStream << std::setfill('0') << std::setw(BUFFSIZE) << "Pedido listo";
-    std::string dato = datoStream.str();
-
     std::stringstream ss;
-    ss << "Cocinero: Escribo en mozo: [" << dato << "]" << std::endl;
+    ss << "Cocinero: Entrego pedido a mozo" << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Cocinero: Escribo en mozo: [" << dato << "]" << std::endl;
+    std::cout << "Cocinero: Entrego pedido a mozo" << std::endl;
 
-    lCocinero.escribir(static_cast<const void *>(dato.c_str()), dato.size());
     avanzarEstado();
 }
 

@@ -37,7 +37,7 @@ int main() {
     for (std::vector<std::pair<std::string, int> >::iterator it = menu.begin(); it != menu.end(); ++it) {
         std::cout << "\t\t" << (*it).first << "\t" << (*it).second << "\n";
     }
-    std::cout << '\n';
+    std::cout << std::endl;
 
     Restaurante resto(recepCant, mozosCant, mesasCant, clientesCant, menu);
     resto.iniciarPersonal();
