@@ -114,18 +114,27 @@ void Mozo::recibiendoOrden() {
     ss1 >> this->idMesa;
     ss2 >> pedido;
 
-    ss.str("");
-    ss << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: ";
-    ss << pedido << std::endl;
-    Log::getInstance()->log(ss.str());
-    std::cout << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: ";
-    ss << pedido << std::endl;
-
     this-> pedido = pedido;
 
     if (!pedirCuenta) {
+        ss.str("");
+        ss << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: ";
+        ss << pedido << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: ";
+        ss << pedido << std::endl;
+
+
         estado = ESPERANDO_COMIDA;  // Si hay pedido va a pedir la comida al cocinero
     } else {
+
+        ss.str("");
+        ss << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio LA CUENTA ";
+        ss << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio LA CUENTA ";
+        ss << std::endl;
+
         estado = ENTREGANDO_CUENTA;  // Si el pedido es 00000 significa que quiere la cuenta
     }
 }
@@ -167,8 +176,6 @@ void Mozo::pedirComida() {
 
 
 void Mozo::esperarComida() {
-    //static const int BUFFSIZE = 12;
-
     std::stringstream ss;
     ss << "Mozo[" << id << "]: SEMAFORO VERDE, puedo buscar la comida cocinada" << std::endl;
     Log::getInstance()->log(ss.str());
@@ -195,7 +202,7 @@ void Mozo::entregandoComida() {
     ss << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir ordenes" << std::endl;
     Log::getInstance()->log(ss.str());
     std::cout << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir ordenes" << std::endl;
-    //Desbloqueo mesa
+    //Desbloqueo mesa, no se la reentrego porque sabe que estuvo comiendo
     semaforosMesas.at(idMesa)->v();
     avanzarEstado();
 }
@@ -205,6 +212,8 @@ void Mozo::entregandoCuenta() {
     ss << "Mozo[" << id << "] entrega cuenta" << std::endl;
     Log::getInstance()->log(ss.str());
     std::cout << "Mozo[" << id << "] entrega cuenta" << std::endl;
+
+    //sumar a la caja del restaurante
 
 
     semaforosMesas.at(idMesa)->v();

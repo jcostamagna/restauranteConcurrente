@@ -99,13 +99,6 @@ void Cocinero::esperandoPedido() {
     std::cout << "Cocinero: Leo al mozo ->" << idMozo << "<-"
               << "Cocinando " << pedido << std::endl;
 
-    /*int N;
-    try {
-        N = std::stoi(mensaje);
-    } catch (...) {
-        std::cout << "Problema parseando id mozo" << std::endl;
-    }*/
-
     ss.str("");
     ss << "Cocinero: Pongo en verde el semaforoConCocinero ->" << idMozo << "<-" << std::endl;
     Log::getInstance()->log(ss.str());

@@ -37,7 +37,7 @@ private:
     int idCliente;  // id del cliente actual sentado en la mesa
 
     MemoriaCompartida2<int> cantClientesLiving;  // cantidad de clientes en el living compartido
-    int cuenta;
+    int cuentaSesion;
 
     std::vector<std::pair<std::string, int> > menu;
 
