@@ -26,7 +26,7 @@ public:
 
     virtual int handleSignal ( int signum ) {
         assert ( signum == SIGCONT );
-        restaurante.apagon();
+        restaurante.apagonRestaurante();
         return 0;
     }
 };

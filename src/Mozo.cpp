@@ -187,5 +187,11 @@ void Mozo::entregandoCuenta() {
 }
 
 void Mozo::apagon() {
+    std::stringstream ss;
+    ss << "Mozo[" << id << "] MODO APAGON" << std::endl;
+    Log::getInstance()->log(ss.str());
+    std::cout << "Mozo[" << id << "] MODO APAGON" << std::endl;
 
+    sleep(TIEMPO_APAGON);
+    avanzarEstado();
 }
