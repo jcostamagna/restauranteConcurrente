@@ -8,9 +8,9 @@
 
 Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, int clientesCant, std::vector<std::pair<std::string, int>> menu)
         : recepCant(recepCant), mozosCant(mozosCant), mesasCant(mesasCant), clientesCant(clientesCant), menu(menu),
-          caja("CMakeCache.txt", 'A'), cantLiving("CMakeCache.txt", 'h'), dineroNoAbonado("Makefile", 'b'),
+          caja("CMakeCache.txt", 'A'), cantLiving("/bin/bash", 'z'), dineroNoAbonado("Makefile", 'b'),
           escrituraLiving("CMakeCache.txt", 'z', 0), generadorClientes(puerta, clientesCant),
-          lockLecturaClientes(puerta.getFdLectura()), lockLecturaLiving(living.getFdLectura()),
+          lockLecturaClientes(puerta.getFdLectura()), lockLecturaLiving(puerta.getFdLectura()),
           lockLecturaMesas(pipePedidosMesas.getFdLectura()) {}
 
 void Restaurante::iniciarPersonal() {
@@ -145,9 +145,13 @@ void Restaurante::vaciar_living() {
         if (bytesLeidos <= 0) return;
         std::string mensaje = buffer;
         mensaje.resize(bytesLeidos);
-        std::string::size_type sz;
 
-        int idCliente = std::stoi(mensaje, &sz);
+        std::stringstream ss1;
+        int idCliente;
+        for (unsigned int i = 0; i < PID_LENGHT && i < mensaje.size(); ++i) {
+            ss1 << mensaje.at(i);
+        }
+        ss1 >> idCliente;
 
         ss.str("");
         ss << "APAGON - LIVING: El cliente [" << idCliente << "]  se va!" << std::endl;
