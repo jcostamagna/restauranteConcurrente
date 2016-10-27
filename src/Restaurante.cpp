@@ -16,7 +16,7 @@ Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, int client
           dineroPerdido(SM_DINERO_PERDIDO_FILE, SM_DINERO_PERDIDO_LETRA),
           semDineroPerdido(SEM_DINERO_PERDIDO_FILE,SEM_DINERO_PERDIDO_LETRA,0) , generadorClientes(puerta, clientesCant),
           lockLecturaClientes(puerta.getFdLectura()), lockLecturaLiving(living.getFdLectura()),
-          lockLecturaMesas(pipePedidosMesas.getFdLectura()), limpiador(NULL),
+          lockLecturaMesas(pipePedidosMesas.getFdLectura()),
           tirarPedidosDeMesas(SM_TIRAR_PEDIDOS_MESAS_FILE, SM_TIRAR_PEDIDOS_MESAS_LETRA) {}
 
 void Restaurante::iniciarPersonal() {
@@ -212,14 +212,6 @@ void Restaurante::limpiar_mesas() {
     for (std::list<Mozo*>::iterator it = mozos.begin(); it != mozos.end(); ++it){
         kill((*it)->get_pid(),SIGCONT);
     }
-
-    //primero mando la senial para que nadie me la lea, y despues las XXXXXXXXX
-    /*if (limpiador)
-        delete limpiador;
-
-    limpiador = new LimpiadorMesas(pipePedidosMesas,lockLecturaMesas);
-    limpiador->start();
-    */
 
 
 

@@ -13,6 +13,8 @@
 #include <MemoriaCompartida2.h>
 #include "Forkeable.h"
 
+#define LIMPIAR_PEDIDOS 'X'
+
 typedef enum ESTADO_MOZO {
     RECIBIENDO_ORDEN, //Esperando que alguna mesa tenga un pedido y le diga cual es (ordenar comida, ordenar cuenta)
     ESPERANDO_COMIDA,

@@ -10,6 +10,8 @@
 #include <list>
 #include "Forkeable.h"
 
+#define LIMPIAR_PEDIDOS 'X'
+
 typedef enum ESTADO_COCINERO {
     ESPERANDO_PEDIDO, //esperando que un mozo le de un pedido de comida
     ENTREGANDO_PEDIDO, //entrega la comida y hace...

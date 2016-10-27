@@ -7,7 +7,6 @@
 #include <iomanip>
 #include "Cocinero.h"
 #include "Log.h"
-#include "LimpiadorMesas.h"
 
 Cocinero::Cocinero(Pipe &escrCocinero, std::list<Semaforo *> &semaforos) :
         eCocinero(escrCocinero), semaforosCocineroMozos(semaforos), vive(true),

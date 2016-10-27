@@ -14,7 +14,6 @@
 #include "GeneradorClientes.h"
 #include "Mesa.h"
 #include "Gerente.h"
-#include "LimpiadorMesas.h"
 
 class Restaurante {
 
@@ -56,8 +55,6 @@ class Restaurante {
     LockFd lockLecturaMesas;    // lock de lectura de mesas (pipe pedidos mesa)
 
     bool apagon;
-
-    LimpiadorMesas *limpiador;
 
     MemoriaCompartida2<bool> tirarPedidosDeMesas;  //se utiliza junto con lockLecturaMesas
 

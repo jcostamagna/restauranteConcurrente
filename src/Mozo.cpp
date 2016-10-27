@@ -6,7 +6,6 @@
 #include "Mozo.h"
 #include "Log.h"
 #include "lockFiles.h"
-#include "LimpiadorMesas.h"
 #include <iomanip>
 
 Mozo::Mozo(int id, Pipe &pedidos,LockFd& lockLecturaMesas,Pipe &escrCocinero, Semaforo &semaforo,
