@@ -8,7 +8,7 @@
 
 Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, int clientesCant, std::vector<std::pair<std::string, int>> menu)
         : recepCant(recepCant), mozosCant(mozosCant), mesasCant(mesasCant), clientesCant(clientesCant), menu(menu),
-          caja("CMakeCache.txt", 'A'), cantLiving("CMakeCache.txt", 'h'), dineroNoAbonado("Makefile", 'b'),
+          caja("CMakeCache.txt", 'A'), cantClientesLiving("/bin/bash", 'z'), dineroNoAbonado("Makefile", 'b'),
           escrituraLiving("CMakeCache.txt", 'z', 0), generadorClientes(puerta, clientesCant),
           lockLecturaClientes(puerta.getFdLectura()), lockLecturaLiving(living.getFdLectura()),
           lockLecturaMesas(pipePedidosMesas.getFdLectura()) {}
@@ -131,7 +131,7 @@ void Restaurante::vaciar_living() {
 
     escrituraLiving.p();
     this->lockLecturaLiving.tomarLock();
-    int cantClientes = this->cantLiving.leer();
+    int cantClientes = this->cantClientesLiving.leer();
 
     std::stringstream ss;
     ss.str("");
@@ -155,7 +155,7 @@ void Restaurante::vaciar_living() {
         std::cout << "APAGON - LIVING: El cliente [" << idCliente << "]  se va!" << std::endl;
     }
 
-    this->cantLiving.escribir(0);
+    this->cantClientesLiving.escribir(0);
     this->lockLecturaLiving.liberarLock();
     escrituraLiving.v();
 }

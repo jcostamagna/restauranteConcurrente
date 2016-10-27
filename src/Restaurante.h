@@ -34,7 +34,7 @@ class Restaurante {
     std::list<Mesa*> mesas;
 
     MemoriaCompartida2<int> caja;
-    MemoriaCompartida2<int> cantLiving;  // Cantidad de clientes en el living
+    MemoriaCompartida2<int> cantClientesLiving;  // Cantidad de clientes en el living
     MemoriaCompartida2<int> dineroNoAbonado;  // De comidas que se ordenaron pero no se pagaron
 
     Semaforo escrituraLiving;  // Para que solo escriban en el cantLiving de a uno por vez
