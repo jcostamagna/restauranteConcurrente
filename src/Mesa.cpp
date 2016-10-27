@@ -24,6 +24,9 @@ void Mesa::run() {
     this->living.cerrar();
     this->pedidos.cerrar();
 
+    std::stringstream ss;
+    ss << "Termino el proceso mesa " << getpid() << std::endl;
+    Log::getInstance()->log(ss.str());
     std::cout << "Termino el proceso mesa " << getpid() << std::endl;
 
 }

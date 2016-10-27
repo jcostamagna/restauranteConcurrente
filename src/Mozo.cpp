@@ -23,6 +23,9 @@ void Mozo::run() {
     this->rutinaMozo();
 
     this->pedidos.cerrar();
+    std::stringstream ss;
+    ss << "Termino el proceso mozo " << getpid() << std::endl;
+    Log::getInstance()->log(ss.str());
     std::cout << "Termino el proceso mozo " << getpid() << std::endl;
 }
 

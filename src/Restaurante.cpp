@@ -204,15 +204,9 @@ void Restaurante::limpiar_mesas() {
 
     pipePedidosMesas.escribir(stream.str().c_str(), BUFFSIZE);
 
-
-
-
     for (std::list<Mozo*>::iterator it = mozos.begin(); it != mozos.end(); ++it){
         kill((*it)->get_pid(),SIGCONT);
     }
-
-
-
 }
 
 void Restaurante::limpiar_cocina() {
@@ -222,7 +216,4 @@ void Restaurante::limpiar_cocina() {
 
     kill(cocinero->get_pid(),SIGCONT);
     pipeECocinero.escribir(stream.str().c_str(), BUFFSIZE);
-
-    //Primero mando la senial para que no me la lea y luego las XXXX
-
 }

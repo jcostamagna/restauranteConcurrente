@@ -22,8 +22,10 @@ void Recepcionista::run() {
 
     this->puerta.cerrar();
     this->living.cerrar();
+    std::stringstream ss;
+    ss << "Termino el proceso recepcionista " << getpid() << std::endl;
+    Log::getInstance()->log(ss.str());
     std::cout << "Termino el proceso recepcionista " << getpid() << std::endl;
-
 }
 
 void Recepcionista::rutinaRecepcionista() {
