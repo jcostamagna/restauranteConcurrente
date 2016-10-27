@@ -8,10 +8,11 @@
 #include "Log.h"
 
 Mesa::Mesa(Pipe &living, Pipe &pedidos, LockFd &lockLiving, Semaforo *sEsperandoMozo, Semaforo &escrituraLiving,
-           std::vector<std::pair<std::string, int> > menu) :
+           Semaforo& semCajaRestaurante, Semaforo& semDineroPerdido, std::vector<std::pair<std::string, int> > menu) :
         living(living), pedidos(pedidos), lockLiving(lockLiving), estado(ESPERANDO_CLIENTE),
-        sEsperandoMozo(sEsperandoMozo), escrituraLiving(escrituraLiving), idCliente(-1),
-        cantClientesLiving("/bin/bash", 'z'), cuentaSesion(0), menu(menu) {}
+        sEsperandoMozo(sEsperandoMozo), idCliente(-1), cantClientesLiving("/bin/bash", 'z'), escrituraLiving(escrituraLiving),
+        cuentaSesion(0),  dineroPerdido("/bin/tar", 'b'),
+        semDineroPerdido(semDineroPerdido), cajaResto("/bin/cat", 'A'), semCajaRestaurante(semCajaRestaurante), menu(menu){}
 
 void Mesa::run() {
     this->rutinaMesa();
@@ -219,6 +220,19 @@ void Mesa::clienteEsperaCuenta() {
             return;
     }
 
+    ss.str("");
+    ss << "Mesa(" << getpid() << "): Pagando [" << cuentaSesion << "] pesos" << std::endl;
+    Log::getInstance()->log(ss.str());
+
+    std::cout << "Mesa(" << getpid() << "): Pagando [" << cuentaSesion << "] pesos" << std::endl;
+
+    //pago
+    semCajaRestaurante.p();
+    int caja = cajaResto.leer();
+    cajaResto.escribir(caja+cuentaSesion);
+    semCajaRestaurante.v();
+    cuentaSesion = 0;
+
     avanzarEstado(); //Vuelvo al estado ESPERANDO_CLIENTE por si viene otro cliente.
 }
 
@@ -227,6 +241,13 @@ void Mesa::apagonMesa() {
     ss << "APAGON: Mesa(" << getpid() << ") del cliente [" << idCliente << "]" << std::endl;
     Log::getInstance()->log(ss.str());
     std::cout << "APAGON: Mesa(" << getpid() << ") del cliente [" << idCliente << "]" << std::endl;
+
+    //actualizo la plata que se perdio
+    semDineroPerdido.p();
+    int perdido = dineroPerdido.leer();
+    dineroPerdido.escribir(perdido+cuentaSesion);
+    semDineroPerdido.v();
+    cuentaSesion = 0;
 
     sleep(TIEMPO_APAGON);
     avanzarEstado();

@@ -13,6 +13,7 @@
 #include "Mozo.h"
 #include "GeneradorClientes.h"
 #include "Mesa.h"
+#include "Gerente.h"
 
 class Restaurante {
 
@@ -20,6 +21,7 @@ class Restaurante {
     std::vector<std::pair<std::string, int> > menu;
 
     Cocinero *cocinero;
+    Gerente *gerente;
     std::map<pid_t, Mozo *> mozosMap;
 
     Pipe living; //clientes en el living, mesas que los sacan
@@ -34,10 +36,17 @@ class Restaurante {
     std::list<Mesa*> mesas;
 
     MemoriaCompartida2<int> caja;
-    MemoriaCompartida2<int> cantClientesLiving;  // Cantidad de clientes en el living
-    MemoriaCompartida2<int> dineroNoAbonado;  // De comidas que se ordenaron pero no se pagaron
+    Semaforo semCajaRestaurante;
 
+    MemoriaCompartida2<int> cantClientesLiving;  // Cantidad de clientes en el living
     Semaforo escrituraLiving;  // Para que solo escriban en el cantLiving de a uno por vez
+
+    MemoriaCompartida2<int> dineroPerdido;  // De comidas que se ordenaron pero no se pagaron en el apagon
+    Semaforo semDineroPerdido;
+//    MemoriaCompartida2<int> dineroNoAbonado;  // De comidas que se ordenaron pero no se pagaron toavia
+
+
+
 
     GeneradorClientes generadorClientes;  // Genera clientes y los mete en el pipe puerta
 
@@ -69,6 +78,9 @@ public:
     void vaciar_living();
 
     virtual ~Restaurante();
+
+    void iniciarGerente();
+
 
 };
 

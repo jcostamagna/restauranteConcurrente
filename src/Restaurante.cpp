@@ -8,8 +8,8 @@
 
 Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, int clientesCant, std::vector<std::pair<std::string, int>> menu)
         : recepCant(recepCant), mozosCant(mozosCant), mesasCant(mesasCant), clientesCant(clientesCant), menu(menu),
-          caja("CMakeCache.txt", 'A'), cantClientesLiving("/bin/bash", 'z'), dineroNoAbonado("Makefile", 'b'),
-          escrituraLiving("CMakeCache.txt", 'z', 0), generadorClientes(puerta, clientesCant),
+          caja("/bin/cat", 'A'), semCajaRestaurante("/bin/echo",'z',0), cantClientesLiving("/bin/bash", 'z'),
+          escrituraLiving("CMakeCache.txt", 'z', 0), dineroPerdido("/bin/tar", 'b'),  semDineroPerdido("/bin/cp",'k',0) , generadorClientes(puerta, clientesCant),
           lockLecturaClientes(puerta.getFdLectura()), lockLecturaLiving(living.getFdLectura()),
           lockLecturaMesas(pipePedidosMesas.getFdLectura()) {}
 
@@ -19,6 +19,7 @@ void Restaurante::iniciarPersonal() {
     iniciarCocinero();
     iniciarRecepcionistas();
     iniciarGeneradorClientes();
+    //iniciarGerente();
 }
 
 void Restaurante::iniciarGeneradorClientes(){
@@ -26,6 +27,26 @@ void Restaurante::iniciarGeneradorClientes(){
 }
 
 void Restaurante::abrirPuertas() {
+}
+
+
+void Restaurante::iniciarMesas() {
+    for (int i = 0; i < mesasCant; i++){
+        std::string path = "/bin/grep";
+        char sem = (char)'a'+i;
+        Semaforo *semParaMozos = new Semaforo(path, sem,0);
+        Mesa* mesa = new Mesa(this->living, this->pipePedidosMesas, this->lockLecturaLiving, semParaMozos,  this->escrituraLiving, semCajaRestaurante, semDineroPerdido, menu);
+        mesa->start();
+        //this->semaforosMesas[mesa->get_pid()] = semaforoConCocinero;
+        this->semaforosMesas.insert(std::make_pair(mesa->get_pid(), semParaMozos));
+        this->mesas.push_back(mesa);
+    }
+
+    caja.escribir(0);
+    dineroPerdido.escribir(0);
+    semCajaRestaurante.v();
+    semDineroPerdido.v();
+
 }
 
 void Restaurante::iniciarMozos() {
@@ -55,26 +76,17 @@ void Restaurante::iniciarRecepcionistas() {
     }
 
     //Inicializo en 0
-    MemoriaCompartida2<int> cantClientesLiving;
-    cantClientesLiving.crear("/bin/bash", 'z');
     cantClientesLiving.escribir(0);
 
     escrituraLiving.v();
 }
 
-
-void Restaurante::iniciarMesas() {
-    for (int i = 0; i < mesasCant; i++){
-        std::string path = "/bin/grep";
-        char sem = (char)'a'+i;
-        Semaforo *semaforo = new Semaforo(path, sem,0);
-        Mesa* mesa = new Mesa(this->living, this->pipePedidosMesas, this->lockLecturaLiving, semaforo,  this->escrituraLiving, menu);
-        mesa->start();
-        //this->semaforosMesas[mesa->get_pid()] = semaforoConCocinero;
-        this->semaforosMesas.insert(std::make_pair(mesa->get_pid(), semaforo));
-        this->mesas.push_back(mesa);
-    }
+void Restaurante::iniciarGerente() {
+    gerente = new Gerente(escrituraLiving,semCajaRestaurante,semDineroPerdido);
+    gerente->start();
 }
+
+
 
 
 
@@ -110,10 +122,16 @@ Restaurante::~Restaurante() {
     kill(this->cocinero->get_pid(), SIGINT);
     this->cocinero->stop();
 
+    kill(this->gerente->get_pid(), SIGINT);
+    this->gerente->stop();
+
 
     kill(this->generadorClientes.get_pid(), SIGINT);
     this->generadorClientes.stop();
     escrituraLiving.eliminar();
+    semDineroPerdido.eliminar();
+    semCajaRestaurante.eliminar();
+    //semaforosCocineroMozos eliminarlos!!
 }
 
 void Restaurante::apagonRestaurante() {
@@ -164,3 +182,5 @@ void Restaurante::vaciar_living() {
     this->lockLecturaLiving.liberarLock();
     escrituraLiving.v();
 }
+
+

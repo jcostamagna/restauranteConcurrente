@@ -11,7 +11,7 @@ Mozo::Mozo(int id, Pipe &pedidos,LockFd& lockLecturaMesas,Pipe &escrCocinero, Se
            const std::map<int, Semaforo *> &semaforosMesas)
         : id(id), pedidos(pedidos), lockLecturaMesas(lockLecturaMesas),eCocinero(escrCocinero),
           vive(true),estado(RECIBIENDO_ORDEN), semaforoConCocinero(semaforo), semaforosMesas(semaforosMesas),
-          cuenta("/bin/bash", 'j'), idMesa(-1) {}
+          cajaResto("/bin/cat", 'A'), idMesa(-1) {}
 
 Mozo::~Mozo() {
 

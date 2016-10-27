@@ -22,8 +22,8 @@ class Gerente: public Forkeable {
     Semaforo& semClientesLiving;  // Para descontar gente del living cuando los saco
     MemoriaCompartida2<int> cantClientesLiving;  // cantidad de clientes en el living compartido
 
-    MemoriaCompartida2<int> cajaRestaurante;
     Semaforo& semCajaRestaurante;
+    MemoriaCompartida2<int> cajaRestaurante;
 
     MemoriaCompartida2<int> dineroPerdido;  // De comidas que se ordenaron pero no se pagaron
     Semaforo& semDineroPerdido;
@@ -37,9 +37,7 @@ class Gerente: public Forkeable {
     void rutinaGerente();
 
 public:
-    Gerente(Semaforo &semClientesLiving, const MemoriaCompartida2<int> &cantClientesLiving,
-            const MemoriaCompartida2<int> &cajaRestaurante, Semaforo &semCajaRestaurante,
-            const MemoriaCompartida2<int> &dineroPerdido, Semaforo &semDineroPerdido);
+    Gerente(Semaforo &semClientesLiving, Semaforo &semCajaRestaurante, Semaforo &semDineroPerdido);
 
     virtual ~Gerente();
 };

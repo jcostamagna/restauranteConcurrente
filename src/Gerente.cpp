@@ -5,11 +5,9 @@
 #include "Gerente.h"
 #include "Log.h"
 
-Gerente::Gerente(Semaforo &semClientesLiving, const MemoriaCompartida2<int> &cantClientesLiving,
-                 const MemoriaCompartida2<int> &cajaRestaurante, Semaforo &semCajaRestaurante,
-                 const MemoriaCompartida2<int> &dineroPerdido, Semaforo &semDineroPerdido) :
-        semClientesLiving(semClientesLiving), cantClientesLiving(cantClientesLiving), cajaRestaurante(cajaRestaurante),
-        semCajaRestaurante(semCajaRestaurante), dineroPerdido(dineroPerdido), semDineroPerdido(semDineroPerdido) {}
+Gerente::Gerente(Semaforo &semClientesLiving, Semaforo &semCajaRestaurante, Semaforo &semDineroPerdido) :
+        semClientesLiving(semClientesLiving), cantClientesLiving("/bin/bash", 'z'), semCajaRestaurante(semCajaRestaurante),
+        cajaRestaurante("/bin/cat", 'A'), dineroPerdido("/bin/tar", 'b'), semDineroPerdido(semDineroPerdido) {}
 
 
 Gerente::~Gerente() {
@@ -24,7 +22,7 @@ void Gerente::run() {
 
 void Gerente::rutinaGerente() {
     while (sigint_handler.getGracefulQuit() == 0) {
-        sleep(10);
+        sleep(5);
         consultarDatos();
     }
 }
@@ -52,7 +50,7 @@ void Gerente::consultarClientesLiving(std::stringstream &ss) {
 void Gerente::consultarCajaResto(std::stringstream &ss) {
     semCajaRestaurante.p();
 
-    ss << "\t\t Cantidad de dinero en el restaurante: \t" << cajaRestaurante.leer() << std::endl;
+    ss << "\t\t Cantidad de dinero en la caja del restaurante: \t" << cajaRestaurante.leer() << std::endl;
 
     semCajaRestaurante.v();
 }

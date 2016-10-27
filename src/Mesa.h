@@ -32,11 +32,19 @@ private:
 
     e_mesa estado;
     Semaforo* sEsperandoMozo;  // Mientras el mozo hace cosas me duermo
-    Semaforo& escrituraLiving;  // Para descontar gente del living cuando los saco
+
     int idCliente;  // id del cliente actual sentado en la mesa
 
     MemoriaCompartida2<int> cantClientesLiving;  // cantidad de clientes en el living compartido
-    int cuentaSesion;
+    Semaforo& escrituraLiving;  // Para descontar gente del living cuando los saco
+
+
+    int cuentaSesion;  // Cuenta de lo pedido por ahora en la sesion
+    MemoriaCompartida2<int> dineroPerdido;  // De comidas que se ordenaron pero no se pagaron en el apagon
+    Semaforo& semDineroPerdido;
+
+    MemoriaCompartida2<int> cajaResto;
+    Semaforo& semCajaRestaurante;
 
     std::vector<std::pair<std::string, int> > menu;
 
@@ -60,7 +68,8 @@ private:
     void pedirComida(std::ostringstream &stream);
 
 public:
-    Mesa (Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo* sEsperandoMozo, Semaforo& escrituraLiving, std::vector<std::pair<std::string, int> > menu);
+    Mesa (Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo* sEsperandoMozo, Semaforo& escrituraLiving,
+          Semaforo& semCajaRestaurante, Semaforo& semDineroPerdido, std::vector<std::pair<std::string, int> > menu);
 
 
 };
