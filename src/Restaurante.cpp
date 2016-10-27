@@ -123,6 +123,12 @@ void Restaurante::apagonRestaurante() {
         kill((*it)->get_pid(),SIGCONT);
     }
 
+    for (std::list<Mozo*>::iterator it = mozos.begin(); it != mozos.end(); ++it){
+        kill((*it)->get_pid(),SIGCONT);
+    }
+
+    kill(cocinero->get_pid(),SIGCONT);
+
     kill(generadorClientes.get_pid(),SIGCONT);
 }
 

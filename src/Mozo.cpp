@@ -27,6 +27,10 @@ void Mozo::run() {
 
 void Mozo::rutinaMozo() {
     while (sigint_handler.getGracefulQuit() == 0) {
+        if (apagon_handler_procesos.getApagon() == 1) {
+            estado = APAGON_MOZO;
+            apagon_handler_procesos.stopApagon();
+        }
         switch (estado) {
             case RECIBIENDO_ORDEN:
                 recibiendoOrden();
@@ -114,10 +118,8 @@ void Mozo::recibiendoOrden() {
         Log::getInstance()->log(ss.str());
         std::cout << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: [" << pedido << "] " << std::endl;
 
-
         estado = ESPERANDO_COMIDA;  // Si hay pedido va a pedir la comida al cocinero
     } else {
-
         ss.str("");
         ss << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio la CUENTA: " << std::endl;
         Log::getInstance()->log(ss.str());
@@ -135,8 +137,6 @@ void Mozo::pedirComida() {
 
     std::string dato = datoStream.str();
 
-
-
     std::stringstream ss;
     ss << "Mozo[" << id << "]: Accediendo a Cocinero. Escribo mi ID con el pedido en cocinero y me pongo rojo. "
        << "Pedido: " << dato << std::endl;
@@ -148,7 +148,13 @@ void Mozo::pedirComida() {
 
     this->eCocinero.escribir(static_cast<const void *>(dato.c_str()), BUFFSIZE);  // Pido la comida
 
-    semaforoConCocinero.p();  // Me bloqueo mientras el cocinero cocina
+    try {
+        semaforoConCocinero.p();  // Me bloqueo mientras el cocinero cocina
+    } catch (int e) {
+        if (e == APAGON_MATA_SEMAFORO)
+            estado = APAGON_MOZO;
+            return;
+    }
 
     esperarComida();
 }
@@ -165,30 +171,48 @@ void Mozo::esperarComida() {
 }
 
 void Mozo::entregandoComida() {
-    std::stringstream ss;
-    ss << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir ordenes" << std::endl;
-    Log::getInstance()->log(ss.str());
-    std::cout << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir ordenes" << std::endl;
-    //Desbloqueo mesa
-    semaforosMesas.at(idMesa)->v();
-    avanzarEstado();
+    if (apagon_handler_procesos.getApagon() == 1) {
+        estado = APAGON_MOZO;
+        apagon_handler_procesos.stopApagon();
+        std::stringstream ss;
+        ss << "APAGON: Mozo[" << getpid() << "] no entrego COMIDA por APAGON!" << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "APAGON: Mozo[" << getpid() << "] no entrego COMIDA por APAGON!" << std::endl;
+    } else {
+        std::stringstream ss;
+        ss << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir ordenes" << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir ordenes" << std::endl;
+        //Desbloqueo mesa
+        semaforosMesas.at(idMesa)->v();
+        avanzarEstado();
+    }
 }
 
 void Mozo::entregandoCuenta() {
-    std::stringstream ss;
-    ss << "Mozo[" << id << "] entrega cuenta" << std::endl;
-    Log::getInstance()->log(ss.str());
-    std::cout << "Mozo[" << id << "] entrega cuenta" << std::endl;
+    if (apagon_handler_procesos.getApagon() == 1) {
+        estado = APAGON_MOZO;
+        apagon_handler_procesos.stopApagon();
+        std::stringstream ss;
+        ss << "APAGON: Mozo[" << getpid() << "] no entrego CUENTA por APAGON!" << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "APAGON: Mozo[" << getpid() << "] no entrego CUENTA por APAGON!" << std::endl;
+    } else {
+        std::stringstream ss;
+        ss << "Mozo[" << id << "] entrega cuenta" << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "Mozo[" << id << "] entrega cuenta" << std::endl;
 
-    semaforosMesas.at(idMesa)->v();
-    avanzarEstado();
+        semaforosMesas.at(idMesa)->v();
+        avanzarEstado();
+    }
 }
 
 void Mozo::apagon() {
     std::stringstream ss;
-    ss << "Mozo[" << id << "] MODO APAGON" << std::endl;
+    ss << "APAGON: Mozo[" << id << "] MODO APAGON" << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Mozo[" << id << "] MODO APAGON" << std::endl;
+    std::cout << "APAGON: Mozo[" << id << "] MODO APAGON" << std::endl;
 
     sleep(TIEMPO_APAGON);
     avanzarEstado();

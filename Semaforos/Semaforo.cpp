@@ -1,7 +1,7 @@
 #include "Semaforo.h"
 #include <string.h>
 #include <iostream>
-
+#include <zconf.h>
 
 
 Semaforo :: Semaforo ( const std::string& nombre,const char character,const int valorInicial ):valorInicial(valorInicial) {
@@ -54,11 +54,12 @@ int Semaforo :: p () const {
 	if (resultado < 0){
         int errsv = errno;
 		std::string mensaje = std::string("Error en semop() (p): ") + std::string(strerror(errno));
-		std::cerr<<mensaje<<std::endl;
+		//std::cerr<<mensaje <<std::endl;
 
         if (errsv == EINTR)
             throw APAGON_MATA_SEMAFORO;
-        throw mensaje;
+		else
+			throw mensaje;
 	}
 	return resultado;
 }
@@ -73,8 +74,12 @@ int Semaforo :: v () const {
 
 	int resultado = semop ( this->id,&operacion,1 );
 	if (resultado < 0){
+		int errsv = errno;
 		std::string mensaje = std::string("Error en semop() (v): ") + std::string(strerror(errno));
-		std::cerr<<mensaje<<std::endl;
+		//std::cerr<<mensaje<<std::endl;
+		if (errsv == EINTR)
+			throw APAGON_MATA_SEMAFORO;
+		else
 		throw mensaje;
 	}
 	return resultado;

@@ -10,7 +10,7 @@
 #include <Apagon_Handler_Procesos.h>
 
 #define PID_LENGHT 10
-#define TIEMPO_APAGON 10
+#define TIEMPO_APAGON 20
 
 class Forkeable {
 public:
