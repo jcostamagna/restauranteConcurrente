@@ -181,9 +181,9 @@ void Mozo::entregandoComida() {
         std::cout << "APAGON: Mozo[" << getpid() << "] no entrego COMIDA por APAGON!" << std::endl;
     } else {
         std::stringstream ss;
-        ss << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir ordenes" << std::endl;
+        ss << "Mozo[" << id << "] entrega COMIDA a mesa [" << idMesa << "] y vuelve a recibir ordenes" << std::endl;
         Log::getInstance()->log(ss.str());
-        std::cout << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir ordenes" << std::endl;
+        std::cout << "Mozo[" << id << "] entrega COMIDA a mesa [" << idMesa << "] y vuelve a recibir ordenes" << std::endl;
         //Desbloqueo mesa
         semaforosMesas.at(idMesa)->v();
         avanzarEstado();

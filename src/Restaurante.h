@@ -14,6 +14,7 @@
 #include "GeneradorClientes.h"
 #include "Mesa.h"
 #include "Gerente.h"
+#include "LimpiadorMesas.h"
 
 class Restaurante {
 
@@ -56,6 +57,8 @@ class Restaurante {
 
     bool apagon;
 
+    LimpiadorMesas *limpiador;
+
     void iniciarMozos();
 
     void iniciarCocinero();
@@ -78,6 +81,9 @@ public:
     virtual ~Restaurante();
 
     void iniciarGerente();
+
+
+    void limpiar_mesas();
 
 
 };

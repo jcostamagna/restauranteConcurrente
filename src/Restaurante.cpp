@@ -3,6 +3,7 @@
 //
 
 #include <sstream>
+#include <iomanip>
 #include "Restaurante.h"
 #include "Log.h"
 #include "lockFiles.h"
@@ -15,7 +16,7 @@ Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, int client
           dineroPerdido(SM_DINERO_PERDIDO_FILE, SM_DINERO_PERDIDO_LETRA),
           semDineroPerdido("/bin/cp",'k',0) , generadorClientes(puerta, clientesCant),
           lockLecturaClientes(puerta.getFdLectura()), lockLecturaLiving(living.getFdLectura()),
-          lockLecturaMesas(pipePedidosMesas.getFdLectura()) {}
+          lockLecturaMesas(pipePedidosMesas.getFdLectura()), limpiador(NULL) {}
 
 void Restaurante::iniciarPersonal() {
     caja.escribir(0);
@@ -151,6 +152,8 @@ void Restaurante::apagonRestaurante() {
     kill(cocinero->get_pid(),SIGCONT);
 
     kill(generadorClientes.get_pid(),SIGCONT);
+
+    limpiar_mesas();
 }
 
 void Restaurante::vaciar_living() {
@@ -190,4 +193,18 @@ void Restaurante::vaciar_living() {
     this->cantClientesLiving.escribir(0);
     this->lockLecturaLiving.liberarLock();
     escrituraLiving.v();
+}
+
+void Restaurante::limpiar_mesas() {
+    if (limpiador)
+        delete limpiador;
+
+    std::stringstream stream;
+    stream << std::setfill('0') << std::setw(PID_LENGHT) << getpid();
+    stream << std::setfill('0') << std::setw(BUFFSIZE - PID_LENGHT) << LIMPIAR_PEDIDOS;
+
+    pipePedidosMesas.escribir(stream.str().c_str(), BUFFSIZE);
+
+    limpiador = new LimpiadorMesas(pipePedidosMesas,lockLecturaMesas);
+    limpiador->start();
 }
