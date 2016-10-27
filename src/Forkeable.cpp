@@ -4,7 +4,6 @@
 
 #include <wait.h>
 #include <SignalHandler.h>
-#include <cstdlib>
 #include "Forkeable.h"
 
 Forkeable::~Forkeable() {}
@@ -15,6 +14,7 @@ void Forkeable::start() {
 
         // se registra el event handler declarado antes
         SignalHandler::getInstance()->registrarHandler(SIGINT, &sigint_handler);
+        SignalHandler::getInstance()->registrarHandler(SIGCONT, &apagon_handler_procesos);
 
         run();
 

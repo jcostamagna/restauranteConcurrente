@@ -5,14 +5,14 @@
 #include <iostream>
 #include "Mozo.h"
 #include "Log.h"
-#include <sstream>
+#include "lockFiles.h"
 #include <iomanip>
 
 Mozo::Mozo(int id, Pipe &pedidos,LockFd& lockLecturaMesas,Pipe &escrCocinero, Semaforo &semaforo,
            const std::map<int, Semaforo *> &semaforosMesas)
         : id(id), pedidos(pedidos), lockLecturaMesas(lockLecturaMesas),eCocinero(escrCocinero),
           vive(true),estado(RECIBIENDO_ORDEN), semaforoConCocinero(semaforo), semaforosMesas(semaforosMesas),
-          cuenta("/bin/bash", 'j'), idMesa(-1) {}
+          cajaResto(SM_CAJA_FILE, SM_CAJA_LETRA), idMesa(-1) {}
 
 Mozo::~Mozo() {
 
@@ -28,6 +28,10 @@ void Mozo::run() {
 
 void Mozo::rutinaMozo() {
     while (sigint_handler.getGracefulQuit() == 0) {
+        if (apagon_handler_procesos.getApagon() == 1) {
+            estado = APAGON_MOZO;
+            apagon_handler_procesos.stopApagon();
+        }
         switch (estado) {
             case RECIBIENDO_ORDEN:
                 recibiendoOrden();
@@ -97,7 +101,6 @@ void Mozo::recibiendoOrden() {
 
     std::stringstream ss1, ss2;
     unsigned i;
-    std::string pedido;
     for (i = 0; i < PID_LENGHT; ++i) {
         ss1 << mensaje.at(i);
     }
@@ -108,19 +111,20 @@ void Mozo::recibiendoOrden() {
     }
 
     ss1 >> this->idMesa;
-    ss2 >> pedido;
-
-    ss.str("");
-    ss << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: ";
-    ss << pedido << std::endl;
-    Log::getInstance()->log(ss.str());
-    std::cout << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: " << pedido << std::endl;
-
-    this-> pedido = pedido;
+    ss2 >> this->pedido;
 
     if (!pedirCuenta) {
+        ss.str("");
+        ss << "Mozo[" << id << "]: Leí el PEDIDO de la mesa con PID " << idMesa << " y pidio de comer: [" << pedido << "] " << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "Mozo[" << id << "]: Leí el PEDIDO de la mesa con PID " << idMesa << " y pidio de comer: [" << pedido << "] " << std::endl;
+
         estado = ESPERANDO_COMIDA;  // Si hay pedido va a pedir la comida al cocinero
     } else {
+        ss.str("");
+        ss << "Mozo[" << id << "]: Leí el PEDIDO de la mesa con PID " << idMesa << " y pidio la CUENTA: " << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "Mozo[" << id << "]: Leí el PEDIDO de la mesa con PID " << idMesa << " y pidio la CUENTA: " << std::endl;
         estado = ENTREGANDO_CUENTA;  // Si el pedido es 00000 significa que quiere la cuenta
     }
 }
@@ -134,23 +138,24 @@ void Mozo::pedirComida() {
 
     std::string dato = datoStream.str();
 
-    this->eCocinero.escribir(static_cast<const void *>(dato.c_str()), BUFFSIZE);  // Pido la comida
-
     std::stringstream ss;
-    ss << "Mozo[" << id << "]: Intentando acceder al cocinero" << std::endl;
-    Log::getInstance()->log(ss.str());
-    ss.str("");
-    std::cout << "Mozo[" << id << "]: Intentando acceder al cocinero" << std::endl;
-
-    ss << "Mozo[" << id << "]: Escribo mi ID con el pedido en cocinero y me pongo rojo. "
+    ss << "Mozo[" << id << "]: Accediendo a Cocinero. Escribo mi ID con el pedido en cocinero y me pongo rojo. "
        << "Pedido: " << dato << std::endl;
     Log::getInstance()->log(ss.str());
     ss.str("");
 
-    std::cout << "Mozo[" << id << "]: Escribo mi ID con el pedido en cocinero y me pongo rojo. "
-              << "Pedido: " << dato << std::endl;
+    std::cout << "Mozo[" << id << "]: Accediendo a Cocinero. Escribo mi ID con el pedido en cocinero y me pongo rojo. "
+              << "Pedido: [" << dato << "]" << std::endl;
 
-    semaforoConCocinero.p();  // Me bloqueo mientras el cocinero cocina
+    this->eCocinero.escribir(static_cast<const void *>(dato.c_str()), BUFFSIZE);  // Pido la comida
+
+    try {
+        semaforoConCocinero.p();  // Me bloqueo mientras el cocinero cocina
+    } catch (int e) {
+        if (e == APAGON_MATA_SEMAFORO)
+            estado = APAGON_MOZO;
+            return;
+    }
 
     esperarComida();
 }
@@ -167,25 +172,49 @@ void Mozo::esperarComida() {
 }
 
 void Mozo::entregandoComida() {
-    std::stringstream ss;
-    ss << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir ordenes" << std::endl;
-    Log::getInstance()->log(ss.str());
-    std::cout << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir ordenes" << std::endl;
-    //Desbloqueo mesa
-    semaforosMesas.at(idMesa)->v();
-    avanzarEstado();
+    if (apagon_handler_procesos.getApagon() == 1) {
+        estado = APAGON_MOZO;
+        apagon_handler_procesos.stopApagon();
+        std::stringstream ss;
+        ss << "APAGON: Mozo[" << getpid() << "] no entrego COMIDA por APAGON!" << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "APAGON: Mozo[" << getpid() << "] no entrego COMIDA por APAGON!" << std::endl;
+    } else {
+        std::stringstream ss;
+        ss << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir ordenes" << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "Mozo[" << id << "] entrega COMIDA y vuelve a recibir ordenes" << std::endl;
+        //Desbloqueo mesa
+        semaforosMesas.at(idMesa)->v();
+        avanzarEstado();
+    }
 }
 
 void Mozo::entregandoCuenta() {
-    std::stringstream ss;
-    ss << "Mozo[" << id << "] entrega cuenta" << std::endl;
-    Log::getInstance()->log(ss.str());
-    std::cout << "Mozo[" << id << "] entrega cuenta" << std::endl;
-
-    semaforosMesas.at(idMesa)->v();
-    avanzarEstado();
+    if (apagon_handler_procesos.getApagon() == 1) {
+        estado = APAGON_MOZO;
+        apagon_handler_procesos.stopApagon();
+        std::stringstream ss;
+        ss << "APAGON: Mozo[" << getpid() << "] no entrego CUENTA por APAGON!" << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "APAGON: Mozo[" << getpid() << "] no entrego CUENTA por APAGON!" << std::endl;
+    } else {
+        std::stringstream ss;
+        ss << "Mozo[" << id << "] entrega cuenta" << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "Mozo[" << id << "] entrega cuenta" << std::endl;
+        //Desbloqueo mesa
+        semaforosMesas.at(idMesa)->v();
+        avanzarEstado();
+    }
 }
 
 void Mozo::apagon() {
+    std::stringstream ss;
+    ss << "APAGON: Mozo[" << id << "] MODO APAGON" << std::endl;
+    Log::getInstance()->log(ss.str());
+    std::cout << "APAGON: Mozo[" << id << "] MODO APAGON" << std::endl;
 
+    sleep(TIEMPO_APAGON);
+    avanzarEstado();
 }

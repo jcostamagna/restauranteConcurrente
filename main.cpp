@@ -1,12 +1,23 @@
-
 #include <iostream>
+#include <fstream>
 #include <list>
 #include <Restaurante.h>
 #include <Log.h>
+#include <SignalHandler.h>
 #include "src/Parser.h"
+#include "Signal/Apagon_Handler.h"
 #define SALIR "q"
 
 int main() {
+    std::string fileName = "pid.txt";
+    std::ofstream myfile (fileName);
+    if (myfile.is_open())
+    {
+        myfile << getpid();
+        myfile.close();
+    }
+    else
+        std::cout << "No se pudo crear archivo para el apagon";
 
     Log::getInstance()->setearArchivo("log.txt");
 
@@ -33,7 +44,7 @@ int main() {
     }
 
 
-    std::cout << "\nmylist contains:\n";
+    std::cout << "\nEl menu:\n";
     for (std::vector<std::pair<std::string, int> >::iterator it = menu.begin(); it != menu.end(); ++it) {
         std::cout << "\t\t" << (*it).first << "\t" << (*it).second << "\n";
     }
@@ -42,12 +53,24 @@ int main() {
     Restaurante resto(recepCant, mozosCant, mesasCant, clientesCant, menu);
     resto.iniciarPersonal();
 
+    Apagon_Handler apagon_handler(resto);
+    SignalHandler::getInstance()->registrarHandler(SIGCONT, &apagon_handler);
+
 
     std::cout << "Salir ingresando tecla 'q'" << std::endl;
     std::string mensaje;
+
+    if (std::cin.fail() || std::cin.eof())
+        std::cin.clear();
     std::getline(std::cin,mensaje);
+
     while (mensaje != SALIR){
+        if (std::cin.fail() || std::cin.eof())
+            std::cin.clear();
         std::getline(std::cin,mensaje);
+        //std::cout << mensaje << std::endl;
     }
 
+    SignalHandler::destruir();
+    remove(const_cast<char*>(fileName.c_str()));
 }

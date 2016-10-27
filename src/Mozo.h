@@ -33,7 +33,7 @@ private:
     Semaforo& semaforoConCocinero;  // Me bloqueo cuando espero que el cocinero cocine la comida
     const std::map<int, Semaforo*> &semaforosMesas; // Para que las mesas puedan continuar cuando les devuelvo su pedido
 
-    MemoriaCompartida2<int> cuenta;
+    MemoriaCompartida2<int> cajaResto;
     int idMesa;
     std::string pedido;
 

@@ -20,7 +20,6 @@ typedef enum ESTADO_MESA {
     CLIENTE_ESPERA_PEDIDO,
     CLIENTE_COMIENDO,
     CLIENTE_ESPERA_CUENTA,
-    CLIENTE_SE_VA,
     APAGON_MESA
 } e_mesa;
 
@@ -33,11 +32,19 @@ private:
 
     e_mesa estado;
     Semaforo* sEsperandoMozo;  // Mientras el mozo hace cosas me duermo
-    Semaforo& escrituraLiving;  // Para descontar gente del living cuando los saco
+
     int idCliente;  // id del cliente actual sentado en la mesa
 
     MemoriaCompartida2<int> cantClientesLiving;  // cantidad de clientes en el living compartido
-    int cuenta;
+    Semaforo& escrituraLiving;  // Para descontar gente del living cuando los saco
+
+
+    int cuentaSesion;  // Cuenta de lo pedido por ahora en la sesion
+    MemoriaCompartida2<int> dineroPerdido;  // De comidas que se ordenaron pero no se pagaron en el apagon
+    Semaforo& semDineroPerdido;
+
+    MemoriaCompartida2<int> cajaResto;
+    Semaforo& semCajaRestaurante;
 
     std::vector<std::pair<std::string, int> > menu;
 
@@ -52,16 +59,19 @@ private:
     void clienteEsperaPedido();
     void comer();
     void clienteEsperaCuenta();
-    void apagon();
+    void apagonMesa();
 
     void avanzarEstado();
 
     int calcularRandom(int max);
 
-public:
-    Mesa (Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo* sEsperandoMozo, Semaforo& escrituraLiving, std::vector<std::pair<std::string, int> > menu);
-
     void pedirComida(std::ostringstream &stream);
+
+public:
+    Mesa (Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo* sEsperandoMozo, Semaforo& escrituraLiving,
+          Semaforo& semCajaRestaurante, Semaforo& semDineroPerdido, std::vector<std::pair<std::string, int> > menu);
+
+
 };
 
 

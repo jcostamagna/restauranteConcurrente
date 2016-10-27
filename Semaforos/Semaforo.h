@@ -6,6 +6,8 @@
 #include <sys/types.h>
 #include <string>
 
+#define APAGON_MATA_SEMAFORO 6
+
 class Semaforo {
 
 private:

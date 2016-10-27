@@ -16,7 +16,7 @@ GeneradorClientes::GeneradorClientes (Pipe& clientes, int cantClientes): cantCli
 void GeneradorClientes::run() {
 
     // se registra el event handler declarado antes
-    SignalHandler :: getInstance()->registrarHandler ( SIGINT,&sigint_handler );
+    //SignalHandler :: getInstance()->registrarHandler ( SIGINT,&sigint_handler );
 
 
     this->rutinaGenerador();
@@ -28,13 +28,13 @@ void GeneradorClientes::run() {
     exit(0);
 }
 
-void GeneradorClientes::rutinaGenerador(){
-    //std::string dato = "Hola mundo pipes!!";
+void GeneradorClientes::rutinaGenerador() {
     int i = 0;
 
     while ( sigint_handler.getGracefulQuit() == 0 ){
         std::ostringstream ss;
         ss << std::setfill('0') << std::setw(PID_LENGHT) << i;
+        ss << std::setfill('0') << std::setw(BUFFSIZE-PID_LENGHT) << 0;
         std::string dato(ss.str());
 
         ss.str("");
@@ -47,10 +47,19 @@ void GeneradorClientes::rutinaGenerador(){
 
 
         i++;
-        sleep(1);
+        unsigned int sleeep = 500000;
+        usleep(sleeep);
 
         if (i>= cantClientes) break;
-        //Reinicio contador
-        //i = i % 100000000;//if (i == 99999999) i = 0;
+
+        if (apagon_handler_procesos.getApagon() == 1) {
+            std::stringstream ss;
+            ss.str("");
+            ss << "APAGON GENERADOR CLIENTES"<< std::endl;
+            Log::getInstance()->log(ss.str());
+            std::cout << "APAGON GENERADOR CLIENTES"<< std::endl;
+            sleep(TIEMPO_APAGON);
+            apagon_handler_procesos.stopApagon();
+        }
     }
 }
