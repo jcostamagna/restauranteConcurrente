@@ -6,13 +6,15 @@
 #include "Mozo.h"
 #include "Log.h"
 #include "lockFiles.h"
+#include "LimpiadorMesas.h"
 #include <iomanip>
 
 Mozo::Mozo(int id, Pipe &pedidos,LockFd& lockLecturaMesas,Pipe &escrCocinero, Semaforo &semaforo,
            const std::map<int, Semaforo *> &semaforosMesas)
         : id(id), pedidos(pedidos), lockLecturaMesas(lockLecturaMesas),eCocinero(escrCocinero),
           vive(true),estado(RECIBIENDO_ORDEN), semaforoConCocinero(semaforo), semaforosMesas(semaforosMesas),
-          cajaResto(SM_CAJA_FILE, SM_CAJA_LETRA), idMesa(-1) {}
+          cajaResto(SM_CAJA_FILE, SM_CAJA_LETRA), idMesa(-1), tirar(false),
+          tirarPedidosDeMesas(SM_TIRAR_PEDIDOS_MESAS_FILE, SM_TIRAR_PEDIDOS_MESAS_LETRA) {}
 
 Mozo::~Mozo() {
 
@@ -93,6 +95,7 @@ void Mozo::recibiendoOrden() {
     //Leemos con un lock de lectura
     lockLecturaMesas.tomarLock();
     ssize_t bytesLeidos = this->pedidos.leer(static_cast<void *>(buffer), BUFFSIZE);  // Leo pedidos de cualquier mesa
+    tirar = tirarPedidosDeMesas.leer();
     lockLecturaMesas.liberarLock();
 
     if (bytesLeidos <= 0) return;
@@ -101,31 +104,52 @@ void Mozo::recibiendoOrden() {
 
     std::stringstream ss1, ss2;
     unsigned i;
+
     for (i = 0; i < PID_LENGHT; ++i) {
         ss1 << mensaje.at(i);
     }
+
     bool pedirCuenta = true;
+    bool auxFinTirar = true;
     for (; i < mensaje.length(); ++i) {
         ss2 << mensaje.at(i);
         pedirCuenta &= mensaje.at(i) == '0';
+        auxFinTirar &= mensaje.at(i) == LIMPIAR_PEDIDOS;
     }
-
     ss1 >> this->idMesa;
     ss2 >> this->pedido;
 
-    if (!pedirCuenta) {
+    if (auxFinTirar) { //si eran todas XXXX
+        //tiro por ultima vez
+        ss.str("");
+        ss << "Mozo[" << id << "]:tirando el ULTIMO pedido..." << pedido << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << ss.str();
+
+        tirar = false;
+        tirarPedidosDeMesas.escribir(false);
+        lockLecturaMesas.liberarLock();
+        return;
+    }
+
+    if (tirar) {
+        ss.str("");
+        ss << "Mozo[" << id << "]:TIRANDO el pedido..." << pedido << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << ss.str();
+    }  else if (pedirCuenta) {
+        ss.str("");
+        ss << "Mozo[" << id << "]: Leí el PEDIDO de la mesa con PID " << idMesa << " y pidio la CUENTA: " << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "Mozo[" << id << "]: Leí el PEDIDO de la mesa con PID " << idMesa << " y pidio la CUENTA: " << std::endl;
+        estado = ENTREGANDO_CUENTA;  // Si el pedido es 00000 significa que quiere la cuenta
+    } else  {
         ss.str("");
         ss << "Mozo[" << id << "]: Leí el PEDIDO de la mesa con PID " << idMesa << " y pidio de comer: [" << pedido << "] " << std::endl;
         Log::getInstance()->log(ss.str());
         std::cout << "Mozo[" << id << "]: Leí el PEDIDO de la mesa con PID " << idMesa << " y pidio de comer: [" << pedido << "] " << std::endl;
 
         estado = ESPERANDO_COMIDA;  // Si hay pedido va a pedir la comida al cocinero
-    } else {
-        ss.str("");
-        ss << "Mozo[" << id << "]: Leí el PEDIDO de la mesa con PID " << idMesa << " y pidio la CUENTA: " << std::endl;
-        Log::getInstance()->log(ss.str());
-        std::cout << "Mozo[" << id << "]: Leí el PEDIDO de la mesa con PID " << idMesa << " y pidio la CUENTA: " << std::endl;
-        estado = ENTREGANDO_CUENTA;  // Si el pedido es 00000 significa que quiere la cuenta
     }
 }
 

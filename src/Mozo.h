@@ -37,6 +37,9 @@ private:
     int idMesa;
     std::string pedido;
 
+    bool tirar;
+    MemoriaCompartida2<bool> tirarPedidosDeMesas; //si es true tiro todo
+
     Mozo(const Mozo& object);
     Mozo& operator=(const Mozo& object);
 
@@ -57,12 +60,14 @@ private:
     void avanzarEstado();
 
 public:
-    Mozo(int id, Pipe &pedidos,LockFd& lockLecturaMesas,Pipe &escrCocinero, Semaforo &semaforo,const std::map<int, Semaforo *> &semaforosMesas);
+    Mozo(int id, Pipe &pedidos,LockFd& lockLecturaMesas,Pipe &escrCocinero, Semaforo &semaforo,
+         const std::map<int, Semaforo *> &semaforosMesas);
 
     virtual ~Mozo();
 
 
     void esperarComida();
+
 
 
 };

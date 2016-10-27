@@ -59,6 +59,8 @@ class Restaurante {
 
     LimpiadorMesas *limpiador;
 
+    MemoriaCompartida2<bool> tirarPedidosDeMesas;  //se utiliza junto con lockLecturaMesas
+
     void iniciarMozos();
 
     void iniciarCocinero();
@@ -86,6 +88,7 @@ public:
     void limpiar_mesas();
 
 
+    void limpiar_cocina();
 };
 
 

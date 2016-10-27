@@ -14,9 +14,10 @@ Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, int client
           cantClientesLiving(SM_CLIENTES_LIVING_FILE, SM_CLIENTES_LIVING_LETRA),
           escrituraLiving(SEM_CLIENTES_LIVING_FILE, SEM_CLIENTES_LIVING_LETRA, 0),
           dineroPerdido(SM_DINERO_PERDIDO_FILE, SM_DINERO_PERDIDO_LETRA),
-          semDineroPerdido("/bin/cp",'k',0) , generadorClientes(puerta, clientesCant),
+          semDineroPerdido(SEM_DINERO_PERDIDO_FILE,SEM_DINERO_PERDIDO_LETRA,0) , generadorClientes(puerta, clientesCant),
           lockLecturaClientes(puerta.getFdLectura()), lockLecturaLiving(living.getFdLectura()),
-          lockLecturaMesas(pipePedidosMesas.getFdLectura()), limpiador(NULL) {}
+          lockLecturaMesas(pipePedidosMesas.getFdLectura()), limpiador(NULL),
+          tirarPedidosDeMesas(SM_TIRAR_PEDIDOS_MESAS_FILE, SM_TIRAR_PEDIDOS_MESAS_LETRA) {}
 
 void Restaurante::iniciarPersonal() {
     caja.escribir(0);
@@ -139,28 +140,16 @@ Restaurante::~Restaurante() {
 }
 
 void Restaurante::apagonRestaurante() {
-    vaciar_living();
     limpiar_mesas();
 
-    std::stringstream stream;
-    stream << std::setfill(LIMPIAR_PEDIDOS) << std::setw(BUFFSIZE) << LIMPIAR_PEDIDOS;
-    pipeECocinero.escribir(stream.str().c_str(), BUFFSIZE);
+    vaciar_living();
 
-    kill(cocinero->get_pid(),SIGCONT);
+    limpiar_cocina();
 
     for (std::list<Mesa*>::iterator it = mesas.begin(); it != mesas.end(); ++it){
         kill((*it)->get_pid(),SIGCONT);
     }
-
-    for (std::list<Mozo*>::iterator it = mozos.begin(); it != mozos.end(); ++it){
-        kill((*it)->get_pid(),SIGCONT);
-    }
-
-
-
     kill(generadorClientes.get_pid(),SIGCONT);
-
-
 }
 
 void Restaurante::vaciar_living() {
@@ -203,16 +192,47 @@ void Restaurante::vaciar_living() {
 }
 
 void Restaurante::limpiar_mesas() {
-    if (limpiador)
-        delete limpiador;
+    std::stringstream ss;
+    ss.str("");
+    ss << "APAGON - MOZOS: SETEO TIRAR A TRUE" << std::endl;
+    Log::getInstance()->log(ss.str());
+    std::cout << "APAGON - MOZOS: SETEO TIRAR A TRUE" << std::endl;
 
-    limpiador = new LimpiadorMesas(pipePedidosMesas,lockLecturaMesas);
-    limpiador->start();
+    tirarPedidosDeMesas.escribir(true);
 
     std::stringstream stream;
     stream << std::setfill(LIMPIAR_PEDIDOS) << std::setw(BUFFSIZE) << LIMPIAR_PEDIDOS;
 
+
     pipePedidosMesas.escribir(stream.str().c_str(), BUFFSIZE);
 
+
+
+
+    for (std::list<Mozo*>::iterator it = mozos.begin(); it != mozos.end(); ++it){
+        kill((*it)->get_pid(),SIGCONT);
+    }
+
+    //primero mando la senial para que nadie me la lea, y despues las XXXXXXXXX
+    /*if (limpiador)
+        delete limpiador;
+
+    limpiador = new LimpiadorMesas(pipePedidosMesas,lockLecturaMesas);
+    limpiador->start();
+    */
+
+
+
+}
+
+void Restaurante::limpiar_cocina() {
+    kill(cocinero->get_pid(),SIGCONT);
+    std::stringstream stream;
+    stream << std::setfill(LIMPIAR_PEDIDOS) << std::setw(BUFFSIZE) << LIMPIAR_PEDIDOS;
+
+    kill(cocinero->get_pid(),SIGCONT);
+    pipeECocinero.escribir(stream.str().c_str(), BUFFSIZE);
+
+    //Primero mando la senial para que no me la lea y luego las XXXX
 
 }

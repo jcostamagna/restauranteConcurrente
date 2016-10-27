@@ -24,6 +24,7 @@ private:
     e_cocinero estado;
 
     unsigned int idMozoCocinarle;
+    std::string pedido;
 
 private:
     virtual void run() override;
@@ -41,6 +42,8 @@ public:
     void cocinar(std::string pedido);
 
     void limpiarPipePedidos();
+
+
 };
 
 

@@ -8,7 +8,10 @@
 #include "Log.h"
 
 LimpiadorMesas::LimpiadorMesas(Pipe &pedidos, LockFd &lockLecturaMesas) :
-        pedidos(pedidos), lockLecturaMesas(lockLecturaMesas) {}
+        pedidos(pedidos), lockLecturaMesas(lockLecturaMesas) {
+
+    lockLecturaMesas.tomarLock(); //lo tomo al inico para que nadie me lea las XXXX
+}
 
 LimpiadorMesas::~LimpiadorMesas() {
 
@@ -34,7 +37,7 @@ void LimpiadorMesas::rutinaLimpiador() {
     bool terminaLimpieza = false;
 
     //Leemos con un lock de lectura
-    lockLecturaMesas.tomarLock();
+
 
     while (!terminaLimpieza) {
         char buffer[BUFFSIZE];

@@ -20,6 +20,8 @@
 #define SEM_DINERO_PERDIDO_FILE "/bin/cp"
 #define SEM_DINERO_PERDIDO_LETRA 'k'
 
+#define SM_TIRAR_PEDIDOS_MESAS_FILE "/bin/dir"
+#define SM_TIRAR_PEDIDOS_MESAS_LETRA 'a'
 
 
 
