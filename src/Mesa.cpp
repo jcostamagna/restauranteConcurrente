@@ -212,7 +212,6 @@ void Mesa::clienteEsperaCuenta() {
     std::cout << "Mesa(" << getpid() << "): Hago pedido de cuenta en el pipe del mozo [" << idCliente << "]"
               << std::endl;
 
-
     try {
         this->sEsperandoMozo->p(); //me bloqueo mientras espero al mozo. Me desbloqueo cuando el mozo me hace v()
     } catch (int e) {
@@ -220,7 +219,6 @@ void Mesa::clienteEsperaCuenta() {
             return;
     }
 
-    avanzarEstado();
     avanzarEstado(); //Vuelvo al estado ESPERANDO_CLIENTE por si viene otro cliente.
 }
 

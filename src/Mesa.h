@@ -57,10 +57,12 @@ private:
 
     int calcularRandom(int max);
 
+    void pedirComida(std::ostringstream &stream);
+
 public:
     Mesa (Pipe& living, Pipe& pedidos, LockFd& lockLiving, Semaforo* sEsperandoMozo, Semaforo& escrituraLiving, std::vector<std::pair<std::string, int> > menu);
 
-    void pedirComida(std::ostringstream &stream);
+
 };
 
 

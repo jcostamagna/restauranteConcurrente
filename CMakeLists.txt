@@ -31,7 +31,7 @@ set(SOURCE_FILES
         Lock/LockFd.cpp Lock/LockFd.h
         src/Mesa.cpp src/Mesa.h
         Signal/Apagon_Handler.h
-        Signal/Apagon_Handler_Procesos.h)
+        Signal/Apagon_Handler_Procesos.h src/Gerente.cpp src/Gerente.h)
 
 add_executable(restaurantConcurrente main.cpp ${SOURCE_FILES} ${CONFIG_FILES})#${HEADER_FILES})
 add_executable(apagon apagon.cpp)
