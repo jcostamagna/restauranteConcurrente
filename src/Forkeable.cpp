@@ -4,7 +4,6 @@
 
 #include <wait.h>
 #include <SignalHandler.h>
-#include <cstdlib>
 #include "Forkeable.h"
 
 Forkeable::~Forkeable() {}

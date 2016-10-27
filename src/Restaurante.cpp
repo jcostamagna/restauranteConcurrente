@@ -25,8 +25,6 @@ void Restaurante::iniciarGeneradorClientes(){
     this->generadorClientes.start();
 }
 
-void Restaurante::abrirPuertas() {
-}
 
 void Restaurante::iniciarMozos() {
     for (int i = 0; i < mozosCant; i++) {
@@ -90,15 +88,15 @@ Restaurante::~Restaurante() {
         delete (*it);
     }
 
-    for (std::map<int, Semaforo*>::iterator it = semaforosMesas.begin(); it != semaforosMesas.end(); ++it){
-        (*it).second->eliminar();
-        delete (*it).second;
-    }
-
     for (std::list<Mesa*>::iterator it = mesas.begin(); it != mesas.end(); ++it){
         kill((*it)->get_pid(), SIGINT);
         (*it)->stop();
         delete (*it);
+    }
+
+    for (std::map<int, Semaforo*>::iterator it = semaforosMesas.begin(); it != semaforosMesas.end(); ++it){
+        (*it).second->eliminar();
+        delete (*it).second;
     }
 
     for (std::list<Recepcionista*>::iterator it = recepcionistas.begin(); it != recepcionistas.end(); ++it){

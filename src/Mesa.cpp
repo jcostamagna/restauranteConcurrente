@@ -17,10 +17,8 @@ void Mesa::run() {
     this->rutinaMesa();
 
     this->living.cerrar();
-    //this->pedidos.cerrar();
-    //this->living.cerrar();
-    //this->escrituraLiving.eliminar();
-    //this->sEsperandoMozo.eliminar();
+    this->pedidos.cerrar();
+
     std::cout << "Termino el proceso mesa " << getpid() << std::endl;
 
 }
@@ -199,7 +197,10 @@ void Mesa::comer() {
         ss.str("");
 
         ss << "Mesa(" << getpid() << ") del cliente [" << idCliente << "]: Ya comi, que rico!!" << std::endl;
+
+
         Log::getInstance()->log(ss.str());
+
         std::cout << "Mesa(" << getpid() << ") del cliente [" << idCliente << "]: Ya comi, que rico!!" << std::endl;
 
         avanzarEstado();

@@ -54,12 +54,13 @@ int Semaforo :: p () const {
 	if (resultado < 0){
         int errsv = errno;
 		std::string mensaje = std::string("Error en semop() (p): ") + std::string(strerror(errno));
-		//std::cerr<<mensaje <<std::endl;
 
-        if (errsv == EINTR)
-            throw APAGON_MATA_SEMAFORO;
-		else
+        if (errsv == EINTR) {
+			throw APAGON_MATA_SEMAFORO;
+		}else {
+			std::cerr << mensaje << std::endl;
 			throw mensaje;
+		}
 	}
 	return resultado;
 }
@@ -76,11 +77,13 @@ int Semaforo :: v () const {
 	if (resultado < 0){
 		int errsv = errno;
 		std::string mensaje = std::string("Error en semop() (v): ") + std::string(strerror(errno));
-		//std::cerr<<mensaje<<std::endl;
-		if (errsv == EINTR)
+
+		if (errsv == EINTR) {
 			throw APAGON_MATA_SEMAFORO;
-		else
-		throw mensaje;
+		}else {
+			std::cerr<<mensaje<<std::endl;
+			throw mensaje;
+		}
 	}
 	return resultado;
 }
