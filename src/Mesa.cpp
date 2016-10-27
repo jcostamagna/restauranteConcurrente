@@ -111,7 +111,6 @@ void Mesa::esperandoCliente() {
     escrituraLiving.p();
     std::string mensaje = buffer;
     mensaje.resize(bytesLeidos);
-    std::string::size_type sz;
 
     std::stringstream ss1;
     unsigned int i;

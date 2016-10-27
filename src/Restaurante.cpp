@@ -147,7 +147,12 @@ void Restaurante::vaciar_living() {
         mensaje.resize(bytesLeidos);
         std::string::size_type sz;
 
-        int idCliente = std::stoi(mensaje, &sz);
+        std::stringstream ss1;
+        int idCliente;
+        for (unsigned int i = 0; i < PID_LENGHT && i < mensaje.size(); ++i) {
+            ss1 << mensaje.at(i);
+        }
+        ss1 >> idCliente;
 
         ss.str("");
         ss << "APAGON - LIVING: El cliente [" << idCliente << "]  se va!" << std::endl;
