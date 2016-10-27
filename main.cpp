@@ -44,7 +44,7 @@ int main() {
     }
 
 
-    std::cout << "\nmylist contains:\n";
+    std::cout << "\nEl menu:\n";
     for (std::vector<std::pair<std::string, int> >::iterator it = menu.begin(); it != menu.end(); ++it) {
         std::cout << "\t\t" << (*it).first << "\t" << (*it).second << "\n";
     }

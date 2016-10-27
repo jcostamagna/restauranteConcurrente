@@ -75,9 +75,6 @@ void Mesa::avanzarEstado() {
                 estado = CLIENTE_ESPERA_CUENTA;
             break;
         case CLIENTE_ESPERA_CUENTA:
-            estado = CLIENTE_SE_VA;
-            break;
-        case CLIENTE_SE_VA:
             estado = ESPERANDO_CLIENTE;
             break;
         case APAGON_MESA:
@@ -104,11 +101,15 @@ void Mesa::esperandoCliente() {
     //Leemos del pipe living con un lock de lectura
     this->lockLiving.tomarLock();
     ssize_t bytesLeidos = this->living.leer(static_cast<void *>(buffer), BUFFSIZE);
-    this->lockLiving.liberarLock();
-
-    if (bytesLeidos <= 0) return;
-
     escrituraLiving.p();
+
+    if (bytesLeidos <= 0){
+        this->lockLiving.liberarLock();
+        escrituraLiving.v();
+        return;
+    }
+
+
     std::string mensaje = buffer;
     mensaje.resize(bytesLeidos);
 
@@ -138,6 +139,7 @@ void Mesa::esperandoCliente() {
     std::cout << "Mesa(" << getpid() << "): Cantidad clientes en living [" << cantClientes << "] " << std::endl;
     this->cantClientesLiving.escribir(cantClientes);
 
+    this->lockLiving.liberarLock();
     escrituraLiving.v();
     avanzarEstado();
 }
@@ -167,8 +169,12 @@ void Mesa::clienteEsperaPedido() {
     Log::getInstance()->log(ss.str());
     std::cout << "Mesa(" << getpid() << "): Esperando Comida " << "del cliente [" << idCliente << "]" << std::endl;
 
-
-    this->sEsperandoMozo->p(); //me bloqueo mientras espero al mozo. Me desbloqueo cuando el mozo me hace v()
+    try {
+        this->sEsperandoMozo->p(); //me bloqueo mientras espero al mozo. Me desbloqueo cuando el mozo me hace v()
+    } catch (int e) {
+        if (e == APAGON_MATA_SEMAFORO)
+            return;
+    }
     avanzarEstado();
 }
 
@@ -206,7 +212,13 @@ void Mesa::clienteEsperaCuenta() {
     std::cout << "Mesa(" << getpid() << "): Hago pedido de cuenta en el pipe del mozo [" << idCliente << "]"
               << std::endl;
 
-    this->sEsperandoMozo->p(); //me bloqueo mientras espero al mozo. Me desbloqueo cuando el mozo me hace v()
+
+    try {
+        this->sEsperandoMozo->p(); //me bloqueo mientras espero al mozo. Me desbloqueo cuando el mozo me hace v()
+    } catch (int e) {
+        if (e == APAGON_MATA_SEMAFORO)
+            return;
+    }
 
     avanzarEstado();
     avanzarEstado(); //Vuelvo al estado ESPERANDO_CLIENTE por si viene otro cliente.
