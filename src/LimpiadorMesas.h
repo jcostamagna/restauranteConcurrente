@@ -10,7 +10,7 @@
 #include <LockFd.h>
 #include "Forkeable.h"
 
-#define LIMPIAR_PEDIDOS "LIMPIAR_PEDIDOS"
+#define LIMPIAR_PEDIDOS 'X'
 
 class LimpiadorMesas: public Forkeable {
 

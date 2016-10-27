@@ -140,6 +140,7 @@ Restaurante::~Restaurante() {
 
 void Restaurante::apagonRestaurante() {
     vaciar_living();
+    limpiar_mesas();
 
     for (std::list<Mesa*>::iterator it = mesas.begin(); it != mesas.end(); ++it){
         kill((*it)->get_pid(),SIGCONT);
@@ -153,7 +154,7 @@ void Restaurante::apagonRestaurante() {
 
     kill(generadorClientes.get_pid(),SIGCONT);
 
-    limpiar_mesas();
+
 }
 
 void Restaurante::vaciar_living() {
@@ -199,12 +200,13 @@ void Restaurante::limpiar_mesas() {
     if (limpiador)
         delete limpiador;
 
+    limpiador = new LimpiadorMesas(pipePedidosMesas,lockLecturaMesas);
+    limpiador->start();
+
     std::stringstream stream;
-    stream << std::setfill('0') << std::setw(PID_LENGHT) << getpid();
-    stream << std::setfill('0') << std::setw(BUFFSIZE - PID_LENGHT) << LIMPIAR_PEDIDOS;
+    stream << std::setfill(LIMPIAR_PEDIDOS) << std::setw(BUFFSIZE) << LIMPIAR_PEDIDOS;
 
     pipePedidosMesas.escribir(stream.str().c_str(), BUFFSIZE);
 
-    limpiador = new LimpiadorMesas(pipePedidosMesas,lockLecturaMesas);
-    limpiador->start();
+
 }

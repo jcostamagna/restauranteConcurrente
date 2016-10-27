@@ -31,9 +31,12 @@ void LimpiadorMesas::run() {
 
 void LimpiadorMesas::rutinaLimpiador() {
     std::string pedido = "";
+    bool terminaLimpieza = false;
+
+    //Leemos con un lock de lectura
     lockLecturaMesas.tomarLock();
 
-    while (!pedido.compare(LIMPIAR_PEDIDOS)) {
+    while (!terminaLimpieza) {
         char buffer[BUFFSIZE];
 
         std::stringstream ss;
@@ -44,27 +47,30 @@ void LimpiadorMesas::rutinaLimpiador() {
         ss.flush();
         ss.clear();
 
-        //Leemos con un lock de lectura
-
         ssize_t bytesLeidos = this->pedidos.leer(static_cast<void *>(buffer), BUFFSIZE);  // Leo pedidos de cualquier mesa
 
 
-        if (bytesLeidos <= 0) return;
+        if (bytesLeidos <= 0) {
+            lockLecturaMesas.liberarLock();
+            return;
+        }
         std::string mensaje = buffer;
         mensaje.resize(bytesLeidos); //Si todos escribimos BUFFSIZE no haria falta...
 
-        std::stringstream ss1, ss2;
+        std::stringstream ss2;
         unsigned i;
-        for (i = 0; i < PID_LENGHT; ++i) {
-            ss1 << mensaje.at(i);
-        }
-        bool pedirCuenta = true;
-        for (; i < mensaje.length(); ++i) {
+        terminaLimpieza = true;
+        for (i=0; i < mensaje.length(); ++i) {
             ss2 << mensaje.at(i);
-            pedirCuenta &= mensaje.at(i) == '0';
+            terminaLimpieza &= mensaje.at(i) == LIMPIAR_PEDIDOS;
         }
+        //Si todos los mensajes son X, se termino la limpieza
 
         ss2 >> pedido;
+
+        ss << "Limpiador: tirando el pedido..." << pedido << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "Limpiador: tirando el pedido..." << pedido << std::endl;
     }
     lockLecturaMesas.liberarLock();
 }
