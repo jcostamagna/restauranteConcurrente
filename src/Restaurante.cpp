@@ -50,7 +50,6 @@ void Restaurante::iniciarMesas() {
         Semaforo *semParaMozos = new Semaforo(path, sem,0);
         Mesa* mesa = new Mesa(this->living, this->pipePedidosMesas, this->lockLecturaLiving, semParaMozos,  this->escrituraLiving, semCajaRestaurante, semDineroPerdido, menu);
         mesa->start();
-        //this->semaforosMesas[mesa->get_pid()] = semaforoConCocinero;
         this->semaforosMesas.insert(std::make_pair(mesa->get_pid(), semParaMozos));
         this->mesas.push_back(mesa);
     }
@@ -81,8 +80,6 @@ void Restaurante::iniciarRecepcionistas() {
         recepcionista->start();
         this->recepcionistas.push_back(recepcionista);
     }
-
-    //Inicializo en 0
 
 }
 
@@ -126,10 +123,11 @@ Restaurante::~Restaurante() {
 
     kill(this->cocinero->get_pid(), SIGINT);
     this->cocinero->stop();
+    delete cocinero;
 
     kill(this->gerente->get_pid(), SIGINT);
     this->gerente->stop();
-
+    delete gerente;
 
     kill(this->generadorClientes.get_pid(), SIGINT);
     this->generadorClientes.stop();
