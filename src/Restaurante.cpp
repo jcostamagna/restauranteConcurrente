@@ -8,16 +8,16 @@
 
 Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, int clientesCant, std::vector<std::pair<std::string, int>> menu)
         : recepCant(recepCant), mozosCant(mozosCant), mesasCant(mesasCant), clientesCant(clientesCant), menu(menu),
-          caja("/bin/cat", 'A'), semCajaRestaurante("/bin/echo",'z',0), cantClientesLiving("/bin/bash", 'z'),
+          caja("/bin/cat", 'A'), semCajaRestaurante("/bin/echo",'z',0), cantClientesLiving("/bin/cat", 'z'),
           escrituraLiving("CMakeCache.txt", 'z', 0), dineroPerdido("/bin/tar", 'b'),  semDineroPerdido("/bin/cp",'k',0) , generadorClientes(puerta, clientesCant),
           lockLecturaClientes(puerta.getFdLectura()), lockLecturaLiving(living.getFdLectura()),
           lockLecturaMesas(pipePedidosMesas.getFdLectura()) {}
 
 void Restaurante::iniciarPersonal() {
+	iniciarGerente();
     iniciarMesas();
     iniciarMozos();
     iniciarCocinero();
-    iniciarGerente();
     iniciarRecepcionistas();
     iniciarGeneradorClientes();
 

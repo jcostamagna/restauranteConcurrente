@@ -22,8 +22,9 @@ void Gerente::run() {
 
 void Gerente::rutinaGerente() {
     while (sigint_handler.getGracefulQuit() == 0) {
-        sleep(5);
+
         consultarDatos();
+        sleep(5);
     }
 }
 
