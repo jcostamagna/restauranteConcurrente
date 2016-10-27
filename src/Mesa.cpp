@@ -75,6 +75,9 @@ void Mesa::avanzarEstado() {
             // Con una probabilidad de 0.3 vuelve a pedir comida. Podria ser interminable...
             if (calcularRandom(10) < 3) {
                 estado = CLIENTE_SENTADO;
+                std::stringstream ss;
+                ss << "Mesa(" << getpid() << "), cliente [" << idCliente << "]: Vuelvo a pedir comida!! :)" << std::endl;
+                Log::getInstance()->log(ss.str());
             } else {
                 estado = CLIENTE_ESPERA_CUENTA;
             }
@@ -93,6 +96,7 @@ void Mesa::avanzarEstado() {
 
 void Mesa::esperandoCliente() {
     cuentaSesion = 0; // reseteo la cuenta antes de que venga otro grupo de comensales
+    idCliente = -1;
 
     // lector
     char buffer[BUFFSIZE];
@@ -159,20 +163,18 @@ void Mesa::clienteSentado() {
     pedidos.escribir(static_cast<const void *>(dato.c_str()), dato.size());
 
     ss.str("");
-    ss << "Mesa(" << getpid() << "): Hago pedido de [" << dato << "] en el pipe del cliente [" << idCliente << "]"
-       << std::endl;
+    ss << "Mesa(" << getpid() << "), cliente [" << idCliente << "]: Hago pedido de [" << dato << "] en el pipe" << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Mesa(" << getpid() << "): Hago pedido de [" << dato << "] en el pipe del cliente [" << idCliente
-              << "]" << std::endl;
+    std::cout << "Mesa(" << getpid() << "), cliente [" << idCliente << "]: Hago pedido de [" << dato << "] en el pipe" << std::endl;
 
     avanzarEstado();
 }
 
 void Mesa::clienteEsperaPedido() {
     std::stringstream ss;
-    ss << "Mesa(" << getpid() << "): Esperando Comida " << "del cliente [" << idCliente << "]" << std::endl;
+    ss << "Mesa(" << getpid() << "), cliente [" << idCliente << "]: Esperando Comida "<< std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Mesa(" << getpid() << "): Esperando Comida " << "del cliente [" << idCliente << "]" << std::endl;
+    std::cout << "Mesa(" << getpid() << "), cliente [" << idCliente << "]: Esperando Comida "<< std::endl;
 
     try {
         this->sEsperandoMozo->p(); //me bloqueo mientras espero al mozo. Me desbloqueo cuando el mozo me hace v()
@@ -185,9 +187,9 @@ void Mesa::clienteEsperaPedido() {
 
 void Mesa::comer() {
     std::stringstream ss;
-    ss << "Mesa(" << getpid() << ") del cliente [" << idCliente << "]: COMIENDO" << std::endl;
+    ss << "Mesa(" << getpid() << "), cliente [" << idCliente << "]: COMIENDO" << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Mesa(" << getpid() << ") del cliente [" << idCliente << "]: COMIENDO" << std::endl;
+    std::cout << "Mesa(" << getpid() << "), cliente [" << idCliente << "]: COMIENDO" << std::endl;
 
     sleep(1);
     if (apagon_handler_procesos.getApagon() == 1) {
@@ -195,19 +197,19 @@ void Mesa::comer() {
         apagon_handler_procesos.stopApagon();
 
         ss.str("");
-        ss << "APAGON: Mesa(" << getpid() << ") del cliente [" << idCliente << "]: No pude terminar de comer por el apagon!" << std::endl;
+        ss << "APAGON: Mesa(" << getpid() << "), cliente [" << idCliente << "]: No pude terminar de comer por el apagon!" << std::endl;
         Log::getInstance()->log(ss.str());
-        std::cout << "APAGON: Mesa(" << getpid() << ") del cliente [" << idCliente << "]: No pude terminar de comer por el apagon!" << std::endl;
+        std::cout << "APAGON: Mesa(" << getpid() << "), cliente [" << idCliente << "]: No pude terminar de comer por el apagon!" << std::endl;
         return;
     } else {
         ss.str("");
 
-        ss << "Mesa(" << getpid() << ") del cliente [" << idCliente << "]: Ya comi, que rico!!" << std::endl;
+        ss << "Mesa(" << getpid() << "), cliente [" << idCliente << "]: Ya comi, que rico!!" << std::endl;
 
 
         Log::getInstance()->log(ss.str());
 
-        std::cout << "Mesa(" << getpid() << ") del cliente [" << idCliente << "]: Ya comi, que rico!!" << std::endl;
+        std::cout << "Mesa(" << getpid() << "), cliente [" << idCliente << "]: Ya comi, que rico!!" << std::endl;
 
         avanzarEstado();
     }
@@ -224,12 +226,10 @@ void Mesa::clienteEsperaCuenta() {
     pedidos.escribir(static_cast<const void *>(dato.c_str()), dato.size());
 
     ss.str("");
-    ss << "Mesa(" << getpid() << "): Hago pedido de cuenta en el pipe. Del cliente [" << idCliente << "]"
-       << std::endl;
+    ss << "Mesa(" << getpid() << "), cliente [" << idCliente << "]: Hago pedido de cuenta en el pipe" << std::endl;
     Log::getInstance()->log(ss.str());
 
-    std::cout << "Mesa(" << getpid() << "): Hago pedido de cuenta en el pipe. Del cliente [" << idCliente << "]"
-              << std::endl;
+    std::cout << "Mesa(" << getpid() << "), cliente [" << idCliente << "]: Hago pedido de cuenta en el pipe"  << std::endl;
 
     try {
         this->sEsperandoMozo->p(); //me bloqueo mientras espero al mozo. Me desbloqueo cuando el mozo me hace v()
@@ -239,10 +239,10 @@ void Mesa::clienteEsperaCuenta() {
     }
 
     ss.str("");
-    ss << "Mesa(" << getpid() << "): Pagando [" << cuentaSesion << "] pesos" << std::endl;
+    ss << "Mesa(" << getpid() << "), cliente [" << idCliente << "]: Pagando [" << cuentaSesion << "] pesos" << std::endl;
     Log::getInstance()->log(ss.str());
 
-    std::cout << "Mesa(" << getpid() << "): Pagando [" << cuentaSesion << "] pesos" << std::endl;
+    std::cout << "Mesa(" << getpid() << "), cliente [" << idCliente << "]: Pagando [" << cuentaSesion << "] pesos" << std::endl;
 
     //pago
     semCajaRestaurante.p();
@@ -256,9 +256,9 @@ void Mesa::clienteEsperaCuenta() {
 
 void Mesa::apagonMesa() {
     std::stringstream ss;
-    ss << "APAGON: Mesa(" << getpid() << ") del cliente [" << idCliente << "]" << std::endl;
+    ss << "APAGON: Mesa(" << getpid() << "), cliente [" << idCliente << "]" << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "APAGON: Mesa(" << getpid() << ") del cliente [" << idCliente << "]" << std::endl;
+    std::cout << "APAGON: Mesa(" << getpid() << "), cliente [" << idCliente << "]" << std::endl;
 
     //actualizo la plata que se perdio
     semDineroPerdido.p();

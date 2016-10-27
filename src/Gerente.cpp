@@ -53,7 +53,7 @@ void Gerente::consultarClientesLiving(std::stringstream &ss) {
 void Gerente::consultarCajaResto(std::stringstream &ss) {
     semCajaRestaurante.p();
 
-    ss << "\t\t Cantidad de dinero en la caja del restaurante: \t" << cajaRestaurante.leer() << std::endl;
+    ss << "\t\t Cantidad de dinero en la caja del restaurante: \t" << cajaRestaurante.leer() << " pesos" << std::endl;
 
     semCajaRestaurante.v();
 }
@@ -61,7 +61,7 @@ void Gerente::consultarCajaResto(std::stringstream &ss) {
 void Gerente::consultarDineroPerdido(std::stringstream &ss) {
     semDineroPerdido.p();
 
-    ss << "\t\t Cantidad de dinero perdido por cortes de luz: \t" << dineroPerdido.leer() << std::endl;
+    ss << "\t\t Cantidad de dinero perdido por cortes de luz: \t" << dineroPerdido.leer() << " pesos" << std::endl;
 
     semDineroPerdido.v();
 }
