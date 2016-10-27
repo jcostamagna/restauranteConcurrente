@@ -17,9 +17,10 @@ void Restaurante::iniciarPersonal() {
     iniciarMesas();
     iniciarMozos();
     iniciarCocinero();
+    iniciarGerente();
     iniciarRecepcionistas();
     iniciarGeneradorClientes();
-    //iniciarGerente();
+
 }
 
 void Restaurante::iniciarGeneradorClientes(){
