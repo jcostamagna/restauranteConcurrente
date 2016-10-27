@@ -8,7 +8,6 @@
 #include <SIGINT_Handler.h>
 #include "Recepcionista.h"
 #include <Log.h>
-#include <sstream>
 
 
 Recepcionista::Recepcionista(Pipe &clientes, LockFd& lecturaPuerta, Semaforo& escrituraLiving,Pipe &living) :
@@ -89,16 +88,15 @@ void Recepcionista::esperando() {
 
 
     escrituraLiving.p(); //semaforo para que la cantidad de gente en el living sea siempre valida (nadie puede sumar ni restar)
-
-    //LLevo clientes al living, o mesa si hay disponible
-    this->living.escribir(static_cast<const void *>(mensaje.c_str()), mensaje.size());
-
-    std::cout << "Recepcionista("<< getpid() <<"): LLeve al cliente [" << mensaje << "] " << "al living"
+    std::cout << "Recepcionista("<< getpid() <<"): LLevo al cliente [" << mensaje << "] " << "al living"
               << std::endl;
-    ss << "Recepcionista("<< getpid() <<"): Lleve al cliente [" << mensaje << "] " << "al living"
+    ss << "Recepcionista("<< getpid() <<"): Llevo al cliente [" << mensaje << "] " << "al living"
        << std::endl;
     Log::getInstance()->log(ss.str());
     ss.str("");
+
+    //LLevo clientes al living, o mesa si hay disponible
+    this->living.escribir(static_cast<const void *>(mensaje.c_str()), mensaje.size());
 
     // aumento en 1 la cantidad de clientes en el living
     int cantClientes = this->cantClientesLiving.leer();

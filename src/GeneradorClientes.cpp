@@ -47,7 +47,8 @@ void GeneradorClientes::rutinaGenerador() {
 
 
         i++;
-        sleep(0.25);
+        unsigned int sleeep = 500000;
+        usleep(sleeep);
 
         if (i>= cantClientes) break;
 
