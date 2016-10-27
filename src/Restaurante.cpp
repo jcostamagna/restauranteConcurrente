@@ -5,16 +5,29 @@
 #include <sstream>
 #include "Restaurante.h"
 #include "Log.h"
+#include "lockFiles.h"
 
 Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, int clientesCant, std::vector<std::pair<std::string, int>> menu)
         : recepCant(recepCant), mozosCant(mozosCant), mesasCant(mesasCant), clientesCant(clientesCant), menu(menu),
-          caja("/bin/cat", 'A'), semCajaRestaurante("/bin/echo",'z',0), cantClientesLiving("/bin/cat", 'z'),
-          escrituraLiving("CMakeCache.txt", 'z', 0), dineroPerdido("/bin/tar", 'b'),  semDineroPerdido("/bin/cp",'k',0) , generadorClientes(puerta, clientesCant),
+          caja(SM_CAJA_FILE, SM_CAJA_LETRA), semCajaRestaurante(SEM_CAJA_FILE,SEM_CAJA_LETRA,0),
+          cantClientesLiving(SM_CLIENTES_LIVING_FILE, SM_CLIENTES_LIVING_LETRA),
+          escrituraLiving(SEM_CLIENTES_LIVING_FILE, SEM_CLIENTES_LIVING_LETRA, 0),
+          dineroPerdido(SM_DINERO_PERDIDO_FILE, SM_DINERO_PERDIDO_LETRA),
+          semDineroPerdido("/bin/cp",'k',0) , generadorClientes(puerta, clientesCant),
           lockLecturaClientes(puerta.getFdLectura()), lockLecturaLiving(living.getFdLectura()),
           lockLecturaMesas(pipePedidosMesas.getFdLectura()) {}
 
 void Restaurante::iniciarPersonal() {
-	iniciarGerente();
+    caja.escribir(0);
+    semCajaRestaurante.v();
+
+    dineroPerdido.escribir(0);
+    semDineroPerdido.v();
+
+    cantClientesLiving.escribir(0);
+    escrituraLiving.v();
+
+    iniciarGerente();
     iniciarMesas();
     iniciarMozos();
     iniciarCocinero();
@@ -39,17 +52,11 @@ void Restaurante::iniciarMesas() {
         this->semaforosMesas.insert(std::make_pair(mesa->get_pid(), semParaMozos));
         this->mesas.push_back(mesa);
     }
-
-    caja.escribir(0);
-    dineroPerdido.escribir(0);
-    semCajaRestaurante.v();
-    semDineroPerdido.v();
-
 }
 
 void Restaurante::iniciarMozos() {
     for (int i = 0; i < mozosCant; i++) {
-        std::string path = "/bin/bash";
+        std::string path = "/bin/chmod";
         char sem = (char)'a'+i;
         Semaforo *semaforo = new Semaforo(path, sem,0); // attentos, cada uno tiene un semaforoConCocinero distinto
         Mozo* mozoi = new Mozo(i,pipePedidosMesas,lockLecturaMesas,pipeECocinero,*semaforo, this->semaforosMesas);
@@ -74,9 +81,7 @@ void Restaurante::iniciarRecepcionistas() {
     }
 
     //Inicializo en 0
-    cantClientesLiving.escribir(0);
 
-    escrituraLiving.v();
 }
 
 void Restaurante::iniciarGerente() {

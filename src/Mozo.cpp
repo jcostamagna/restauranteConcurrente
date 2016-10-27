@@ -5,13 +5,14 @@
 #include <iostream>
 #include "Mozo.h"
 #include "Log.h"
+#include "lockFiles.h"
 #include <iomanip>
 
 Mozo::Mozo(int id, Pipe &pedidos,LockFd& lockLecturaMesas,Pipe &escrCocinero, Semaforo &semaforo,
            const std::map<int, Semaforo *> &semaforosMesas)
         : id(id), pedidos(pedidos), lockLecturaMesas(lockLecturaMesas),eCocinero(escrCocinero),
           vive(true),estado(RECIBIENDO_ORDEN), semaforoConCocinero(semaforo), semaforosMesas(semaforosMesas),
-          cajaResto("/bin/cat", 'A'), idMesa(-1) {}
+          cajaResto(SM_CAJA_FILE, SM_CAJA_LETRA), idMesa(-1) {}
 
 Mozo::~Mozo() {
 

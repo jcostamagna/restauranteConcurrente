@@ -6,13 +6,17 @@
 #include <sstream>
 #include "Mesa.h"
 #include "Log.h"
+#include "lockFiles.h"
 
 Mesa::Mesa(Pipe &living, Pipe &pedidos, LockFd &lockLiving, Semaforo *sEsperandoMozo, Semaforo &escrituraLiving,
-           Semaforo& semCajaRestaurante, Semaforo& semDineroPerdido, std::vector<std::pair<std::string, int> > menu) :
+           Semaforo &semCajaRestaurante, Semaforo &semDineroPerdido, std::vector<std::pair<std::string, int> > menu) :
         living(living), pedidos(pedidos), lockLiving(lockLiving), estado(ESPERANDO_CLIENTE),
-        sEsperandoMozo(sEsperandoMozo), idCliente(-1), cantClientesLiving("/bin/bash", 'z'), escrituraLiving(escrituraLiving),
-        cuentaSesion(0),  dineroPerdido("/bin/tar", 'b'),
-        semDineroPerdido(semDineroPerdido), cajaResto("/bin/cat", 'A'), semCajaRestaurante(semCajaRestaurante), menu(menu){}
+        sEsperandoMozo(sEsperandoMozo), idCliente(-1),
+        cantClientesLiving(SM_CLIENTES_LIVING_FILE, SM_CLIENTES_LIVING_LETRA),
+        escrituraLiving(escrituraLiving),
+        cuentaSesion(0), dineroPerdido(SM_DINERO_PERDIDO_FILE, SM_DINERO_PERDIDO_LETRA),
+        semDineroPerdido(semDineroPerdido), cajaResto(SM_CAJA_FILE, SM_CAJA_LETRA),
+        semCajaRestaurante(semCajaRestaurante), menu(menu) {}
 
 void Mesa::run() {
     this->rutinaMesa();
@@ -44,6 +48,7 @@ void Mesa::rutinaMesa() {
                 break;
             case CLIENTE_COMIENDO:
                 comer();
+                break;
             case CLIENTE_ESPERA_CUENTA:
                 clienteEsperaCuenta();
                 break;
@@ -70,10 +75,11 @@ void Mesa::avanzarEstado() {
             break;
         case CLIENTE_COMIENDO:
             // Con una probabilidad de 0.3 vuelve a pedir comida. Podria ser interminable...
-            if (calcularRandom(10) < 3)
+            if (calcularRandom(10) < 3) {
                 estado = CLIENTE_SENTADO;
-            else
+            } else {
                 estado = CLIENTE_ESPERA_CUENTA;
+            }
             break;
         case CLIENTE_ESPERA_CUENTA:
             estado = ESPERANDO_CLIENTE;
@@ -104,7 +110,9 @@ void Mesa::esperandoCliente() {
     ssize_t bytesLeidos = this->living.leer(static_cast<void *>(buffer), BUFFSIZE);
     escrituraLiving.p();
 
-    if (bytesLeidos <= 0){
+    if (bytesLeidos <= 0) {
+        std::cerr << "PASE SIN HABER LEIDO NADA!!!!!!!!!" << std::endl;
+        Log::getInstance()->log("PASE SIN HABER LEIDO NADA!!!!!!!!!\n");
         this->lockLiving.liberarLock();
         escrituraLiving.v();
         return;
@@ -159,8 +167,6 @@ void Mesa::clienteSentado() {
     std::cout << "Mesa(" << getpid() << "): Hago pedido de [" << dato << "] en el pipe del cliente [" << idCliente
               << "]" << std::endl;
 
-    // EL PRECIO
-    //this->cuenta += 50;
     avanzarEstado();
 }
 
@@ -201,16 +207,16 @@ void Mesa::clienteEsperaCuenta() {
     std::ostringstream ss;
     ss << std::setfill('0') << std::setw(PID_LENGHT) << getpid();
     //Pedir algo de 0 pesos es pedir la cuenta
-    ss << std::setfill('0') << std::setw(BUFFSIZE-PID_LENGHT) << 0;
+    ss << std::setfill('0') << std::setw(BUFFSIZE - PID_LENGHT) << 0;
     std::string dato(ss.str());
     pedidos.escribir(static_cast<const void *>(dato.c_str()), dato.size());
 
     ss.str("");
-    ss << "Mesa(" << getpid() << "): Hago pedido de cuenta en el pipe del mozo [" << idCliente << "]"
+    ss << "Mesa(" << getpid() << "): Hago pedido de cuenta en el pipe. Del cliente [" << idCliente << "]"
        << std::endl;
     Log::getInstance()->log(ss.str());
 
-    std::cout << "Mesa(" << getpid() << "): Hago pedido de cuenta en el pipe del mozo [" << idCliente << "]"
+    std::cout << "Mesa(" << getpid() << "): Hago pedido de cuenta en el pipe. Del cliente [" << idCliente << "]"
               << std::endl;
 
     try {
@@ -229,11 +235,21 @@ void Mesa::clienteEsperaCuenta() {
     //pago
     semCajaRestaurante.p();
     int caja = cajaResto.leer();
-    cajaResto.escribir(caja+cuentaSesion);
+    cajaResto.escribir(caja + cuentaSesion);
     semCajaRestaurante.v();
     cuentaSesion = 0;
 
+    ss.str("");
+    ss << "Mesa(" << getpid() << "): Estado actual [" << estado << "]\n AVANZO ESTADO...." << std::endl;
+    Log::getInstance()->log(ss.str());
+
+
     avanzarEstado(); //Vuelvo al estado ESPERANDO_CLIENTE por si viene otro cliente.
+
+
+    ss.str("");
+    ss << "Mesa(" << getpid() << "): Estado actual [" << estado << "]" << std::endl;
+    Log::getInstance()->log(ss.str());
 }
 
 void Mesa::apagonMesa() {
@@ -245,14 +261,13 @@ void Mesa::apagonMesa() {
     //actualizo la plata que se perdio
     semDineroPerdido.p();
     int perdido = dineroPerdido.leer();
-    dineroPerdido.escribir(perdido+cuentaSesion);
+    dineroPerdido.escribir(perdido + cuentaSesion);
     semDineroPerdido.v();
     cuentaSesion = 0;
 
     sleep(TIEMPO_APAGON);
     avanzarEstado();
 }
-
 
 
 void Mesa::pedirComida(std::ostringstream &stream) {
@@ -262,12 +277,12 @@ void Mesa::pedirComida(std::ostringstream &stream) {
     int precio = plato.second;
     cuentaSesion += precio;
 
-    stream << std::setfill('0') << std::setw(BUFFSIZE-PID_LENGHT) << comida;
+    stream << std::setfill('0') << std::setw(BUFFSIZE - PID_LENGHT) << comida;
 }
 
 
-int Mesa::calcularRandom (int max) {
-    srand ( time(NULL) );
+int Mesa::calcularRandom(int max) {
+    srand(time(NULL));
     int resultado = rand() % max;
     return resultado;
 }

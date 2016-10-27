@@ -4,10 +4,12 @@
 
 #include "Gerente.h"
 #include "Log.h"
+#include "lockFiles.h"
 
 Gerente::Gerente(Semaforo &semClientesLiving, Semaforo &semCajaRestaurante, Semaforo &semDineroPerdido) :
-        semClientesLiving(semClientesLiving), cantClientesLiving("/bin/bash", 'z'), semCajaRestaurante(semCajaRestaurante),
-        cajaRestaurante("/bin/cat", 'A'), dineroPerdido("/bin/tar", 'b'), semDineroPerdido(semDineroPerdido) {}
+        semClientesLiving(semClientesLiving), cantClientesLiving(SM_CLIENTES_LIVING_FILE, SM_CLIENTES_LIVING_LETRA),
+        semCajaRestaurante(semCajaRestaurante), cajaRestaurante(SM_CAJA_FILE, SM_CAJA_LETRA),
+        dineroPerdido(SM_DINERO_PERDIDO_FILE, SM_DINERO_PERDIDO_LETRA), semDineroPerdido(semDineroPerdido) {}
 
 
 Gerente::~Gerente() {

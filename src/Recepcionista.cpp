@@ -7,12 +7,14 @@
 #include <iostream>
 #include <SIGINT_Handler.h>
 #include "Recepcionista.h"
+#include "lockFiles.h"
 #include <Log.h>
 
 
 Recepcionista::Recepcionista(Pipe &clientes, LockFd& lecturaPuerta, Semaforo& escrituraLiving,Pipe &living) :
                             puerta(clientes),living(living), mesaLibre(false), estado(ESPERANDO),
-                            lecturaPuerta(lecturaPuerta), escrituraLiving(escrituraLiving), cantClientesLiving("/bin/bash", 'z'){}
+                            lecturaPuerta(lecturaPuerta), escrituraLiving(escrituraLiving),
+                            cantClientesLiving(SM_CLIENTES_LIVING_FILE, SM_CLIENTES_LIVING_LETRA){}
 
 void Recepcionista::run() {
 
