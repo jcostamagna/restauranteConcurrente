@@ -19,12 +19,12 @@
       <sourceFolder url="file://$MODULE_DIR$/test/lib/googletest/cmake/internal_utils.cmake" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Semaforos/Semaforo.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Semaforos/Semaforo.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/lockFiles.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Forkeable.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Gerente.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Forkeable.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Gerente.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Parser.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/lockFiles.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Log.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Restaurante.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Cocinero.cpp" isTestSource="false" />
