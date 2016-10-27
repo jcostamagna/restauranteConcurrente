@@ -71,8 +71,6 @@ public:
 
     void iniciarPersonal();
 
-    void abrirPuertas();
-
     void apagonRestaurante();
 
     void vaciar_living();

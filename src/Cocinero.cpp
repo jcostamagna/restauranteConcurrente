@@ -25,6 +25,10 @@ void Cocinero::run() {
 
 void Cocinero::rutinaCocinero() {
     while (sigint_handler.getGracefulQuit() == 0) {
+        if (apagon_handler_procesos.getApagon() == 1) {
+            estado = APAGON_COCINERO;
+            apagon_handler_procesos.stopApagon();
+        }
         switch (estado) {
             case ESPERANDO_PEDIDO:
                 esperandoPedido();
@@ -52,7 +56,7 @@ void Cocinero::avanzarEstado() {
             estado = ESPERANDO_PEDIDO;
             break;
         case APAGON_COCINERO:
-            estado = APAGON_COCINERO;
+            estado = ESPERANDO_PEDIDO;
             break;
         default:
             estado = ESPERANDO_PEDIDO;
@@ -104,26 +108,42 @@ void Cocinero::esperandoPedido() {
 }
 
 void Cocinero::entregandoPedido() {
-    std::stringstream ss;
-    ss << "Cocinero: Entrego pedido a mozo" << std::endl;
-    Log::getInstance()->log(ss.str());
-    std::cout << "Cocinero: Entrego pedido a mozo" << std::endl;
+    if (apagon_handler_procesos.getApagon() == 1) {
+        estado = APAGON_COCINERO;
+        apagon_handler_procesos.stopApagon();
 
-    ss.str("");
-    ss << "Cocinero: Pongo en verde el semaforo con el mozo ->" << idMozoCocinarle << "<-" << std::endl;
-    Log::getInstance()->log(ss.str());
-    std::cout << "Cocinero: Pongo en verde el semaforo con el mozo ->" << idMozoCocinarle << "<-" << std::endl;
-    if (semaforosCocineroMozos.size() > idMozoCocinarle) {
-        std::list<Semaforo *>::iterator it = semaforosCocineroMozos.begin();
-        std::advance(it, idMozoCocinarle);
-        (*it)->v();
+        std::stringstream ss;
+        ss.str("");
+        ss << "APAGON: Cocinero[" << getpid() << "] No entrego el pedido por APAGON!" << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "APAGON: Cocinero[" << getpid() << "] No entrego el pedido por apagon!" << std::endl;
+    } else {
+        std::stringstream ss;
+        ss << "Cocinero: Entrego pedido a mozo" << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "Cocinero: Entrego pedido a mozo" << std::endl;
+        ss.str("");
+        ss << "Cocinero: Pongo en verde el semaforo con el mozo ->" << idMozoCocinarle << "<-" << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "Cocinero: Pongo en verde el semaforo con el mozo ->" << idMozoCocinarle << "<-" << std::endl;
+        if (semaforosCocineroMozos.size() > idMozoCocinarle) {
+            std::list<Semaforo *>::iterator it = semaforosCocineroMozos.begin();
+            std::advance(it, idMozoCocinarle);
+            (*it)->v();
+        }
+        idMozoCocinarle = 999; // para que no entre en este if?
+        avanzarEstado();
     }
-    idMozoCocinarle = 999; //para que no entre en este if
-    avanzarEstado();
 }
 
 void Cocinero::apagon() {
+    std::stringstream ss;
+    ss << "APAGON: Cocinero[" << getpid() << "] MODO APAGON" << std::endl;
+    Log::getInstance()->log(ss.str());
+    std::cout << "APAGON: Cocinero[" << getpid() << "] MODO APAGON" << std::endl;
 
+    sleep(TIEMPO_APAGON);
+    avanzarEstado();
 }
 
 Cocinero::~Cocinero() {

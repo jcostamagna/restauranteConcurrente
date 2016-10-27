@@ -22,10 +22,8 @@ void Mesa::run() {
     this->rutinaMesa();
 
     this->living.cerrar();
-    //this->pedidos.cerrar();
-    //this->living.cerrar();
-    //this->escrituraLiving.eliminar();
-    //this->sEsperandoMozo.eliminar();
+    this->pedidos.cerrar();
+
     std::cout << "Termino el proceso mesa " << getpid() << std::endl;
 
 }
@@ -192,13 +190,27 @@ void Mesa::comer() {
     std::cout << "Mesa(" << getpid() << ") del cliente [" << idCliente << "]: COMIENDO" << std::endl;
 
     sleep(1);
+    if (apagon_handler_procesos.getApagon() == 1) {
+        estado = APAGON_MESA;
+        apagon_handler_procesos.stopApagon();
 
-    ss.str("");
-    ss << "Mesa(" << getpid() << ") del cliente [" << idCliente << "]: Ya comi, que rico!!" << std::endl;
-    Log::getInstance()->log(ss.str());
-    std::cout << "Mesa(" << getpid() << ") del cliente [" << idCliente << "]: Ya comi, que rico!!" << std::endl;
+        ss.str("");
+        ss << "APAGON: Mesa(" << getpid() << ") del cliente [" << idCliente << "]: No pude terminar de comer por el apagon!" << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "APAGON: Mesa(" << getpid() << ") del cliente [" << idCliente << "]: No pude terminar de comer por el apagon!" << std::endl;
+        return;
+    } else {
+        ss.str("");
 
-    avanzarEstado();
+        ss << "Mesa(" << getpid() << ") del cliente [" << idCliente << "]: Ya comi, que rico!!" << std::endl;
+
+
+        Log::getInstance()->log(ss.str());
+
+        std::cout << "Mesa(" << getpid() << ") del cliente [" << idCliente << "]: Ya comi, que rico!!" << std::endl;
+
+        avanzarEstado();
+    }
 }
 
 void Mesa::clienteEsperaCuenta() {
@@ -239,17 +251,7 @@ void Mesa::clienteEsperaCuenta() {
     semCajaRestaurante.v();
     cuentaSesion = 0;
 
-    ss.str("");
-    ss << "Mesa(" << getpid() << "): Estado actual [" << estado << "]\n AVANZO ESTADO...." << std::endl;
-    Log::getInstance()->log(ss.str());
-
-
     avanzarEstado(); //Vuelvo al estado ESPERANDO_CLIENTE por si viene otro cliente.
-
-
-    ss.str("");
-    ss << "Mesa(" << getpid() << "): Estado actual [" << estado << "]" << std::endl;
-    Log::getInstance()->log(ss.str());
 }
 
 void Mesa::apagonMesa() {

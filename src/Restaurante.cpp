@@ -105,15 +105,15 @@ Restaurante::~Restaurante() {
         delete (*it);
     }
 
-    for (std::map<int, Semaforo*>::iterator it = semaforosMesas.begin(); it != semaforosMesas.end(); ++it){
-        (*it).second->eliminar();
-        delete (*it).second;
-    }
-
     for (std::list<Mesa*>::iterator it = mesas.begin(); it != mesas.end(); ++it){
         kill((*it)->get_pid(), SIGINT);
         (*it)->stop();
         delete (*it);
+    }
+
+    for (std::map<int, Semaforo*>::iterator it = semaforosMesas.begin(); it != semaforosMesas.end(); ++it){
+        (*it).second->eliminar();
+        delete (*it).second;
     }
 
     for (std::list<Recepcionista*>::iterator it = recepcionistas.begin(); it != recepcionistas.end(); ++it){
@@ -143,6 +143,12 @@ void Restaurante::apagonRestaurante() {
     for (std::list<Mesa*>::iterator it = mesas.begin(); it != mesas.end(); ++it){
         kill((*it)->get_pid(),SIGCONT);
     }
+
+    for (std::list<Mozo*>::iterator it = mozos.begin(); it != mozos.end(); ++it){
+        kill((*it)->get_pid(),SIGCONT);
+    }
+
+    kill(cocinero->get_pid(),SIGCONT);
 
     kill(generadorClientes.get_pid(),SIGCONT);
 }
@@ -185,5 +191,3 @@ void Restaurante::vaciar_living() {
     this->lockLecturaLiving.liberarLock();
     escrituraLiving.v();
 }
-
-
