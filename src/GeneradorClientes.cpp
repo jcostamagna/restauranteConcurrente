@@ -16,7 +16,7 @@ GeneradorClientes::GeneradorClientes (Pipe& clientes, int cantClientes): cantCli
 void GeneradorClientes::run() {
 
     // se registra el event handler declarado antes
-    SignalHandler :: getInstance()->registrarHandler ( SIGINT,&sigint_handler );
+    //SignalHandler :: getInstance()->registrarHandler ( SIGINT,&sigint_handler );
 
 
     this->rutinaGenerador();

@@ -26,9 +26,6 @@ void Restaurante::iniciarGeneradorClientes(){
     this->generadorClientes.start();
 }
 
-void Restaurante::abrirPuertas() {
-}
-
 
 void Restaurante::iniciarMesas() {
     for (int i = 0; i < mesasCant; i++){
