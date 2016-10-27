@@ -142,6 +142,12 @@ void Restaurante::apagonRestaurante() {
     vaciar_living();
     limpiar_mesas();
 
+    std::stringstream stream;
+    stream << std::setfill(LIMPIAR_PEDIDOS) << std::setw(BUFFSIZE) << LIMPIAR_PEDIDOS;
+    pipeECocinero.escribir(stream.str().c_str(), BUFFSIZE);
+
+    kill(cocinero->get_pid(),SIGCONT);
+
     for (std::list<Mesa*>::iterator it = mesas.begin(); it != mesas.end(); ++it){
         kill((*it)->get_pid(),SIGCONT);
     }
@@ -150,7 +156,7 @@ void Restaurante::apagonRestaurante() {
         kill((*it)->get_pid(),SIGCONT);
     }
 
-    kill(cocinero->get_pid(),SIGCONT);
+
 
     kill(generadorClientes.get_pid(),SIGCONT);
 

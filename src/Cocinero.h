@@ -39,6 +39,8 @@ public:
     virtual ~Cocinero();
 
     void cocinar(std::string pedido);
+
+    void limpiarPipePedidos();
 };
 
 

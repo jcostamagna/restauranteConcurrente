@@ -7,6 +7,7 @@
 #include <iomanip>
 #include "Cocinero.h"
 #include "Log.h"
+#include "LimpiadorMesas.h"
 
 Cocinero::Cocinero(Pipe &escrCocinero, std::list<Semaforo *> &semaforos) :
         eCocinero(escrCocinero), semaforosCocineroMozos(semaforos), vive(true),
@@ -142,6 +143,8 @@ void Cocinero::apagon() {
     Log::getInstance()->log(ss.str());
     std::cout << "APAGON: Cocinero[" << getpid() << "] MODO APAGON" << std::endl;
 
+    limpiarPipePedidos();
+
     sleep(TIEMPO_APAGON);
     avanzarEstado();
 }
@@ -152,4 +155,48 @@ Cocinero::~Cocinero() {
 
 void Cocinero::cocinar(std::string pedido) {
     sleep(1);  // dormir la cantidad de comidas * 0.5
+}
+
+void Cocinero::limpiarPipePedidos() {
+    std::string pedido = "";
+    bool terminaLimpieza = false;
+
+    //Leemos con un lock de lectura
+
+    while (!terminaLimpieza) {
+        char buffer[BUFFSIZE];
+
+        std::stringstream ss;
+        ss << "COCINERO: esperando para limpiar pedido..." << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "COCINERO: esperando para limpiar pedido..." << std::endl;
+        ss.str("");
+        ss.flush();
+        ss.clear();
+
+        ssize_t bytesLeidos = this->eCocinero.leer(static_cast<void *>(buffer), BUFFSIZE);  // Leo pedidos de cualquier mozo
+
+        if (bytesLeidos <= 0) {
+            return;
+        }
+        std::string mensaje = buffer;
+        mensaje.resize(bytesLeidos); //Si todos escribimos BUFFSIZE no haria falta...
+
+        std::stringstream ss2;
+        unsigned i;
+        terminaLimpieza = true;
+        for (i = PID_LENGHT; i < mensaje.length(); ++i) {
+            ss2 << mensaje.at(i);
+            terminaLimpieza &= mensaje.at(i) == LIMPIAR_PEDIDOS;
+        }
+        //Si todos los chars son X, se termino la limpieza
+
+        ss2 >> pedido;
+
+        ss << "COCINERO: tirando el pedido..." << pedido << std::endl;
+        Log::getInstance()->log(ss.str());
+        std::cout << "COCINERO: tirando el pedido..." << pedido << std::endl;
+    }
+
+
 }

@@ -60,7 +60,7 @@ void LimpiadorMesas::rutinaLimpiador() {
         std::stringstream ss2;
         unsigned i;
         terminaLimpieza = true;
-        for (i=0; i < mensaje.length(); ++i) {
+        for (i=PID_LENGHT; i < mensaje.length(); ++i) {
             ss2 << mensaje.at(i);
             terminaLimpieza &= mensaje.at(i) == LIMPIAR_PEDIDOS;
         }
