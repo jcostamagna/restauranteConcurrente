@@ -8,7 +8,14 @@
 #include "Signal/Apagon_Handler.h"
 #define SALIR "q"
 
-int main() {
+int main(int argc, char** argv) {
+    std::string logFileName = "";
+    if (argc < 2) {
+        std::cout << "uso " << argv[0] << "<nombre_archivo_log>" << std::endl;
+        return 0;
+    }
+    logFileName = argv[1];
+
     std::string fileName = "pid.txt";
     std::ofstream myfile (fileName);
     if (myfile.is_open())
@@ -19,7 +26,7 @@ int main() {
     else
         std::cout << "No se pudo crear archivo para el apagon";
 
-    Log::getInstance()->setearArchivo("log.txt");
+    Log::getInstance()->setearArchivo(logFileName.c_str());
 
     std::string string("restaurante.config");
 
