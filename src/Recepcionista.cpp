@@ -66,9 +66,9 @@ void Recepcionista::esperando() {
     char buffer[BUFFSIZE];
 
     std::stringstream ss;
-    ss << "Recepcionista("<< getpid() <<"): Esperando clientes..." << std::endl;
+    ss << "Recepcionista: Esperando clientes..." << std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Recepcionista("<< getpid() <<"): Esperando clientes..." << std::endl;
+    std::cout << "Recepcionista: Esperando clientes..." << std::endl;
     ss.str("");
 
 
@@ -81,18 +81,18 @@ void Recepcionista::esperando() {
     std::string mensaje = buffer;
     mensaje.resize(bytesLeidos);
 
-    std::cout << "Recepcionista("<< getpid() <<"): LLego el cliente [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe puerta"
+    std::cout << "Recepcionista: LLego el cliente [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe puerta"
               << std::endl;
-    ss << "Recepcionista("<< getpid() <<"): LLego el cliente [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe puerta"
+    ss << "Recepcionista: LLego el cliente [" << mensaje << "] (" << bytesLeidos << " bytes) del pipe puerta"
           << std::endl;
     Log::getInstance()->log(ss.str());
     ss.str("");
 
 
     escrituraLiving.p(); //semaforo para que la cantidad de gente en el living sea siempre valida (nadie puede sumar ni restar)
-    std::cout << "Recepcionista("<< getpid() <<"): LLevo al cliente [" << mensaje << "] " << "al living"
+    std::cout << "Recepcionista: LLevo al cliente [" << mensaje << "] " << "al living"
               << std::endl;
-    ss << "Recepcionista("<< getpid() <<"): Llevo al cliente [" << mensaje << "] " << "al living"
+    ss << "Recepcionista: Llevo al cliente [" << mensaje << "] " << "al living"
        << std::endl;
     Log::getInstance()->log(ss.str());
     ss.str("");
@@ -103,9 +103,9 @@ void Recepcionista::esperando() {
     // aumento en 1 la cantidad de clientes en el living
     int cantClientes = this->cantClientesLiving.leer();
     cantClientes ++;
-    ss << "Recepcionista("<< getpid() <<"): Cantidad clientes en living [" << cantClientes << "] "<< std::endl;
+    ss << "Recepcionista: Cantidad clientes en living [" << cantClientes << "] "<< std::endl;
     Log::getInstance()->log(ss.str());
-    std::cout << "Recepcionista("<< getpid() <<"): Cantidad clientes en living [" << cantClientes << "] "<< std::endl;
+    std::cout << "Recepcionista: Cantidad clientes en living [" << cantClientes << "] "<< std::endl;
 
     ss.str("");
     this->cantClientesLiving.escribir(cantClientes);

@@ -115,16 +115,16 @@ void Mozo::recibiendoOrden() {
 
     if (!pedirCuenta) {
         ss.str("");
-        ss << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: [" << pedido << "] " << std::endl;
+        ss << "Mozo[" << id << "]: Leí el PEDIDO de la mesa con PID " << idMesa << " y pidio de comer: [" << pedido << "] " << std::endl;
         Log::getInstance()->log(ss.str());
-        std::cout << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio de comer: [" << pedido << "] " << std::endl;
+        std::cout << "Mozo[" << id << "]: Leí el PEDIDO de la mesa con PID " << idMesa << " y pidio de comer: [" << pedido << "] " << std::endl;
 
         estado = ESPERANDO_COMIDA;  // Si hay pedido va a pedir la comida al cocinero
     } else {
         ss.str("");
-        ss << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio la CUENTA: " << std::endl;
+        ss << "Mozo[" << id << "]: Leí el PEDIDO de la mesa con PID " << idMesa << " y pidio la CUENTA: " << std::endl;
         Log::getInstance()->log(ss.str());
-        std::cout << "Mozo[" << id << "]: Leí el PEDIDO del cliente con PID " << idMesa << " y pidio la CUENTA: " << std::endl;
+        std::cout << "Mozo[" << id << "]: Leí el PEDIDO de la mesa con PID " << idMesa << " y pidio la CUENTA: " << std::endl;
         estado = ENTREGANDO_CUENTA;  // Si el pedido es 00000 significa que quiere la cuenta
     }
 }
@@ -203,7 +203,7 @@ void Mozo::entregandoCuenta() {
         ss << "Mozo[" << id << "] entrega cuenta" << std::endl;
         Log::getInstance()->log(ss.str());
         std::cout << "Mozo[" << id << "] entrega cuenta" << std::endl;
-
+        //Desbloqueo mesa
         semaforosMesas.at(idMesa)->v();
         avanzarEstado();
     }
