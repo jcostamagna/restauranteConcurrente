@@ -15,17 +15,14 @@ GeneradorClientes::GeneradorClientes (Pipe& clientes, int cantClientes): cantCli
 
 void GeneradorClientes::run() {
 
-    // se registra el event handler declarado antes
-    //SignalHandler :: getInstance()->registrarHandler ( SIGINT,&sigint_handler );
-
-
     this->rutinaGenerador();
 
     // se recibio la senial SIGINT, el proceso termina
-    SignalHandler :: destruir ();
+    std::stringstream ss;
+    ss << "Termino el proceso Generador " << getpid() << std::endl;
+    Log::getInstance()->log(ss.str());
     std::cout << "Generador: fin del proceso" << std::endl;
     puerta.cerrar();
-    exit(0);
 }
 
 void GeneradorClientes::rutinaGenerador() {

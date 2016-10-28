@@ -10,6 +10,8 @@
 #include <list>
 #include "Forkeable.h"
 
+#define LIMPIAR_PEDIDOS 'X'
+
 typedef enum ESTADO_COCINERO {
     ESPERANDO_PEDIDO, //esperando que un mozo le de un pedido de comida
     ENTREGANDO_PEDIDO, //entrega la comida y hace...
@@ -24,6 +26,7 @@ private:
     e_cocinero estado;
 
     unsigned int idMozoCocinarle;
+    std::string pedido;
 
 private:
     virtual void run() override;
@@ -39,6 +42,10 @@ public:
     virtual ~Cocinero();
 
     void cocinar(std::string pedido);
+
+    void limpiarPipePedidos();
+
+
 };
 
 

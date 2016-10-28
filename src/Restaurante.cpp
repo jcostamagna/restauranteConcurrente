@@ -3,6 +3,7 @@
 //
 
 #include <sstream>
+#include <iomanip>
 #include "Restaurante.h"
 #include "Log.h"
 #include "lockFiles.h"
@@ -13,9 +14,10 @@ Restaurante::Restaurante(int recepCant, int mozosCant, int mesasCant, int client
           cantClientesLiving(SM_CLIENTES_LIVING_FILE, SM_CLIENTES_LIVING_LETRA),
           escrituraLiving(SEM_CLIENTES_LIVING_FILE, SEM_CLIENTES_LIVING_LETRA, 0),
           dineroPerdido(SM_DINERO_PERDIDO_FILE, SM_DINERO_PERDIDO_LETRA),
-          semDineroPerdido("/bin/cp",'k',0) , generadorClientes(puerta, clientesCant),
+          semDineroPerdido(SEM_DINERO_PERDIDO_FILE,SEM_DINERO_PERDIDO_LETRA,0) , generadorClientes(puerta, clientesCant),
           lockLecturaClientes(puerta.getFdLectura()), lockLecturaLiving(living.getFdLectura()),
-          lockLecturaMesas(pipePedidosMesas.getFdLectura()) {}
+          lockLecturaMesas(pipePedidosMesas.getFdLectura()),
+          tirarPedidosDeMesas(SM_TIRAR_PEDIDOS_MESAS_FILE, SM_TIRAR_PEDIDOS_MESAS_LETRA) {}
 
 void Restaurante::iniciarPersonal() {
     caja.escribir(0);
@@ -48,7 +50,6 @@ void Restaurante::iniciarMesas() {
         Semaforo *semParaMozos = new Semaforo(path, sem,0);
         Mesa* mesa = new Mesa(this->living, this->pipePedidosMesas, this->lockLecturaLiving, semParaMozos,  this->escrituraLiving, semCajaRestaurante, semDineroPerdido, menu);
         mesa->start();
-        //this->semaforosMesas[mesa->get_pid()] = semaforoConCocinero;
         this->semaforosMesas.insert(std::make_pair(mesa->get_pid(), semParaMozos));
         this->mesas.push_back(mesa);
     }
@@ -79,8 +80,6 @@ void Restaurante::iniciarRecepcionistas() {
         recepcionista->start();
         this->recepcionistas.push_back(recepcionista);
     }
-
-    //Inicializo en 0
 
 }
 
@@ -124,10 +123,11 @@ Restaurante::~Restaurante() {
 
     kill(this->cocinero->get_pid(), SIGINT);
     this->cocinero->stop();
+    delete cocinero;
 
     kill(this->gerente->get_pid(), SIGINT);
     this->gerente->stop();
-
+    delete gerente;
 
     kill(this->generadorClientes.get_pid(), SIGINT);
     this->generadorClientes.stop();
@@ -138,18 +138,15 @@ Restaurante::~Restaurante() {
 }
 
 void Restaurante::apagonRestaurante() {
+    limpiar_mesas();
+
     vaciar_living();
+
+    limpiar_cocina();
 
     for (std::list<Mesa*>::iterator it = mesas.begin(); it != mesas.end(); ++it){
         kill((*it)->get_pid(),SIGCONT);
     }
-
-    for (std::list<Mozo*>::iterator it = mozos.begin(); it != mozos.end(); ++it){
-        kill((*it)->get_pid(),SIGCONT);
-    }
-
-    kill(cocinero->get_pid(),SIGCONT);
-
     kill(generadorClientes.get_pid(),SIGCONT);
 }
 
@@ -190,4 +187,33 @@ void Restaurante::vaciar_living() {
     this->cantClientesLiving.escribir(0);
     this->lockLecturaLiving.liberarLock();
     escrituraLiving.v();
+}
+
+void Restaurante::limpiar_mesas() {
+    std::stringstream ss;
+    ss.str("");
+    ss << "APAGON - MOZOS: SETEO TIRAR A TRUE" << std::endl;
+    Log::getInstance()->log(ss.str());
+    std::cout << "APAGON - MOZOS: SETEO TIRAR A TRUE" << std::endl;
+
+    tirarPedidosDeMesas.escribir(true);
+
+    std::stringstream stream;
+    stream << std::setfill(LIMPIAR_PEDIDOS) << std::setw(BUFFSIZE) << LIMPIAR_PEDIDOS;
+
+
+    pipePedidosMesas.escribir(stream.str().c_str(), BUFFSIZE);
+
+    for (std::list<Mozo*>::iterator it = mozos.begin(); it != mozos.end(); ++it){
+        kill((*it)->get_pid(),SIGCONT);
+    }
+}
+
+void Restaurante::limpiar_cocina() {
+    kill(cocinero->get_pid(),SIGCONT);
+    std::stringstream stream;
+    stream << std::setfill(LIMPIAR_PEDIDOS) << std::setw(BUFFSIZE) << LIMPIAR_PEDIDOS;
+
+    kill(cocinero->get_pid(),SIGCONT);
+    pipeECocinero.escribir(stream.str().c_str(), BUFFSIZE);
 }

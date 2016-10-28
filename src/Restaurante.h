@@ -56,6 +56,8 @@ class Restaurante {
 
     bool apagon;
 
+    MemoriaCompartida2<bool> tirarPedidosDeMesas;  //se utiliza junto con lockLecturaMesas
+
     void iniciarMozos();
 
     void iniciarCocinero();
@@ -80,6 +82,10 @@ public:
     void iniciarGerente();
 
 
+    void limpiar_mesas();
+
+
+    void limpiar_cocina();
 };
 
 

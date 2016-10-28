@@ -19,12 +19,14 @@ Gerente::~Gerente() {
 void Gerente::run() {
     rutinaGerente();
 
+    std::stringstream ss;
+    ss << "Termino el proceso gerente " << getpid() << std::endl;
+    Log::getInstance()->log(ss.str());
     std::cout << "Termino el proceso gerente " << getpid() << std::endl;
 }
 
 void Gerente::rutinaGerente() {
     while (sigint_handler.getGracefulQuit() == 0) {
-
         consultarDatos();
         sleep(5);
     }
