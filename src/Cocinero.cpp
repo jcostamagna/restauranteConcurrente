@@ -10,9 +10,7 @@
 
 Cocinero::Cocinero(Pipe &escrCocinero, std::list<Semaforo *> &semaforos) :
         eCocinero(escrCocinero), semaforosCocineroMozos(semaforos), vive(true),
-        estado(ESPERANDO_PEDIDO), idMozoCocinarle(999), pedido("") {
-
-}
+        estado(ESPERANDO_PEDIDO), idMozoCocinarle(999), pedido("") { }
 
 
 void Cocinero::run() {
